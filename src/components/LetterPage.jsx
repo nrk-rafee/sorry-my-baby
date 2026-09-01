@@ -48,10 +48,16 @@ export default function LetterPage({ setCurrentPage }) {
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-pink-50 to-purple-50">
                   {/* Save the photos with name like 1.jpg, 2.jpg ... and change the src to this - /images/${i}.jpg */}
                   <img
-                    src={`/images/1.jpg`}
-                    alt={`Beautiful memory ${i}`}
-                    className="w-full h-36 object-cover"
-                  />
+  src={
+    i === 1
+      ? "/images/IMG-20260801-WA0000.jpg"
+      : i === 2
+      ? "/images/IMG-20260821-WA0001.jpg"
+      : "/images/file_000000002c7881fa8780dfbef1a37bc0.png"
+  }
+  alt={`Beautiful memory ${i}`}
+  className="w-full h-36 object-cover"
+/>
 
                   {/* Cute corner decorations */}
                   <div className="absolute top-1 right-1">
