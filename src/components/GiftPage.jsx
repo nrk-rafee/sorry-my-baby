@@ -1,7 +1,7 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function GiftPage({ setCurrentPage }) {
   const [giftOpened, setGiftOpened] = useState(false)
@@ -22,7 +22,7 @@ export default function GiftPage({ setCurrentPage }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 text-center relative overflow-hidden">
 
-      {/* Floating cute elements */}
+      {/* Floating gift */}
       <motion.div
         className="absolute top-40 md:top-20 left-8 text-2xl"
         animate={{
@@ -31,21 +31,22 @@ export default function GiftPage({ setCurrentPage }) {
         }}
         transition={{
           duration: 3,
-          repeat: Number.POSITIVE_INFINITY,
+          repeat: Infinity,
         }}
       >
         🎁
       </motion.div>
 
+      {/* Sparkle */}
       <motion.div
         className="absolute top-32 right-10 text-xl"
         animate={{
           y: [0, -5, 0],
+          opacity: [0.5, 1, 0.5],
         }}
         transition={{
           duration: 2.5,
-          repeat: Number.POSITIVE_INFINITY,
-          delay: 1,
+          repeat: Infinity,
         }}
       >
         ✨
@@ -73,7 +74,10 @@ export default function GiftPage({ setCurrentPage }) {
 
         <AnimatePresence mode="wait">
 
-          {/* CLOSED GIFT */}
+          {/* =========================
+              CLOSED GIFT
+          ========================= */}
+
           {!giftOpened ? (
             <motion.div
               key="gift-box"
@@ -84,14 +88,12 @@ export default function GiftPage({ setCurrentPage }) {
               }}
               transition={{
                 duration: 1,
-                ease: [0.25, 0.46, 0.45, 0.94],
               }}
               className="cursor-pointer group relative"
               onClick={openGift}
             >
 
-              {/* Glow */}
-              <div className="absolute inset-0 w-56 h-56 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full blur-xl scale-110 group-hover:scale-125 transition-transform duration-300"></div>
+              <div className="absolute inset-0 w-56 h-56 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full blur-xl scale-110 group-hover:scale-125 transition-transform duration-300" />
 
               <motion.img
                 src="/gifs/gift.gif"
@@ -112,19 +114,18 @@ export default function GiftPage({ setCurrentPage }) {
                 animate={{
                   y: [0, -3, 0],
                   textShadow: [
-                    "0 0 10px rgba(236, 72, 153, 0.5)",
-                    "0 0 20px rgba(236, 72, 153, 0.8)",
-                    "0 0 10px rgba(236, 72, 153, 0.5)",
+                    "0 0 10px rgba(236,72,153,0.5)",
+                    "0 0 20px rgba(236,72,153,0.8)",
+                    "0 0 10px rgba(236,72,153,0.5)",
                   ],
                 }}
                 transition={{
                   duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
+                  repeat: Infinity,
                 }}
                 className="text-pink-200 mt-6 text-xl relative z-10"
               >
-                Click to open!🎁✨
+                Click to open! 🎁✨
               </motion.p>
 
               <motion.div
@@ -135,7 +136,7 @@ export default function GiftPage({ setCurrentPage }) {
                 }}
                 transition={{
                   duration: 3,
-                  repeat: Number.POSITIVE_INFINITY,
+                  repeat: Infinity,
                 }}
               >
                 ⭐
@@ -145,7 +146,10 @@ export default function GiftPage({ setCurrentPage }) {
 
           ) : (
 
-            /* OPENED GIFT */
+            /* =========================
+               OPENED GIFT
+            ========================= */
+
             <motion.div
               key="opened-gift"
               initial={{
@@ -160,11 +164,11 @@ export default function GiftPage({ setCurrentPage }) {
               }}
               transition={{
                 duration: 1.2,
-                ease: [0.25, 0.46, 0.45, 0.94],
               }}
               className="space-y-12"
             >
 
+              {/* Teddy */}
               <motion.div
                 initial={{
                   y: 50,
@@ -179,13 +183,11 @@ export default function GiftPage({ setCurrentPage }) {
                 transition={{
                   duration: 1,
                   delay: 0.3,
-                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
-                className="relative w-full h-full"
+                className="relative w-full"
               >
 
-                {/* Aura */}
-                <div className="absolute w-64 h-64 mx-auto inset-0 bg-gradient-to-r from-pink-400/30 to-purple-400/30 rounded-full blur-2xl scale-110"></div>
+                <div className="absolute w-64 h-64 mx-auto inset-0 bg-gradient-to-r from-pink-400/30 to-purple-400/30 rounded-full blur-2xl scale-110" />
 
                 <img
                   src="/gifs/teddy-giving-flower.gif"
@@ -201,7 +203,7 @@ export default function GiftPage({ setCurrentPage }) {
                   }}
                   transition={{
                     duration: 2.5,
-                    repeat: Number.POSITIVE_INFINITY,
+                    repeat: Infinity,
                   }}
                 >
                   🌸
@@ -215,8 +217,7 @@ export default function GiftPage({ setCurrentPage }) {
                   }}
                   transition={{
                     duration: 3,
-                    repeat: Number.POSITIVE_INFINITY,
-                    delay: 1,
+                    repeat: Infinity,
                   }}
                 >
                   💕
@@ -227,7 +228,6 @@ export default function GiftPage({ setCurrentPage }) {
               <AnimatePresence>
 
                 {showSurprise && (
-
                   <motion.div
                     initial={{
                       opacity: 0,
@@ -244,63 +244,41 @@ export default function GiftPage({ setCurrentPage }) {
                   >
 
                     <motion.p
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.8,
-                        delay: 0.3,
-                      }}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
                       className="text-2xl text-pink-300 leading-relaxed"
                     >
-                      This flower will never wilt...🌹
+                      This flower will never wilt... 🌹
                     </motion.p>
 
                     <motion.p
-                      initial={{
-                        opacity: 0,
-                        y: 15,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        duration: 0.8,
-                        delay: 0.6,
-                      }}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.6 }}
                       className="text-lg text-purple-200 leading-relaxed"
                     >
                       Just like my love for you. I promise to cherish you every
                       single day, and never take your beautiful heart for
-                      granted again.💖
+                      granted again. 💖
                     </motion.p>
 
                     <motion.p
-                      initial={{
-                        opacity: 0,
-                        y: 10,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
                         delay: 0.9,
                         duration: 0.8,
                       }}
                       className="text-xl text-pink-200"
                     >
-                      You mean everything to me💕✨
+                      You mean everything to me 💕✨
                     </motion.p>
 
 
-                    {/* ONE LAST THING BUTTON */}
+                    {/* =========================
+                        ONLY ONE BUTTON
+                    ========================= */}
 
                     <motion.div
                       initial={{
@@ -333,9 +311,9 @@ export default function GiftPage({ setCurrentPage }) {
                         }}
                       >
 
-                        {/* Butterfly */}
+                        {/* Flying butterfly */}
                         <motion.span
-                          className="absolute -top-8 left-1/2 text-2xl"
+                          className="absolute -top-8 left-1/2 text-2xl pointer-events-none"
                           animate={{
                             x: [-45, -15, 15, 40, 15, -20, -45],
                             y: [15, -5, 10, -8, -18, 0, 15],
@@ -343,7 +321,7 @@ export default function GiftPage({ setCurrentPage }) {
                           }}
                           transition={{
                             duration: 4,
-                            repeat: Number.POSITIVE_INFINITY,
+                            repeat: Infinity,
                             ease: "easeInOut",
                           }}
                         >
@@ -359,13 +337,11 @@ export default function GiftPage({ setCurrentPage }) {
                     </motion.div>
 
                   </motion.div>
-
                 )}
 
               </AnimatePresence>
 
             </motion.div>
-
           )}
 
         </AnimatePresence>
@@ -378,54 +354,34 @@ export default function GiftPage({ setCurrentPage }) {
         <div className="absolute inset-0 pointer-events-none">
 
           {[...Array(15)].map((_, i) => (
-
             <motion.div
               key={i}
+              className="absolute text-2xl z-40"
               initial={{
-                x:
-                  Math.random() *
-                  (typeof window !== "undefined"
-                    ? window.innerWidth
-                    : 800),
-
-                y:
-                  (typeof window !== "undefined"
-                    ? window.innerHeight
-                    : 600) + 50,
-
+                x: `${(i * 37) % 100}%`,
+                y: "110%",
                 opacity: 0,
                 scale: 0,
               }}
               animate={{
-                y: -150,
+                y: "-20%",
                 opacity: [0, 0.8, 0.8, 0],
                 scale: [0, 1.5, 1, 0.5],
                 rotate: 360,
-
-                x:
-                  Math.random() *
-                  (typeof window !== "undefined"
-                    ? window.innerWidth
-                    : 800),
               }}
               transition={{
-                duration: 5,
-                delay: Math.random() * 3,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatDelay: Math.random() * 6,
-                ease: [0.25, 0.46, 0.45, 0.94],
+                duration: 5 + (i % 3),
+                delay: (i % 5) * 0.5,
+                repeat: Infinity,
+                repeatDelay: 2,
               }}
-              className="absolute text-2xl z-40"
               style={{
                 filter:
-                  "drop-shadow(0 0 10px rgba(236, 72, 153, 0.6))",
+                  "drop-shadow(0 0 10px rgba(236,72,153,0.6))",
               }}
             >
-              {["💖", "🌸", "💕", "🌺", "💝", "🌹", "✨"][
-                Math.floor(Math.random() * 7)
-              ]}
+              {["💖", "🌸", "💕", "🌺", "💝", "🌹", "✨"][i % 7]}
             </motion.div>
-
           ))}
 
         </div>
