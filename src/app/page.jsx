@@ -13,75 +13,102 @@ import GiftPage from "@/components/GiftPage"
 import MusicPlayer from "@/components/MusicPlayer"
 
 
-// ======================================================
-// 🌸 LAST THING PAGE
-// ======================================================
+// =====================================================
+// 🌸 GARDEN PAGE
+// =====================================================
 
-function LastThingPage() {
+function GardenPage() {
+
   const [flowers, setFlowers] = useState([])
 
+
+  // 🌸 Different flowers
   const flowerTypes = [
     {
       name: "Rose",
       flower: "🌹",
+      bud: "🌱",
     },
     {
       name: "Hibiscus",
       flower: "🌺",
+      bud: "🌱",
     },
     {
       name: "Kat Golap",
       flower: "🌷",
+      bud: "🌱",
     },
     {
       name: "Shapla",
       flower: "🪷",
+      bud: "🌱",
     },
     {
       name: "Cherry Blossom",
       flower: "🌸",
+      bud: "🌱",
     },
   ]
 
 
-  // 🌸 Create a new flower when screen is touched
+  // 🌱 Create a new plant
   const createFlower = (e) => {
+
+    // prevent accidental double event
+    e.preventDefault()
+
     const rect = e.currentTarget.getBoundingClientRect()
 
     const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
 
-    const randomFlower =
-      flowerTypes[Math.floor(Math.random() * flowerTypes.length)]
+    const randomType =
+      flowerTypes[
+        Math.floor(Math.random() * flowerTypes.length)
+      ]
+
 
     const newFlower = {
       id: Date.now() + Math.random(),
+
+      // Tap-er X position
       x,
-      y,
-      flower: randomFlower.flower,
-      size: 0.85 + Math.random() * 0.35,
+
+      flower: randomType.flower,
+      bud: randomType.bud,
+
+      // Every plant slightly different
+      size: 0.8 + Math.random() * 0.35,
+
+      height: 100 + Math.random() * 100,
+
+      side: Math.random() > 0.5 ? 1 : -1,
     }
 
-    setFlowers((prev) => [...prev, newFlower])
+
+    setFlowers((previous) => [
+      ...previous,
+      newFlower,
+    ])
   }
 
 
   return (
     <div
-      onClick={createFlower}
-      className="min-h-screen w-full relative overflow-hidden cursor-pointer"
+      onPointerDown={createFlower}
+      className="min-h-screen w-full relative overflow-hidden cursor-pointer select-none"
       style={{
         background:
-          "radial-gradient(circle at 50% 45%, rgba(130,70,150,0.22), transparent 45%), linear-gradient(to bottom, #080b18, #050712)",
+          "radial-gradient(circle at 50% 45%, rgba(145,70,160,0.22), transparent 42%), linear-gradient(to bottom, #070b19, #030510)",
       }}
     >
 
-      {/* ==================================================
+      {/* =================================================
           HEADER
-      ================================================== */}
+      ================================================= */}
 
       <motion.div
-        className="absolute top-10 left-0 right-0 z-50 text-center px-5 pointer-events-none"
+        className="absolute top-10 left-0 right-0 z-[100] text-center px-5 pointer-events-none"
         initial={{
           opacity: 0,
           y: -25,
@@ -95,13 +122,13 @@ function LastThingPage() {
         }}
       >
 
-        <motion.h2
+        <motion.h1
           className="text-3xl md:text-4xl text-pink-300"
           animate={{
             textShadow: [
-              "0 0 10px rgba(236,72,153,0.2)",
-              "0 0 25px rgba(236,72,153,0.55)",
-              "0 0 10px rgba(236,72,153,0.2)",
+              "0 0 8px rgba(236,72,153,0.2)",
+              "0 0 25px rgba(236,72,153,0.7)",
+              "0 0 8px rgba(236,72,153,0.2)",
             ],
           }}
           transition={{
@@ -110,11 +137,11 @@ function LastThingPage() {
           }}
         >
           One last little thing… 🦋
-        </motion.h2>
+        </motion.h1>
 
 
         <motion.p
-          className="mt-4 text-lg text-purple-200"
+          className="mt-4 text-purple-200 text-lg"
           animate={{
             opacity: [0.45, 1, 0.45],
           }}
@@ -129,36 +156,79 @@ function LastThingPage() {
       </motion.div>
 
 
-      {/* ==================================================
-          BACKGROUND STARS
-      ================================================== */}
 
-      {[...Array(45)].map((_, i) => (
-        <motion.div
-          key={`star-${i}`}
-          className="absolute rounded-full bg-white pointer-events-none"
-          style={{
-            width: `${1 + Math.random() * 2.5}px`,
-            height: `${1 + Math.random() * 2.5}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            opacity: [0.1, 0.8, 0.1],
-            scale: [0.7, 1.3, 0.7],
-          }}
-          transition={{
-            duration: 2 + Math.random() * 3,
-            delay: Math.random() * 3,
-            repeat: Infinity,
-          }}
-        />
-      ))}
+      {/* =================================================
+          STARS
+      ================================================= */}
+
+      <div className="absolute inset-0 pointer-events-none">
+
+        {[
+          [7, 18],
+          [15, 38],
+          [23, 12],
+          [31, 48],
+          [39, 25],
+          [47, 62],
+          [54, 17],
+          [61, 43],
+          [68, 28],
+          [74, 58],
+          [81, 20],
+          [88, 44],
+          [94, 30],
+          [12, 72],
+          [27, 84],
+          [43, 75],
+          [57, 88],
+          [72, 78],
+          [85, 70],
+          [96, 86],
+        ].map(([left, top], index) => (
+
+          <motion.span
+            key={index}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: index % 3 === 0 ? 3 : 2,
+              height: index % 3 === 0 ? 3 : 2,
+              left: `${left}%`,
+              top: `${top}%`,
+            }}
+            animate={{
+              opacity: [0.15, 0.8, 0.15],
+              scale: [0.7, 1.3, 0.7],
+            }}
+            transition={{
+              duration: 2 + (index % 4),
+              repeat: Infinity,
+              delay: (index % 5) * 0.4,
+            }}
+          />
+
+        ))}
+
+      </div>
 
 
-      {/* ==================================================
-          FLOWERS
-      ================================================== */}
+
+      {/* =================================================
+          GROUND GLOW
+      ================================================= */}
+
+      <div
+        className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(30,80,50,0.16), transparent)",
+        }}
+      />
+
+
+
+      {/* =================================================
+          ALL CREATED PLANTS
+      ================================================= */}
 
       <AnimatePresence>
 
@@ -166,10 +236,9 @@ function LastThingPage() {
 
           <motion.div
             key={item.id}
-            className="absolute pointer-events-none"
+            className="absolute bottom-0 pointer-events-none"
             style={{
               left: item.x,
-              top: item.y,
               zIndex: 20,
             }}
             initial={{
@@ -178,44 +247,19 @@ function LastThingPage() {
             animate={{
               opacity: 1,
             }}
-            transition={{
-              duration: 0.4,
-            }}
           >
 
-            {/* 🌟 Glow */}
+            {/* ==========================================
+                🌱 PLANT WRAPPER
+            ========================================== */}
 
             <motion.div
-              className="absolute rounded-full bg-pink-400/20 blur-3xl"
+              className="relative origin-bottom"
               style={{
-                width: 110,
-                height: 110,
-                left: -55,
-                top: -130,
-              }}
-              initial={{
-                opacity: 0,
-                scale: 0,
-              }}
-              animate={{
-                opacity: [0, 0.8, 0.35],
-                scale: [0, 1.4, 1],
-              }}
-              transition={{
-                duration: 2,
-                delay: 1,
-              }}
-            />
-
-
-            {/* ==================================================
-                🌱 PLANT
-            ================================================== */}
-
-            <motion.div
-              className="relative flex flex-col items-center origin-bottom"
-              style={{
-                transform: `translate(-50%, -100%) scale(${item.size})`,
+                width: 120,
+                marginLeft: -60,
+                height: item.height + 170,
+                transform: `scale(${item.size})`,
               }}
               initial={{
                 scaleY: 0,
@@ -231,32 +275,40 @@ function LastThingPage() {
               }}
             >
 
-              {/* 🌑 Soil shadow */}
+
+              {/* ======================================
+                  🌑 SOIL SHADOW
+              ====================================== */}
 
               <motion.div
-                className="absolute bottom-[-7px] w-16 h-3 rounded-full bg-black/40 blur-sm"
+                className="absolute bottom-1 left-1/2 -translate-x-1/2 w-24 h-4 rounded-full bg-black/50 blur-md"
                 initial={{
-                  opacity: 0,
                   scaleX: 0,
+                  opacity: 0,
                 }}
                 animate={{
-                  opacity: 1,
                   scaleX: 1,
+                  opacity: 1,
                 }}
                 transition={{
-                  duration: 0.6,
+                  duration: 0.7,
                 }}
               />
 
 
-              {/* ==================================================
-                  STEM
-              ================================================== */}
+
+              {/* ======================================
+                  🌿 MAIN STEM
+              ====================================== */}
 
               <motion.div
-                className="relative w-[7px] rounded-full bg-gradient-to-t from-green-950 via-green-700 to-green-400 origin-bottom"
+                className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[6px] rounded-full origin-bottom"
                 style={{
-                  height: 115,
+                  height: item.height,
+                  background:
+                    "linear-gradient(to top, #123d24, #287a3e, #55a85a)",
+                  boxShadow:
+                    "0 0 8px rgba(60,180,90,0.25)",
                 }}
                 initial={{
                   scaleY: 0,
@@ -265,21 +317,29 @@ function LastThingPage() {
                   scaleY: 1,
                 }}
                 transition={{
-                  duration: 1.3,
+                  duration: 1.25,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
 
-                {/* LEFT BRANCH */}
+
+                {/* =================================
+                    🍃 LEFT BRANCH
+                ================================= */}
 
                 <motion.div
-                  className="absolute left-[-34px] top-[52px] w-[38px] h-[5px] rounded-full bg-green-600 origin-right"
+                  className="absolute left-0 top-[38%] w-12 h-[5px] rounded-full origin-right"
+                  style={{
+                    background:
+                      "linear-gradient(to right, #1b572d, #4d9e50)",
+                  }}
                   initial={{
                     scaleX: 0,
+                    rotate: 0,
                   }}
                   animate={{
                     scaleX: 1,
-                    rotate: -28,
+                    rotate: -30,
                   }}
                   transition={{
                     duration: 0.7,
@@ -288,141 +348,315 @@ function LastThingPage() {
                 />
 
 
-                {/* RIGHT BRANCH */}
+                {/* =================================
+                    🍃 RIGHT BRANCH
+                ================================= */}
 
                 <motion.div
-                  className="absolute right-[-34px] top-[72px] w-[38px] h-[5px] rounded-full bg-green-600 origin-left"
+                  className="absolute right-0 top-[57%] w-12 h-[5px] rounded-full origin-left"
+                  style={{
+                    background:
+                      "linear-gradient(to right, #1b572d, #4d9e50)",
+                  }}
                   initial={{
                     scaleX: 0,
+                    rotate: 0,
                   }}
                   animate={{
                     scaleX: 1,
-                    rotate: 28,
+                    rotate: 30,
                   }}
                   transition={{
                     duration: 0.7,
-                    delay: 0.8,
+                    delay: 0.85,
                   }}
                 />
 
 
-                {/* LEFT LEAF */}
+                {/* =================================
+                    🍃 LEFT LEAF
+                ================================= */}
 
-                <motion.div
-                  className="absolute left-[-58px] top-[42px] text-2xl"
+                <motion.span
+                  className="absolute left-[-48px] top-[30%] text-3xl"
                   initial={{
                     opacity: 0,
                     scale: 0,
-                    rotate: -30,
+                    rotate: -40,
                   }}
                   animate={{
                     opacity: 1,
                     scale: 1,
-                    rotate: -20,
+                    rotate: -18,
                   }}
                   transition={{
-                    duration: 0.6,
-                    delay: 0.9,
+                    duration: 0.7,
+                    delay: 0.95,
                     ease: "backOut",
                   }}
                 >
                   🍃
-                </motion.div>
+                </motion.span>
 
 
-                {/* RIGHT LEAF */}
+                {/* =================================
+                    🍃 RIGHT LEAF
+                ================================= */}
 
-                <motion.div
-                  className="absolute right-[-58px] top-[62px] text-2xl"
+                <motion.span
+                  className="absolute right-[-48px] top-[50%] text-3xl"
                   initial={{
                     opacity: 0,
                     scale: 0,
-                    rotate: 30,
+                    rotate: 40,
                   }}
                   animate={{
                     opacity: 1,
                     scale: 1,
-                    rotate: 20,
+                    rotate: 18,
                   }}
                   transition={{
-                    duration: 0.6,
-                    delay: 1.05,
+                    duration: 0.7,
+                    delay: 1.1,
                     ease: "backOut",
                   }}
                 >
                   🍃
-                </motion.div>
+                </motion.span>
+
+
+                {/* =================================
+                    🍃 SMALL LEAF
+                ================================= */}
+
+                <motion.span
+                  className="absolute left-[-38px] top-[67%] text-2xl"
+                  initial={{
+                    opacity: 0,
+                    scale: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 1.25,
+                    ease: "backOut",
+                  }}
+                >
+                  🌿
+                </motion.span>
+
+
+                {/* =================================
+                    🌿 RIGHT SMALL LEAF
+                ================================= */}
+
+                <motion.span
+                  className="absolute right-[-38px] top-[75%] text-2xl"
+                  initial={{
+                    opacity: 0,
+                    scale: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 1.35,
+                    ease: "backOut",
+                  }}
+                >
+                  🌿
+                </motion.span>
 
               </motion.div>
 
 
-              {/* ==================================================
-                  🌱 BUD
-              ================================================== */}
+
+              {/* ======================================
+                  🌱 LITTLE VINE LEFT
+              ====================================== */}
 
               <motion.div
-                className="absolute -top-[35px] text-2xl"
+                className="absolute bottom-[35px] left-[15px] origin-bottom"
+                initial={{
+                  scaleY: 0,
+                  rotate: -15,
+                }}
+                animate={{
+                  scaleY: 1,
+                  rotate: -5,
+                }}
+                transition={{
+                  duration: 1,
+                  delay: 0.9,
+                }}
+              >
+
+                <div
+                  className="w-[4px] h-24 rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(to top, #174d28, #62a95e)",
+                  }}
+                />
+
+                <span className="absolute top-5 -left-5 text-2xl">
+                  🍃
+                </span>
+
+                <span className="absolute top-12 left-1 text-2xl">
+                  🍃
+                </span>
+
+                <span className="absolute top-20 -left-4 text-xl">
+                  🌿
+                </span>
+
+              </motion.div>
+
+
+
+              {/* ======================================
+                  🌿 LITTLE VINE RIGHT
+              ====================================== */}
+
+              <motion.div
+                className="absolute bottom-[25px] right-[15px] origin-bottom"
+                initial={{
+                  scaleY: 0,
+                  rotate: 15,
+                }}
+                animate={{
+                  scaleY: 1,
+                  rotate: 5,
+                }}
+                transition={{
+                  duration: 1,
+                  delay: 1.05,
+                }}
+              >
+
+                <div
+                  className="w-[4px] h-20 rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(to top, #174d28, #62a95e)",
+                  }}
+                />
+
+                <span className="absolute top-4 -right-5 text-2xl">
+                  🍃
+                </span>
+
+                <span className="absolute top-11 right-0 text-2xl">
+                  🍃
+                </span>
+
+              </motion.div>
+
+
+
+              {/* ======================================
+                  🌱 BUD
+              ====================================== */}
+
+              <motion.div
+                className="absolute left-1/2 -translate-x-1/2"
+                style={{
+                  bottom: item.height - 12,
+                }}
                 initial={{
                   opacity: 0,
                   scale: 0,
-                  y: 10,
+                  y: 15,
                 }}
                 animate={{
                   opacity: 1,
-                  scale: [0, 1.2, 1],
+                  scale: 1,
                   y: 0,
                 }}
                 transition={{
                   duration: 0.8,
-                  delay: 1.15,
+                  delay: 1.35,
                   ease: "backOut",
                 }}
               >
-                🌱
+                <span className="text-2xl">
+                  {item.bud}
+                </span>
               </motion.div>
 
 
-              {/* ==================================================
+
+              {/* ======================================
                   🌸 FLOWER BLOOM
-              ================================================== */}
+              ====================================== */}
 
               <motion.div
-                className="absolute -top-[70px] text-[55px] md:text-[65px]"
+                className="absolute left-1/2 -translate-x-1/2 text-6xl md:text-7xl"
+                style={{
+                  bottom: item.height + 8,
+                  filter:
+                    "drop-shadow(0 0 8px rgba(255,180,220,0.65)) drop-shadow(0 0 25px rgba(255,70,180,0.35))",
+                }}
                 initial={{
                   opacity: 0,
                   scale: 0,
-                  rotate: -30,
+                  rotate: -35,
+                  y: 15,
                 }}
                 animate={{
                   opacity: 1,
-                  scale: [0, 0.25, 0.6, 1.08, 1],
-                  rotate: [-30, 15, -8, 4, 0],
+                  scale: [
+                    0,
+                    0.2,
+                    0.45,
+                    0.75,
+                    1.12,
+                    0.96,
+                    1,
+                  ],
+                  rotate: [
+                    -35,
+                    20,
+                    -12,
+                    8,
+                    -4,
+                    2,
+                    0,
+                  ],
+                  y: [15, 8, 2, 0, -3, 0, 0],
                 }}
                 transition={{
-                  duration: 2,
-                  delay: 1.45,
+                  duration: 2.1,
+                  delay: 1.55,
                   ease: [0.16, 1, 0.3, 1],
-                }}
-                style={{
-                  filter:
-                    "drop-shadow(0 0 7px rgba(255,180,220,0.55)) drop-shadow(0 0 22px rgba(255,80,190,0.45))",
                 }}
               >
                 {item.flower}
               </motion.div>
 
 
-              {/* ==================================================
-                  🌸 FLOWER BREATHING
-              ================================================== */}
+
+              {/* ======================================
+                  🌸 FLOWER SOFT BREATH
+              ====================================== */}
 
               <motion.div
-                className="absolute -top-[70px] text-[55px] md:text-[65px] pointer-events-none"
+                className="absolute left-1/2 -translate-x-1/2 text-6xl md:text-7xl pointer-events-none"
+                style={{
+                  bottom: item.height + 8,
+                }}
                 animate={{
-                  scale: [1, 1.04, 1],
+                  scale: [1, 1.035, 1],
+                  rotate: [0, 1, 0],
                 }}
                 transition={{
-                  duration: 2.8,
+                  duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
@@ -431,22 +665,24 @@ function LastThingPage() {
               </motion.div>
 
 
-              {/* ==================================================
-                  ✨ SPARKLES
-              ================================================== */}
 
-              {[...Array(6)].map((_, index) => (
+              {/* ======================================
+                  ✨ MAGIC PARTICLES
+              ====================================== */}
+
+              {[0, 1, 2, 3, 4].map((spark) => (
 
                 <motion.span
-                  key={`sparkle-${index}`}
-                  className="absolute text-sm md:text-base"
+                  key={spark}
+                  className="absolute text-sm"
                   style={{
-                    left: -45 + Math.random() * 90,
-                    top: -80 + Math.random() * 100,
+                    left: `${30 + spark * 15}px`,
+                    bottom: `${item.height + 20 + (spark % 3) * 20}px`,
                   }}
                   initial={{
                     opacity: 0,
                     scale: 0,
+                    y: 10,
                   }}
                   animate={{
                     opacity: [0, 1, 0],
@@ -455,37 +691,60 @@ function LastThingPage() {
                   }}
                   transition={{
                     duration: 2,
-                    delay: 1.9 + index * 0.15,
+                    delay: 2.1 + spark * 0.25,
                     repeat: Infinity,
-                    repeatDelay: 1.5,
+                    repeatDelay: 2,
                   }}
                 >
-                  {index % 2 === 0 ? "✨" : "✦"}
+                  {spark % 2 === 0 ? "✨" : "✦"}
                 </motion.span>
 
               ))}
 
 
-              {/* ==================================================
+
+              {/* ======================================
                   🦋 BUTTERFLY
-              ================================================== */}
+              ====================================== */}
 
               <motion.div
                 className="absolute text-2xl md:text-3xl"
+                style={{
+                  bottom: item.height + 25,
+                  left: "50%",
+                }}
                 initial={{
                   opacity: 0,
-                  x: -80,
-                  y: 10,
+                  x: -90,
+                  y: 20,
                 }}
                 animate={{
                   opacity: [0, 1, 1, 1, 0],
-                  x: [-80, -35, 20, 55, 85],
-                  y: [15, -35, -55, -20, 5],
-                  rotate: [-15, 15, -8, 15, -10],
+                  x: [
+                    -90,
+                    -45,
+                    10,
+                    55,
+                    90,
+                  ],
+                  y: [
+                    20,
+                    -25,
+                    -55,
+                    -20,
+                    15,
+                  ],
+                  rotate: [
+                    -15,
+                    15,
+                    -8,
+                    12,
+                    -10,
+                  ],
                 }}
                 transition={{
                   duration: 6,
-                  delay: 2.2,
+                  delay: 2.5,
                   repeat: Infinity,
                   repeatDelay: 1,
                   ease: "easeInOut",
@@ -493,6 +752,7 @@ function LastThingPage() {
               >
                 🦋
               </motion.div>
+
 
             </motion.div>
 
@@ -503,14 +763,15 @@ function LastThingPage() {
       </AnimatePresence>
 
 
-      {/* ==================================================
-          💌 BOTTOM MESSAGE
-      ================================================== */}
+
+      {/* =================================================
+          BOTTOM MESSAGE
+      ================================================= */}
 
       {flowers.length > 0 && (
 
         <motion.div
-          className="absolute bottom-8 left-0 right-0 z-50 text-center pointer-events-none px-5"
+          className="absolute bottom-7 left-0 right-0 z-[90] text-center pointer-events-none px-5"
           initial={{
             opacity: 0,
             y: 20,
@@ -524,7 +785,7 @@ function LastThingPage() {
           <motion.p
             className="text-pink-200 text-lg"
             animate={{
-              opacity: [0.65, 1, 0.65],
+              opacity: [0.6, 1, 0.6],
             }}
             transition={{
               duration: 2.5,
@@ -534,9 +795,8 @@ function LastThingPage() {
             Every flower blooms from a little touch… 🌸
           </motion.p>
 
-
           <p className="text-purple-200/70 text-sm mt-2">
-            Keep tapping and create your little garden 🦋✨
+            Keep tapping and let your little garden grow 🦋✨
           </p>
 
         </motion.div>
@@ -549,9 +809,9 @@ function LastThingPage() {
 
 
 
-// ======================================================
-// 🏠 MAIN HOME PAGE
-// ======================================================
+// =====================================================
+// 🏠 HOME
+// =====================================================
 
 export default function Home() {
 
@@ -569,7 +829,7 @@ export default function Home() {
     letter: LetterPage,
     hug: HugPage,
     gift: GiftPage,
-    lastThing: LastThingPage,
+    garden: GardenPage,
   }
 
 
@@ -577,7 +837,6 @@ export default function Home() {
 
 
   const pageVariants = {
-
     initial: {
       opacity: 0,
       y: 30,
@@ -595,7 +854,6 @@ export default function Home() {
       y: -30,
       scale: 1.05,
     },
-
   }
 
 
@@ -607,28 +865,21 @@ export default function Home() {
 
 
   return (
-
     <div className="min-h-screen bg-gray-900 relative overflow-hidden">
 
       <StarryBackground />
 
 
-      {/* 🎵 MUSIC */}
-
+      {/* Music Player */}
       {showMusicPlayer && (
-
         <MusicPlayer
           musicPlaying={musicPlaying}
           setMusicPlaying={setMusicPlaying}
         />
-
       )}
 
 
-      {/* ==================================================
-          PAGES
-      ================================================== */}
-
+      {/* Page transition */}
       <AnimatePresence mode="wait">
 
         <motion.div
@@ -652,92 +903,6 @@ export default function Home() {
 
       </AnimatePresence>
 
-
-      {/* ==================================================
-          🦋 ONE LAST THING BUTTON
-      ================================================== */}
-
-      {currentPage === "gift" && (
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 4,
-            duration: 1,
-          }}
-          className="relative z-50 flex justify-center pb-14 -mt-4"
-        >
-
-          <motion.button
-            onClick={() => setCurrentPage("lastThing")}
-            className="
-              relative
-              px-8 py-4
-              rounded-full
-              bg-gradient-to-r
-              from-pink-500/25
-              to-purple-500/25
-              backdrop-blur-md
-              border border-pink-300/40
-              text-pink-200
-              text-lg
-              shadow-lg
-              shadow-pink-500/20
-              overflow-hidden
-            "
-            whileHover={{
-              scale: 1.05,
-              boxShadow:
-                "0 0 30px rgba(236,72,153,0.45)",
-            }}
-            whileTap={{
-              scale: 0.95,
-            }}
-          >
-
-            {/* 🦋 Flying butterfly */}
-
-            <motion.span
-              className="absolute text-2xl"
-              initial={{
-                x: -100,
-                y: 5,
-                opacity: 0,
-              }}
-              animate={{
-                x: [-100, -35, 20, 75, 120],
-                y: [10, -18, 8, -15, 5],
-                opacity: [0, 1, 1, 1, 0],
-                rotate: [-15, 15, -10, 15, -10],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              🦋
-            </motion.span>
-
-
-            <span className="relative z-10">
-              One last thing, baby… 🦋
-            </span>
-
-          </motion.button>
-
-        </motion.div>
-
-      )}
-
     </div>
-
   )
 }
