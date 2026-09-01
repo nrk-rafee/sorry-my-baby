@@ -28,8 +28,16 @@ export default function LetterPage({ setCurrentPage }) {
           {[1, 2, 3].map((i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, rotate: -8 + Math.random() * 16, y: 30 }}
-              animate={{ opacity: 1, rotate: -3 + Math.random() * 6, y: 0 }}
+              initial={{
+                opacity: 0,
+                rotate: -8 + Math.random() * 16,
+                y: 30,
+              }}
+              animate={{
+                opacity: 1,
+                rotate: -3 + Math.random() * 6,
+                y: 0,
+              }}
               transition={{
                 duration: 0.8,
                 delay: i * 0.2,
@@ -44,24 +52,32 @@ export default function LetterPage({ setCurrentPage }) {
             >
               {/* Main polaroid container */}
               <div className="bg-white p-3 rounded-2xl shadow-lg transform transition-all duration-300 group-hover:shadow-pink-200/40 max-w-[200px]">
+
                 {/* Photo area */}
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-pink-50 to-purple-50">
-                  {/* Save the photos with name like 1.jpg, 2.jpg ... and change the src to this - /images/${i}.jpg */}
+
+                  {/* Different photo for each card */}
                   <img
-  src={
-    i === 1
-      ? "/images/IMG-20260801-WA0000.jpg"
-      : i === 2
-      ? "/images/IMG-20260821-WA0001.jpg"
-      : "/images/file_000000002c7881fa8780dfbef1a37bc0.png"
-  }
-  alt={`Beautiful memory ${i}`}
-  className="w-full h-36 object-cover"
-/>
+                    src={
+                      i === 1
+                        ? "/images/IMG-20260801-WA0000.jpg"
+                        : i === 2
+                        ? "/images/IMG-20260821-WA0001.jpg"
+                        : "/images/file_000000002c7881fa8780dfbef1a37bc0.png"
+                    }
+                    alt={`Beautiful memory ${i}`}
+                    className="w-full h-36 object-cover"
+                  />
 
                   {/* Cute corner decorations */}
                   <div className="absolute top-1 right-1">
-                    <span className="text-xs">{i === 1 ? "💕" : i === 2 ? "✨" : "🌸"}</span>
+                    <span className="text-xs">
+                      {i === 1
+                        ? "💕"
+                        : i === 2
+                        ? "✨"
+                        : "🌸"}
+                    </span>
                   </div>
                 </div>
 
@@ -72,6 +88,7 @@ export default function LetterPage({ setCurrentPage }) {
                     <div className="w-6 h-0.5 bg-purple-200 rounded-full"></div>
                     <div className="w-10 h-0.5 bg-pink-200 rounded-full"></div>
                   </div>
+
                   <div className="flex justify-center space-x-1 mt-1">
                     <div className="w-12 h-0.5 bg-purple-200 rounded-full"></div>
                     <div className="w-4 h-0.5 bg-pink-200 rounded-full"></div>
@@ -81,12 +98,13 @@ export default function LetterPage({ setCurrentPage }) {
 
               {/* Cute tape - different colors for each */}
               <div
-                className={`absolute -top-2 left-1/2 transform -translate-x-1/2 w-12 h-6 rounded-md shadow-sm opacity-90 ${i === 1
-                  ? "bg-gradient-to-r from-yellow-200 to-yellow-300 border border-yellow-400/30"
-                  : i === 2
+                className={`absolute -top-2 left-1/2 transform -translate-x-1/2 w-12 h-6 rounded-md shadow-sm opacity-90 ${
+                  i === 1
+                    ? "bg-gradient-to-r from-yellow-200 to-yellow-300 border border-yellow-400/30"
+                    : i === 2
                     ? "bg-gradient-to-r from-green-200 to-green-300 border border-green-400/30"
                     : "bg-gradient-to-r from-blue-200 to-blue-300 border border-blue-400/30"
-                  }`}
+                }`}
               ></div>
 
               {/* Floating cute elements */}
@@ -144,8 +162,13 @@ export default function LetterPage({ setCurrentPage }) {
             transition={{ duration: 0.8, delay: 1.8 }}
             className="text-lg text-pink-200 leading-relaxed max-w-lg mx-auto"
           >
-            I know words can't undo what I did, but I need you to know that you mean everything to me. I've been thinking about all our beautiful moments together, and I realize how much I've hurt the most precious person in my life. I promise to do better, to be better, for you.✨
+            I know words can't undo what I did, but I need you to know
+            that you mean everything to me. I've been thinking about all
+            our beautiful moments together, and I realize how much I've
+            hurt the most precious person in my life. I promise to do
+            better, to be better, for you.✨
           </motion.p>
+
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -154,7 +177,6 @@ export default function LetterPage({ setCurrentPage }) {
           >
             Can you please forgive me…?💔
           </motion.p>
-
         </motion.div>
 
         <motion.button
