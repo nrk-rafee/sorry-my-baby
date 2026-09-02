@@ -16,18 +16,19 @@ import GiftPage from "@/components/GiftPage"
    🌸 FLOWER
 ========================================================= */
 
-function Flower({ color = "#ff75c8", size = 42 }) {
-  const petals = [
-    { x: 0, y: -18 },
-    { x: 17, y: -6 },
-    { x: 11, y: 14 },
-    { x: -11, y: 14 },
-    { x: -17, y: -6 },
-  ]
+function GardenFlower({
+  color = "#ff65c7",
+  size = 60,
+  petals = 6,
+}) {
+  const petalAngles = Array.from(
+    { length: petals },
+    (_, i) => (360 / petals) * i
+  )
 
   return (
     <motion.div
-      className="relative"
+      className="relative shrink-0"
       style={{
         width: size,
         height: size,
@@ -36,37 +37,41 @@ function Flower({ color = "#ff75c8", size = 42 }) {
         rotate: [-2, 2, -2],
       }}
       transition={{
-        duration: 3.5,
+        duration: 3.8,
         repeat: Infinity,
         ease: "easeInOut",
       }}
     >
-      {petals.map((petal, i) => (
+      {petalAngles.map((angle, i) => (
         <div
           key={i}
-          className="absolute rounded-full"
+          className="absolute left-1/2 top-1/2"
           style={{
-            width: size * 0.48,
+            width: size * 0.34,
             height: size * 0.58,
-            left: `calc(50% + ${petal.x}px - ${size * 0.24}px)`,
-            top: `calc(50% + ${petal.y}px - ${size * 0.29}px)`,
-            background: color,
-            boxShadow: `0 0 14px ${color}99`,
-            transform: `rotate(${i * 72}deg)`,
-            transformOrigin: "50% 80%",
+            transform: `translate(-50%, -82%) rotate(${angle}deg)`,
+            transformOrigin: "50% 82%",
+            borderRadius: "70% 70% 48% 48%",
+            background: `linear-gradient(
+              135deg,
+              ${color},
+              ${color}cc
+            )`,
+            boxShadow: `0 0 ${Math.max(8, size * 0.18)}px ${color}88`,
           }}
         />
       ))}
 
       <div
-        className="absolute rounded-full"
+        className="absolute left-1/2 top-1/2 rounded-full"
         style={{
           width: size * 0.25,
           height: size * 0.25,
-          left: "37.5%",
-          top: "37.5%",
-          background: "#ffd45c",
-          boxShadow: "0 0 10px #ffd45c",
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(circle, #fff3a8 0%, #ffd34d 45%, #f4a928 100%)",
+          boxShadow:
+            "0 0 10px rgba(255,224,105,.95), 0 0 22px rgba(255,190,70,.5)",
         }}
       />
     </motion.div>
@@ -75,45 +80,38 @@ function Flower({ color = "#ff75c8", size = 42 }) {
 
 
 /* =========================================================
-   🌿 LEAF
+   🍃 LEAF
 ========================================================= */
 
-function Leaf({ side = "left", top = 50, scale = 1 }) {
+function GardenLeaf({ left = true, top = "50%", scale = 1 }) {
   return (
     <motion.div
       className="absolute"
       style={{
         top,
-        [side]: -18 * scale,
-        transformOrigin: side === "left" ? "right center" : "left center",
-      }}
-      initial={{
-        scale: 0,
-        opacity: 0,
+        [left ? "left" : "right"]: `${-16 * scale}px`,
+        width: 34 * scale,
+        height: 17 * scale,
+        transformOrigin: left ? "right center" : "left center",
       }}
       animate={{
-        scale,
-        opacity: 1,
-        rotate: side === "left" ? -18 : 18,
+        rotate: left ? [-16, -5, -16] : [16, 5, 16],
       }}
       transition={{
-        duration: 0.7,
-        delay: 0.45,
-        ease: "backOut",
+        duration: 3.5,
+        repeat: Infinity,
+        ease: "easeInOut",
       }}
     >
       <div
-        className="rounded-full"
+        className="w-full h-full"
         style={{
-          width: 30 * scale,
-          height: 14 * scale,
+          borderRadius: left
+            ? "100% 0 100% 0"
+            : "0 100% 0 100%",
           background:
-            "linear-gradient(135deg,#7bdc69,#1d8d49)",
-          transform:
-            side === "left"
-              ? "rotate(-30deg)"
-              : "rotate(30deg)",
-          boxShadow: "0 0 8px rgba(70,220,100,.25)",
+            "linear-gradient(135deg,#8bea73,#218d4b)",
+          boxShadow: "0 0 8px rgba(70,220,100,.3)",
         }}
       />
     </motion.div>
@@ -122,17 +120,17 @@ function Leaf({ side = "left", top = 50, scale = 1 }) {
 
 
 /* =========================================================
-   🌱 ONE PLANT
+   🌿 GARDEN PLANT
 ========================================================= */
 
-function Plant({
+function GardenPlant({
   left,
   height,
-  flowerColor,
-  flowerSize,
-  delay,
+  color,
+  size,
+  delay = 0,
   curve = 0,
-  flowerTop = 0,
+  petals = 6,
 }) {
   return (
     <motion.div
@@ -140,8 +138,8 @@ function Plant({
       style={{
         left: `${left}%`,
         height,
-        width: 100,
-        transform: `translateX(-50%)`,
+        width: 90,
+        transform: "translateX(-50%)",
         transformOrigin: "bottom center",
       }}
       initial={{
@@ -153,26 +151,25 @@ function Plant({
         scaleY: 1,
       }}
       transition={{
-        duration: 1.8,
+        duration: 1.7,
         delay,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      {/* Main curved stem */}
       <motion.div
         className="absolute bottom-0 left-1/2"
         style={{
-          width: 7,
+          width: 6,
           height: "100%",
-          transformOrigin: "bottom",
+          transform: `translateX(-50%) rotate(${curve}deg)`,
+          transformOrigin: "bottom center",
           borderRadius: 999,
           background:
-            "linear-gradient(to top,#123f2a,#258a49,#62d76a)",
-          transform: `translateX(-50%) rotate(${curve}deg)`,
-          boxShadow: "0 0 7px rgba(80,220,110,.25)",
+            "linear-gradient(to top,#123d29,#26884b,#76d96c)",
+          boxShadow: "0 0 8px rgba(70,210,100,.25)",
         }}
         animate={{
-          rotate: [curve - 1, curve + 1, curve - 1],
+          rotate: [curve - 1.5, curve + 1.5, curve - 1.5],
         }}
         transition={{
           duration: 4,
@@ -181,41 +178,36 @@ function Plant({
         }}
       />
 
-      {/* Left leaves */}
-      <Leaf side="left" top="38%" scale={0.9} />
-      <Leaf side="left" top="58%" scale={0.72} />
-      <Leaf side="left" top="76%" scale={0.62} />
+      <GardenLeaf left top="34%" scale={0.8} />
+      <GardenLeaf left={false} top="43%" scale={0.75} />
+      <GardenLeaf left top="56%" scale={0.65} />
+      <GardenLeaf left={false} top="66%" scale={0.62} />
+      <GardenLeaf left top="77%" scale={0.52} />
 
-      {/* Right leaves */}
-      <Leaf side="right" top="45%" scale={0.85} />
-      <Leaf side="right" top="65%" scale={0.7} />
-
-      {/* Flower */}
       <motion.div
         className="absolute left-1/2"
         style={{
-          top: flowerTop,
+          top: -size * 0.25,
           transform: "translateX(-50%)",
         }}
         initial={{
           opacity: 0,
           scale: 0,
-          y: 15,
         }}
         animate={{
           opacity: 1,
           scale: 1,
-          y: 0,
         }}
         transition={{
-          duration: 1,
-          delay: delay + 1.1,
+          duration: 0.9,
+          delay: delay + 1,
           ease: "backOut",
         }}
       >
-        <Flower
-          color={flowerColor}
-          size={flowerSize}
+        <GardenFlower
+          color={color}
+          size={size}
+          petals={petals}
         />
       </motion.div>
     </motion.div>
@@ -227,11 +219,11 @@ function Plant({
    🌿 CURLING VINE
 ========================================================= */
 
-function Vine({
+function CurlingVine({
   left,
   height,
-  delay,
   flip = false,
+  delay = 0,
 }) {
   return (
     <motion.div
@@ -262,36 +254,35 @@ function Vine({
         style={{
           width: 5,
           height: "100%",
+          transformOrigin: "bottom center",
           borderRadius: 999,
           background:
-            "linear-gradient(to top,#123d28,#39a85a,#75dc72)",
-          transformOrigin: "bottom",
+            "linear-gradient(to top,#143d29,#42a95c,#79df72)",
         }}
         animate={{
           rotate: [-3, 3, -3],
         }}
         transition={{
-          duration: 5,
+          duration: 4.5,
           repeat: Infinity,
           ease: "easeInOut",
         }}
       />
 
-      {/* Curl */}
       <motion.div
-        className="absolute rounded-full border-[4px]"
+        className="absolute"
         style={{
-          width: 55,
-          height: 55,
+          width: 52,
+          height: 52,
           top: 8,
-          left: 35,
-          borderColor: "#4dbb68",
+          left: 32,
+          borderRadius: "50%",
+          border: "4px solid #52bd68",
           borderLeftColor: "transparent",
           borderBottomColor: "transparent",
-          transform: "rotate(25deg)",
         }}
         animate={{
-          rotate: [25, 32, 25],
+          rotate: [20, 30, 20],
         }}
         transition={{
           duration: 4,
@@ -300,30 +291,23 @@ function Vine({
         }}
       />
 
-      <Leaf side="left" top="30%" scale={0.7} />
-      <Leaf side="right" top="48%" scale={0.65} />
-      <Leaf side="left" top="65%" scale={0.6} />
+      <GardenLeaf left top="31%" scale={0.7} />
+      <GardenLeaf left={false} top="47%" scale={0.65} />
+      <GardenLeaf left top="65%" scale={0.6} />
 
-      <motion.div
+      <div
         className="absolute"
         style={{
           top: -8,
-          left: 28,
-        }}
-        initial={{
-          scale: 0,
-        }}
-        animate={{
-          scale: 1,
-        }}
-        transition={{
-          duration: 0.8,
-          delay: delay + 1.2,
-          ease: "backOut",
+          left: 26,
         }}
       >
-        <Flower color="#c77dff" size={30} />
-      </motion.div>
+        <GardenFlower
+          color="#b878ff"
+          size={32}
+          petals={5}
+        />
+      </div>
     </motion.div>
   )
 }
@@ -336,11 +320,12 @@ function Vine({
 function Butterfly({
   top,
   left,
-  duration,
-  delay,
-  color1,
-  color2,
-  size,
+  size = 36,
+  colorA,
+  colorB,
+  duration = 12,
+  delay = 0,
+  direction = 1,
 }) {
   return (
     <motion.div
@@ -351,33 +336,26 @@ function Butterfly({
       }}
       initial={{
         opacity: 0,
+        x: 0,
       }}
       animate={{
         opacity: [0, 1, 1, 1, 0],
-        x: [0, 100, 220, 350, 500],
-        y: [0, -35, 25, -45, 10],
+        x: direction * 420,
+        y: [0, -35, 20, -30, 15],
       }}
       transition={{
         duration,
         delay,
         repeat: Infinity,
-        repeatDelay: 1.5,
+        repeatDelay: 1,
         ease: "easeInOut",
       }}
     >
-      <motion.div
+      <div
         style={{
           width: size,
-          height: size * 0.7,
+          height: size * 0.72,
           position: "relative",
-        }}
-        animate={{
-          rotate: [-4, 4, -4],
-        }}
-        transition={{
-          duration: 0.35,
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       >
         {/* left wing */}
@@ -385,20 +363,21 @@ function Butterfly({
           style={{
             position: "absolute",
             left: 0,
-            top: size * 0.05,
-            width: size * 0.48,
+            top: size * 0.06,
+            width: size * 0.46,
             height: size * 0.58,
-            borderRadius: "70% 30% 70% 30%",
-            background: color1,
+            borderRadius: "75% 35% 75% 35%",
+            background: colorA,
+            boxShadow: `0 0 16px ${colorA}`,
             transformOrigin: "right center",
-            boxShadow: `0 0 14px ${color1}`,
           }}
           animate={{
-            rotateY: [0, 55, 0],
+            rotateY: [0, 65, 0],
           }}
           transition={{
-            duration: 0.35,
+            duration: 0.38,
             repeat: Infinity,
+            ease: "easeInOut",
           }}
         />
 
@@ -407,20 +386,21 @@ function Butterfly({
           style={{
             position: "absolute",
             right: 0,
-            top: size * 0.05,
-            width: size * 0.48,
+            top: size * 0.06,
+            width: size * 0.46,
             height: size * 0.58,
-            borderRadius: "30% 70% 30% 70%",
-            background: color2,
+            borderRadius: "35% 75% 35% 75%",
+            background: colorB,
+            boxShadow: `0 0 16px ${colorB}`,
             transformOrigin: "left center",
-            boxShadow: `0 0 14px ${color2}`,
           }}
           animate={{
-            rotateY: [0, -55, 0],
+            rotateY: [0, -65, 0],
           }}
           transition={{
-            duration: 0.35,
+            duration: 0.38,
             repeat: Infinity,
+            ease: "easeInOut",
           }}
         />
 
@@ -433,11 +413,92 @@ function Butterfly({
             width: size * 0.09,
             height: size * 0.58,
             borderRadius: 999,
-            background: "#22172c",
+            background: "#21152f",
           }}
         />
-      </motion.div>
+
+        {/* antenna */}
+        <div
+          style={{
+            position: "absolute",
+            left: "43%",
+            top: "5%",
+            width: size * 0.25,
+            height: size * 0.18,
+            borderTop: "1px solid rgba(255,255,255,.7)",
+            borderRadius: "50%",
+            transform: "rotate(-25deg)",
+          }}
+        />
+      </div>
     </motion.div>
+  )
+}
+
+
+/* =========================================================
+   ✨ STARS
+========================================================= */
+
+const STAR_POSITIONS = [
+  [4, 12, 2],
+  [9, 25, 1],
+  [15, 8, 2],
+  [21, 18, 1],
+  [28, 6, 2],
+  [34, 25, 1],
+  [41, 12, 2],
+  [48, 5, 1],
+  [54, 21, 2],
+  [61, 10, 1],
+  [68, 28, 2],
+  [75, 7, 1],
+  [82, 20, 2],
+  [89, 11, 2],
+  [96, 26, 1],
+  [12, 38, 1],
+  [27, 34, 2],
+  [38, 42, 1],
+  [57, 37, 2],
+  [72, 40, 1],
+  [92, 36, 2],
+  [18, 48, 1],
+  [47, 46, 2],
+  [83, 45, 1],
+  [97, 52, 2],
+]
+
+
+function Stars() {
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {STAR_POSITIONS.map(([left, top, size], i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-white"
+          style={{
+            left: `${left}%`,
+            top: `${top}%`,
+            width: size,
+            height: size,
+            boxShadow:
+              size > 1
+                ? "0 0 8px 2px rgba(255,255,255,.55)"
+                : "0 0 5px rgba(255,255,255,.5)",
+          }}
+          animate={{
+            opacity: [0.25, 1, 0.25],
+            scale: [0.7, 1.5, 0.7],
+          }}
+          transition={{
+            duration: 2.2 + (i % 4) * 0.45,
+            delay: (i % 6) * 0.35,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
   )
 }
 
@@ -446,47 +507,52 @@ function Butterfly({
    ✨ FIREFLIES
 ========================================================= */
 
-function Fireflies() {
-  const lights = [
-    [8, 35, 2],
-    [16, 54, 3],
-    [25, 28, 2],
-    [33, 48, 3],
-    [43, 35, 2],
-    [52, 58, 3],
-    [62, 31, 2],
-    [70, 50, 3],
-    [79, 27, 2],
-    [88, 43, 3],
-    [94, 58, 2],
-    [13, 72, 2],
-    [29, 65, 3],
-    [48, 73, 2],
-    [67, 69, 3],
-    [84, 67, 2],
-  ]
+const FIREFLIES = [
+  [7, 55, 3],
+  [14, 63, 2],
+  [21, 52, 3],
+  [29, 69, 2],
+  [37, 58, 3],
+  [45, 72, 2],
+  [53, 55, 3],
+  [61, 67, 2],
+  [69, 57, 3],
+  [77, 70, 2],
+  [86, 54, 3],
+  [94, 65, 2],
+  [11, 78, 2],
+  [26, 83, 3],
+  [42, 80, 2],
+  [58, 84, 3],
+  [73, 79, 2],
+  [88, 82, 3],
+]
 
+
+function Fireflies() {
   return (
     <>
-      {lights.map(([left, top, size], i) => (
+      {FIREFLIES.map(([left, top, size], i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full bg-yellow-200 pointer-events-none"
+          className="absolute rounded-full pointer-events-none"
           style={{
             left: `${left}%`,
             top: `${top}%`,
             width: size,
             height: size,
-            boxShadow: "0 0 12px 4px rgba(255,220,100,.5)",
+            background: "#ffe78a",
+            boxShadow:
+              "0 0 12px 4px rgba(255,220,100,.65)",
           }}
           animate={{
             opacity: [0.15, 1, 0.2],
-            scale: [0.7, 1.5, 0.7],
-            y: [-5, 5, -5],
+            scale: [0.7, 1.7, 0.7],
+            y: [-7, 7, -7],
           }}
           transition={{
-            duration: 2.5 + (i % 4) * 0.4,
-            delay: (i % 5) * 0.4,
+            duration: 2.3 + (i % 4) * 0.45,
+            delay: (i % 5) * 0.35,
             repeat: Infinity,
             ease: "easeInOut",
           }}
@@ -498,411 +564,504 @@ function Fireflies() {
 
 
 /* =========================================================
-   🌺 GARDEN
+   🌙 CLOUD
+========================================================= */
+
+function Cloud({
+  top,
+  left,
+  scale = 1,
+  opacity = 0.25,
+}) {
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={{
+        top: `${top}%`,
+        left: `${left}%`,
+        width: 190 * scale,
+        height: 75 * scale,
+        opacity,
+      }}
+      animate={{
+        x: [-12, 12, -12],
+      }}
+      transition={{
+        duration: 12,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    >
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[55%] rounded-full"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(104,73,180,.75),rgba(41,30,105,.8))",
+          filter: "blur(4px)",
+        }}
+      />
+
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: 85 * scale,
+          height: 85 * scale,
+          left: 30 * scale,
+          bottom: 15 * scale,
+          background:
+            "radial-gradient(circle,rgba(105,76,190,.8),rgba(52,38,125,.75))",
+          filter: "blur(5px)",
+        }}
+      />
+
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: 105 * scale,
+          height: 105 * scale,
+          left: 75 * scale,
+          bottom: 4 * scale,
+          background:
+            "radial-gradient(circle,rgba(87,61,170,.8),rgba(48,34,115,.7))",
+          filter: "blur(5px)",
+        }}
+      />
+    </motion.div>
+  )
+}
+
+
+/* =========================================================
+   🌱 GROUND FLOWERS
+========================================================= */
+
+const SMALL_FLOWERS = [
+  [2, 88, "#7c63ff", 22],
+  [7, 82, "#ff63b9", 25],
+  [12, 91, "#ffb347", 18],
+  [17, 85, "#8e65ff", 22],
+  [22, 94, "#ff6fc8", 20],
+  [27, 87, "#54a9ff", 21],
+  [32, 93, "#ff9e48", 19],
+  [37, 84, "#c16cff", 24],
+  [42, 91, "#ff66c7", 21],
+  [47, 86, "#64b5ff", 22],
+  [52, 94, "#ff8e45", 19],
+  [57, 87, "#a969ff", 23],
+  [62, 92, "#ff61bc", 21],
+  [67, 84, "#62c7ff", 23],
+  [72, 94, "#ffab42", 18],
+  [77, 87, "#c26aff", 24],
+  [82, 92, "#ff66bd", 20],
+  [87, 85, "#5caaff", 22],
+  [92, 93, "#ff9d42", 19],
+  [97, 86, "#a968ff", 23],
+
+  [5, 96, "#e966ff", 18],
+  [15, 97, "#5f9cff", 17],
+  [25, 96, "#ff74bf", 18],
+  [35, 98, "#8f6aff", 17],
+  [45, 96, "#ffbd48", 18],
+  [55, 98, "#d86cff", 17],
+  [65, 96, "#ff70b9", 18],
+  [75, 98, "#61aaff", 17],
+  [85, 96, "#ffb341", 18],
+  [95, 98, "#c06aff", 18],
+]
+
+
+function GroundFlowers({ growth }) {
+  if (growth < 2) return null
+
+  return (
+    <div className="absolute inset-x-0 bottom-0 h-[43%] pointer-events-none z-10">
+      {SMALL_FLOWERS.map(([left, bottom, color, size], i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{
+            left: `${left}%`,
+            bottom: `${100 - bottom}%`,
+          }}
+          initial={{
+            opacity: 0,
+            scale: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: growth >= 5 ? 1 : 0.85,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.8,
+            delay: (i % 10) * 0.045,
+            ease: "backOut",
+          }}
+        >
+          <GardenFlower
+            color={color}
+            size={size}
+            petals={5 + (i % 3)}
+          />
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+
+/* =========================================================
+   🌺 BIG FLOWERS
+========================================================= */
+
+const BIG_FLOWERS = [
+  {
+    left: 10,
+    height: "42vh",
+    color: "#a76bff",
+    size: 78,
+    curve: -4,
+    stage: 2,
+  },
+  {
+    left: 25,
+    height: "51vh",
+    color: "#ff62b9",
+    size: 82,
+    curve: 4,
+    stage: 3,
+  },
+  {
+    left: 42,
+    height: "46vh",
+    color: "#7b9dff",
+    size: 65,
+    curve: -3,
+    stage: 2,
+  },
+  {
+    left: 58,
+    height: "57vh",
+    color: "#c66cff",
+    size: 88,
+    curve: 4,
+    stage: 3,
+  },
+  {
+    left: 75,
+    height: "48vh",
+    color: "#ff79bd",
+    size: 74,
+    curve: -5,
+    stage: 2,
+  },
+  {
+    left: 91,
+    height: "43vh",
+    color: "#65b8ff",
+    size: 68,
+    curve: 4,
+    stage: 3,
+  },
+  {
+    left: 4,
+    height: "62vh",
+    color: "#7769ff",
+    size: 70,
+    curve: -4,
+    stage: 4,
+  },
+  {
+    left: 33,
+    height: "67vh",
+    color: "#ff65bb",
+    size: 92,
+    curve: 4,
+    stage: 4,
+  },
+  {
+    left: 50,
+    height: "61vh",
+    color: "#ffae48",
+    size: 72,
+    curve: -3,
+    stage: 4,
+  },
+  {
+    left: 68,
+    height: "69vh",
+    color: "#a66cff",
+    size: 92,
+    curve: 5,
+    stage: 4,
+  },
+  {
+    left: 84,
+    height: "62vh",
+    color: "#ff68c2",
+    size: 84,
+    curve: -4,
+    stage: 4,
+  },
+  {
+    left: 17,
+    height: "76vh",
+    color: "#62aaff",
+    size: 82,
+    curve: -5,
+    stage: 5,
+  },
+  {
+    left: 40,
+    height: "79vh",
+    color: "#ff70bd",
+    size: 94,
+    curve: 4,
+    stage: 5,
+  },
+  {
+    left: 61,
+    height: "73vh",
+    color: "#ff9f45",
+    size: 86,
+    curve: -4,
+    stage: 5,
+  },
+  {
+    left: 79,
+    height: "81vh",
+    color: "#a873ff",
+    size: 96,
+    curve: 5,
+    stage: 5,
+  },
+  {
+    left: 96,
+    height: "74vh",
+    color: "#ff71c9",
+    size: 86,
+    curve: -4,
+    stage: 5,
+  },
+]
+
+
+/* =========================================================
+   🌺 GARDEN PAGE
 ========================================================= */
 
 function GardenPage() {
   const [growth, setGrowth] = useState(0)
 
   const growGarden = () => {
-    setGrowth((prev) => Math.min(prev + 1, 5))
+    setGrowth((current) =>
+      Math.min(current + 1, 5)
+    )
   }
-
-  const plants = [
-    // Stage 1
-    {
-      left: 10,
-      height: "30vh",
-      color: "#ff72c7",
-      size: 42,
-      delay: 0,
-      curve: -4,
-      flowerTop: -15,
-      stage: 1,
-    },
-    {
-      left: 25,
-      height: "38vh",
-      color: "#a978ff",
-      size: 50,
-      delay: 0.2,
-      curve: 4,
-      flowerTop: -12,
-      stage: 1,
-    },
-    {
-      left: 43,
-      height: "32vh",
-      color: "#ff9acb",
-      size: 45,
-      delay: 0.1,
-      curve: -3,
-      flowerTop: -15,
-      stage: 1,
-    },
-
-    // Stage 2
-    {
-      left: 57,
-      height: "43vh",
-      color: "#72b9ff",
-      size: 48,
-      delay: 0,
-      curve: 5,
-      flowerTop: -15,
-      stage: 2,
-    },
-    {
-      left: 73,
-      height: "35vh",
-      color: "#ff78d1",
-      size: 44,
-      delay: 0.15,
-      curve: -5,
-      flowerTop: -12,
-      stage: 2,
-    },
-    {
-      left: 91,
-      height: "40vh",
-      color: "#b47cff",
-      size: 48,
-      delay: 0.3,
-      curve: 3,
-      flowerTop: -15,
-      stage: 2,
-    },
-
-    // Stage 3
-    {
-      left: 5,
-      height: "53vh",
-      color: "#c878ff",
-      size: 56,
-      delay: 0,
-      curve: -5,
-      flowerTop: -15,
-      stage: 3,
-    },
-    {
-      left: 36,
-      height: "58vh",
-      color: "#ff68b9",
-      size: 62,
-      delay: 0.2,
-      curve: 4,
-      flowerTop: -18,
-      stage: 3,
-    },
-    {
-      left: 66,
-      height: "55vh",
-      color: "#ff9c55",
-      size: 55,
-      delay: 0.1,
-      curve: -4,
-      flowerTop: -15,
-      stage: 3,
-    },
-    {
-      left: 84,
-      height: "50vh",
-      color: "#7aa7ff",
-      size: 58,
-      delay: 0.25,
-      curve: 5,
-      flowerTop: -15,
-      stage: 3,
-    },
-
-    // Stage 4
-    {
-      left: 18,
-      height: "67vh",
-      color: "#ff69b4",
-      size: 72,
-      delay: 0,
-      curve: -5,
-      flowerTop: -20,
-      stage: 4,
-    },
-    {
-      left: 48,
-      height: "72vh",
-      color: "#b777ff",
-      size: 76,
-      delay: 0.2,
-      curve: 4,
-      flowerTop: -20,
-      stage: 4,
-    },
-    {
-      left: 78,
-      height: "64vh",
-      color: "#ff83ca",
-      size: 70,
-      delay: 0.1,
-      curve: -4,
-      flowerTop: -18,
-      stage: 4,
-    },
-
-    // Stage 5
-    {
-      left: 2,
-      height: "78vh",
-      color: "#70b8ff",
-      size: 78,
-      delay: 0,
-      curve: -5,
-      flowerTop: -22,
-      stage: 5,
-    },
-    {
-      left: 30,
-      height: "82vh",
-      color: "#ff72b9",
-      size: 86,
-      delay: 0.15,
-      curve: 4,
-      flowerTop: -23,
-      stage: 5,
-    },
-    {
-      left: 54,
-      height: "76vh",
-      color: "#ff9d52",
-      size: 82,
-      delay: 0.3,
-      curve: -3,
-      flowerTop: -22,
-      stage: 5,
-    },
-    {
-      left: 72,
-      height: "84vh",
-      color: "#9c7aff",
-      size: 88,
-      delay: 0.15,
-      curve: 5,
-      flowerTop: -24,
-      stage: 5,
-    },
-    {
-      left: 96,
-      height: "78vh",
-      color: "#ff73cf",
-      size: 82,
-      delay: 0.25,
-      curve: -4,
-      flowerTop: -20,
-      stage: 5,
-    },
-  ]
-
-  const vines = [
-    { left: 13, height: "47vh", delay: 0, flip: false },
-    { left: 40, height: "57vh", delay: 0.2, flip: true },
-    { left: 62, height: "50vh", delay: 0.1, flip: false },
-    { left: 88, height: "55vh", delay: 0.25, flip: true },
-  ]
 
   return (
     <div
       onClick={growGarden}
-      className="min-h-screen w-full relative overflow-hidden cursor-pointer"
+      className="relative w-full h-[100dvh] overflow-hidden cursor-pointer select-none"
       style={{
         background: `
           radial-gradient(
-            circle at 50% 58%,
-            rgba(103,43,150,.42),
-            transparent 38%
-          ),
-          radial-gradient(
-            circle at 50% 100%,
-            rgba(50,20,100,.6),
-            transparent 55%
+            ellipse at 50% 67%,
+            rgba(105,45,164,.62) 0%,
+            rgba(42,20,93,.35) 35%,
+            transparent 68%
           ),
           linear-gradient(
             to bottom,
-            #03051d 0%,
-            #08072c 42%,
-            #170b38 72%,
+            #02031b 0%,
+            #05052a 32%,
+            #10083d 58%,
+            #210d49 77%,
             #050712 100%
           )
         `,
       }}
     >
 
-      {/* =================================================
-          🌌 STARS
-      ================================================= */}
+      {/* =====================================================
+          🌌 SKY
+      ===================================================== */}
 
-      <div className="absolute inset-0 pointer-events-none">
-        {[
-          [4, 12],
-          [9, 25],
-          [15, 8],
-          [21, 18],
-          [28, 6],
-          [34, 25],
-          [41, 12],
-          [48, 5],
-          [54, 21],
-          [61, 10],
-          [68, 28],
-          [75, 7],
-          [82, 20],
-          [89, 11],
-          [96, 26],
-          [12, 38],
-          [27, 34],
-          [38, 42],
-          [57, 37],
-          [72, 40],
-          [92, 36],
-        ].map(([left, top], i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: i % 3 === 0 ? 3 : 2,
-              height: i % 3 === 0 ? 3 : 2,
-            }}
-            animate={{
-              opacity: [0.2, 0.9, 0.2],
-              scale: [0.7, 1.4, 0.7],
-            }}
-            transition={{
-              duration: 2 + (i % 4),
-              delay: (i % 5) * 0.5,
-              repeat: Infinity,
-            }}
-          />
-        ))}
-      </div>
+      <Stars />
 
-
-      {/* =================================================
-          🌙 MOON
-      ================================================= */}
-
-      <motion.div
-        className="absolute top-[13%] right-[9%] w-12 h-12 rounded-full pointer-events-none"
+      {/* extra soft purple sky glow */}
+      <div
+        className="absolute inset-x-0 top-0 h-[65%] pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 35% 35%,#fff,#d9d7ff 55%,#8884c7)",
-          boxShadow: "0 0 35px rgba(190,180,255,.5)",
+            "radial-gradient(ellipse at 50% 85%,rgba(125,57,191,.22),transparent 65%)",
+        }}
+      />
+
+      {/* =====================================================
+          ☁️ CLOUDS
+      ===================================================== */}
+
+      <Cloud
+        top={27}
+        left={-7}
+        scale={1.25}
+        opacity={0.3}
+      />
+
+      <Cloud
+        top={34}
+        left={76}
+        scale={1.1}
+        opacity={0.28}
+      />
+
+      <Cloud
+        top={48}
+        left={-13}
+        scale={1.35}
+        opacity={0.25}
+      />
+
+      {/* =====================================================
+          🌙 MOON
+      ===================================================== */}
+
+      <motion.div
+        className="absolute top-[13%] right-[11%] w-11 h-11 md:w-14 md:h-14 rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 35% 32%,#ffffff 0%,#e9e7ff 48%,#aaa7dc 100%)",
+          boxShadow:
+            "0 0 25px rgba(210,205,255,.65),0 0 65px rgba(150,140,255,.25)",
         }}
         animate={{
-          opacity: [0.75, 1, 0.75],
+          opacity: [0.78, 1, 0.78],
         }}
         transition={{
           duration: 4,
           repeat: Infinity,
+          ease: "easeInOut",
         }}
       />
 
-
-      {/* =================================================
+      {/* =====================================================
           🦋 BUTTERFLIES
-      ================================================= */}
+      ===================================================== */}
 
       <Butterfly
-        top={10}
-        left={4}
-        duration={11}
-        delay={0}
-        color1="#c06cff"
-        color2="#7145ff"
+        top={8}
+        left={5}
         size={42}
-      />
-
-      <Butterfly
-        top={24}
-        left={18}
-        duration={13}
-        delay={2}
-        color1="#ff70bc"
-        color2="#ff3d8d"
-        size={34}
-      />
-
-      <Butterfly
-        top={15}
-        left={52}
-        duration={15}
-        delay={4}
-        color1="#62c9ff"
-        color2="#318cff"
-        size={30}
-      />
-
-      <Butterfly
-        top={32}
-        left={70}
+        colorA="#c46cff"
+        colorB="#7046ff"
         duration={12}
+        delay={0}
+        direction={1}
+      />
+
+      <Butterfly
+        top={22}
+        left={15}
+        size={50}
+        colorA="#ff71c3"
+        colorB="#e936a2"
+        duration={14}
         delay={1}
-        color1="#ffc45c"
-        color2="#ff7a31"
-        size={40}
+        direction={1}
+      />
+
+      <Butterfly
+        top={28}
+        left={43}
+        size={30}
+        colorA="#55c8ff"
+        colorB="#337dff"
+        duration={11}
+        delay={3}
+        direction={1}
+      />
+
+      <Butterfly
+        top={17}
+        left={67}
+        size={37}
+        colorA="#ffd35a"
+        colorB="#ff7935"
+        duration={15}
+        delay={2}
+        direction={-1}
+      />
+
+      <Butterfly
+        top={37}
+        left={79}
+        size={32}
+        colorA="#8d6cff"
+        colorB="#dc64ff"
+        duration={13}
+        delay={4}
+        direction={-1}
       />
 
       <Butterfly
         top={42}
-        left={35}
-        duration={14}
+        left={30}
+        size={25}
+        colorA="#ff8cdb"
+        colorB="#9c55ff"
+        duration={16}
         delay={5}
-        color1="#ff85d5"
-        color2="#a65cff"
-        size={28}
+        direction={1}
       />
 
       <Butterfly
         top={7}
-        left={78}
-        duration={16}
-        delay={3}
-        color1="#72e4c7"
-        color2="#32a8ff"
-        size={32}
+        left={88}
+        size={28}
+        colorA="#63e7c8"
+        colorB="#379bff"
+        duration={14}
+        delay={4}
+        direction={-1}
       />
 
-
-      {/* =================================================
+      {/* =====================================================
           ✨ FIREFLIES
-      ================================================= */}
+      ===================================================== */}
 
       <Fireflies />
 
-
-      {/* =================================================
+      {/* =====================================================
           💬 HEADER
-      ================================================= */}
+      ===================================================== */}
 
       <motion.div
-        className="absolute top-8 md:top-10 left-0 right-0 z-50 text-center px-5 pointer-events-none"
+        className="absolute top-7 md:top-9 left-0 right-0 z-50 text-center px-5 pointer-events-none"
         initial={{
           opacity: 0,
-          y: -20,
+          y: -15,
         }}
         animate={{
           opacity: 1,
           y: 0,
         }}
         transition={{
-          duration: 1.2,
+          duration: 1.1,
         }}
       >
         <motion.h1
-          className="text-2xl md:text-4xl text-pink-200"
+          className="text-[22px] leading-tight md:text-4xl text-pink-200 font-medium"
+          style={{
+            textShadow:
+              "0 0 12px rgba(255,120,210,.35)",
+          }}
           animate={{
             textShadow: [
-              "0 0 8px rgba(255,120,210,.2)",
-              "0 0 24px rgba(255,120,210,.7)",
-              "0 0 8px rgba(255,120,210,.2)",
+              "0 0 8px rgba(255,120,210,.25)",
+              "0 0 25px rgba(255,120,210,.7)",
+              "0 0 8px rgba(255,120,210,.25)",
             ],
           }}
           transition={{
@@ -916,85 +1075,164 @@ function GardenPage() {
         </motion.h1>
 
         <motion.p
-          className="mt-3 text-sm md:text-base text-purple-200/80"
+          className="mt-2 text-xs md:text-base text-purple-200/80"
           animate={{
             opacity: [0.45, 1, 0.45],
           }}
           transition={{
-            duration: 2.2,
+            duration: 2.4,
             repeat: Infinity,
           }}
         >
           {growth < 5
             ? `${5 - growth} little touches left… 🦋`
-            : "Your little magical garden is complete ✨🌸"}
+            : "Your magical garden is complete ✨🌸"}
         </motion.p>
       </motion.div>
 
-
-      {/* =================================================
-          🌱 GARDEN GROUND GLOW
-      ================================================= */}
+      {/* =====================================================
+          🌌 MAGICAL HORIZON
+      ===================================================== */}
 
       <div
-        className="absolute bottom-0 left-0 right-0 h-[34vh] pointer-events-none"
+        className="absolute left-0 right-0 bottom-[22%] h-[30%] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at center bottom,rgba(50,180,100,.2),transparent 65%)",
+            "radial-gradient(ellipse at center,rgba(159,73,190,.25),transparent 68%)",
         }}
       />
 
+      {/* =====================================================
+          🌱 DARK GROUND
+      ===================================================== */}
 
-      {/* =================================================
-          🌱 PLANTS
-      ================================================= */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[32%] pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(
+              ellipse at center bottom,
+              rgba(35,105,55,.82),
+              rgba(8,35,25,.88) 48%,
+              #030811 100%
+            )
+          `,
+        }}
+      />
 
-      <AnimatePresence>
-        {plants
-          .filter((plant) => growth >= plant.stage)
-          .map((plant, index) => (
-            <Plant
-              key={`${plant.left}-${plant.stage}`}
-              left={plant.left}
-              height={plant.height}
-              flowerColor={plant.color}
-              flowerSize={plant.size}
-              delay={plant.delay}
-              curve={plant.curve}
-              flowerTop={plant.flowerTop}
-            />
-          ))}
-      </AnimatePresence>
-
-
-      {/* =================================================
+      {/* =====================================================
           🌿 VINES
-      ================================================= */}
+      ===================================================== */}
 
       {growth >= 2 && (
-        <AnimatePresence>
-          {vines
-            .slice(0, growth >= 4 ? 4 : growth >= 3 ? 3 : 2)
-            .map((vine, i) => (
-              <Vine
-                key={i}
-                left={vine.left}
-                height={vine.height}
-                delay={vine.delay}
-                flip={vine.flip}
-              />
-            ))}
-        </AnimatePresence>
+        <>
+          <CurlingVine
+            left={13}
+            height="48vh"
+            delay={0}
+          />
+
+          <CurlingVine
+            left={39}
+            height="57vh"
+            delay={0.2}
+            flip
+          />
+
+          {growth >= 3 && (
+            <CurlingVine
+              left={63}
+              height="51vh"
+              delay={0.1}
+            />
+          )}
+
+          {growth >= 4 && (
+            <CurlingVine
+              left={88}
+              height="56vh"
+              delay={0.25}
+              flip
+            />
+          )}
+        </>
       )}
 
+      {/* =====================================================
+          🌺 BIG PLANTS
+      ===================================================== */}
 
-      {/* =================================================
-          🍃 LOW GRASS / GROUND COVER
-      ================================================= */}
+      {BIG_FLOWERS.map((plant, i) =>
+        growth >= plant.stage ? (
+          <GardenPlant
+            key={`${plant.left}-${plant.stage}`}
+            left={plant.left}
+            height={plant.height}
+            color={plant.color}
+            size={plant.size}
+            curve={plant.curve}
+            petals={5 + (i % 3)}
+            delay={(i % 5) * 0.12}
+          />
+        ) : null
+      )}
+
+      {/* =====================================================
+          🌸 DENSE FLOWER FIELD
+      ===================================================== */}
+
+      <GroundFlowers growth={growth} />
+
+      {/* =====================================================
+          🌿 FOREGROUND LEAVES
+      ===================================================== */}
 
       {growth >= 3 && (
         <motion.div
-          className="absolute bottom-0 left-0 right-0 h-[18vh] pointer-events-none"
+          className="absolute bottom-0 left-0 right-0 h-[24%] pointer-events-none z-20"
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            duration: 1.4,
+          }}
+          style={{
+            background:
+              "radial-gradient(ellipse at center bottom,rgba(22,92,50,.85),transparent 72%)",
+          }}
+        >
+          <div
+            className="absolute bottom-0 left-[2%] w-[35%] h-20"
+            style={{
+              borderRadius: "50% 50% 0 0",
+              background:
+                "linear-gradient(to top,rgba(4,28,19,.95),rgba(22,88,47,.75))",
+              filter: "blur(1px)",
+            }}
+          />
+
+          <div
+            className="absolute bottom-0 right-[1%] w-[38%] h-24"
+            style={{
+              borderRadius: "50% 50% 0 0",
+              background:
+                "linear-gradient(to top,rgba(4,28,19,.95),rgba(22,88,47,.75))",
+              filter: "blur(1px)",
+            }}
+          />
+        </motion.div>
+      )}
+
+      {/* =====================================================
+          🛤️ CENTRAL PATH
+      ===================================================== */}
+
+      {growth >= 4 && (
+        <motion.div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-15"
           initial={{
             opacity: 0,
             scaleY: 0,
@@ -1004,85 +1242,86 @@ function GardenPage() {
             scaleY: 1,
           }}
           transition={{
-            duration: 1.5,
+            duration: 1.8,
           }}
           style={{
+            width: "31%",
+            maxWidth: 260,
+            height: "23%",
             transformOrigin: "bottom",
-            background: `
-              radial-gradient(
-                ellipse at bottom,
-                rgba(38,125,68,.7),
-                transparent 68%
-              )
-            `,
+            clipPath:
+              "polygon(38% 0%,62% 0%,100% 100%,0% 100%)",
+            background:
+              "linear-gradient(to bottom,#263043,#171b29,#0c101a)",
+            boxShadow:
+              "0 -5px 30px rgba(80,65,130,.2)",
           }}
         >
-          <div className="absolute bottom-2 left-[5%] text-4xl">
-            🍃
-          </div>
-
-          <div className="absolute bottom-1 left-[18%] text-3xl">
-            🌿
-          </div>
-
-          <div className="absolute bottom-0 left-[35%] text-4xl">
-            🍃
-          </div>
-
-          <div className="absolute bottom-2 left-[58%] text-3xl">
-            🌿
-          </div>
-
-          <div className="absolute bottom-1 left-[76%] text-4xl">
-            🍃
-          </div>
-
-          <div className="absolute bottom-0 right-[3%] text-3xl">
-            🌿
-          </div>
+          {/* path lights */}
+          {[20, 42, 64, 82].map((bottom, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                bottom: `${bottom}%`,
+                left: `${35 + (i % 2) * 30}%`,
+                width: 4,
+                height: 4,
+                background: "#ffd985",
+                boxShadow:
+                  "0 0 9px 3px rgba(255,210,110,.55)",
+              }}
+              animate={{
+                opacity: [0.25, 1, 0.25],
+              }}
+              transition={{
+                duration: 2 + i * 0.3,
+                repeat: Infinity,
+              }}
+            />
+          ))}
         </motion.div>
       )}
 
+      {/* =====================================================
+          ✨ EXTRA GROUND LIGHTS
+      ===================================================== */}
 
-      {/* =================================================
-          ✨ GROUND SPARKLES
-      ================================================= */}
-
-      {growth >= 4 && (
-        <>
-          {[12, 23, 38, 51, 67, 82, 93].map((left, i) => (
+      {growth >= 4 &&
+        [8, 19, 31, 44, 57, 70, 83, 94].map(
+          (left, i) => (
             <motion.div
               key={i}
-              className="absolute bottom-[15%] pointer-events-none text-lg"
+              className="absolute bottom-[13%] z-30 pointer-events-none"
               style={{
                 left: `${left}%`,
               }}
               animate={{
-                y: [0, -20, 0],
+                y: [0, -12, 0],
                 opacity: [0.2, 1, 0.2],
-                scale: [0.7, 1.2, 0.7],
+                scale: [0.7, 1.15, 0.7],
               }}
               transition={{
-                duration: 2 + (i % 3),
-                delay: i * 0.25,
+                duration: 2 + (i % 3) * 0.4,
+                delay: i * 0.2,
                 repeat: Infinity,
               }}
             >
-              ✨
+              <span className="text-lg">
+                ✨
+              </span>
             </motion.div>
-          ))}
-        </>
-      )}
+          )
+        )}
 
-
-      {/* =================================================
-          💗 TOUCH MESSAGE
-      ================================================= */}
+      {/* =====================================================
+          🌱 FIRST TAP MESSAGE
+      ===================================================== */}
 
       <AnimatePresence>
         {growth === 0 && (
           <motion.div
-            className="absolute bottom-10 left-0 right-0 z-50 text-center pointer-events-none px-5"
+            className="absolute bottom-8 left-0 right-0 z-50 text-center pointer-events-none px-5"
             initial={{
               opacity: 0,
               y: 20,
@@ -1096,29 +1335,28 @@ function GardenPage() {
               y: 20,
             }}
           >
-            <p className="text-pink-200 text-lg">
+            <p className="text-pink-200 text-base md:text-lg">
               Touch anywhere… 🌱
             </p>
 
-            <p className="text-purple-200/70 text-sm mt-2">
+            <p className="text-purple-200/70 text-xs md:text-sm mt-1">
               Watch something beautiful grow ✨
             </p>
           </motion.div>
         )}
       </AnimatePresence>
 
-
-      {/* =================================================
-          🌸 FINISHED MESSAGE
-      ================================================= */}
+      {/* =====================================================
+          🌸 FINISHED
+      ===================================================== */}
 
       <AnimatePresence>
         {growth >= 5 && (
           <motion.div
-            className="absolute bottom-8 left-0 right-0 z-50 text-center pointer-events-none px-5"
+            className="absolute bottom-6 left-0 right-0 z-50 text-center pointer-events-none px-5"
             initial={{
               opacity: 0,
-              y: 30,
+              y: 25,
             }}
             animate={{
               opacity: 1,
@@ -1129,9 +1367,9 @@ function GardenPage() {
             }}
           >
             <motion.p
-              className="text-pink-200 text-lg md:text-xl"
+              className="text-pink-200 text-sm md:text-xl"
               animate={{
-                opacity: [0.7, 1, 0.7],
+                opacity: [0.65, 1, 0.65],
               }}
               transition={{
                 duration: 2.5,
@@ -1143,7 +1381,6 @@ function GardenPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   )
 }
@@ -1154,9 +1391,14 @@ function GardenPage() {
 ========================================================= */
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState("opening")
-  const [musicPlaying, setMusicPlaying] = useState(false)
-  const [showMusicPlayer, setShowMusicPlayer] = useState(false)
+  const [currentPage, setCurrentPage] =
+    useState("opening")
+
+  const [musicPlaying, setMusicPlaying] =
+    useState(false)
+
+  const [showMusicPlayer, setShowMusicPlayer] =
+    useState(false)
 
   const pages = {
     opening: OpeningPage,
@@ -1168,7 +1410,9 @@ export default function Home() {
     garden: GardenPage,
   }
 
-  const CurrentComponent = pages[currentPage]
+  // Safety fallback — invalid page name হলে app crash করবে না
+  const CurrentComponent =
+    pages[currentPage] || OpeningPage
 
   const pageVariants = {
     initial: {
@@ -1199,12 +1443,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 relative overflow-hidden">
 
-      {/* Background */}
-      {currentPage !== "garden" && <StarryBackground />}
+      {/* Star background শুধু অন্য page-এ */}
+      {currentPage !== "garden" && (
+        <StarryBackground />
+      )}
 
-      {/* Music */}
+      {/* Music player */}
       {showMusicPlayer && (
-        <MusicPlayer
+        <MusicPlayerSafe
           musicPlaying={musicPlaying}
           setMusicPlaying={setMusicPlaying}
         />
@@ -1228,7 +1474,15 @@ export default function Home() {
           />
         </motion.div>
       </AnimatePresence>
-
     </div>
   )
+}
+
+
+/* =========================================================
+   🎵 MUSIC PLAYER SAFE WRAPPER
+========================================================= */
+
+function MusicPlayerSafe(props) {
+  return <MusicPlayer {...props} />
 }
