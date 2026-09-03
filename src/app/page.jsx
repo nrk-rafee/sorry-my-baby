@@ -14,474 +14,16 @@ import MusicPlayer from "@/components/MusicPlayer"
 
 
 /* =========================================================
-   ✨ PARTICLE PORTRAIT
-   The portrait is revealed from thousands of tiny lights.
-   Put /public/portrait-particle-source.png in your project.
+   🌸 FLOWER
 ========================================================= */
 
-function ParticlePortrait({ active }) {
-  const canvasRef = useRef(null)
-  const wrapRef = useRef(null)
-
-  useEffect(() => {
-    if (!active) return
-
-    const canvas = canvasRef.current
-    const wrap = wrapRef.current
-    if (!canvas || !wrap) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    let animationFrame = 0
-    let destroyed = false
-    let particles = []
-    let dust = []
-    let startedAt = 0
-    let resizeObserver = null
-
-    const CONFIG = {
-      particleCount: 3500,
-      dustCount: 200,
-      revealDuration: 5000,
-      holdBeforeReveal: 400,
-    }
-
-    const random = (min, max) =>
-      Math.random() * (max - min) + min
-
-    const clamp = (value, min, max) =>
-      Math.max(min, Math.min(max, value))
-
-    const easeOutCubic = (t) =>
-      1 - Math.pow(1 - clamp(t, 0, 1), 3)
-
-    const easeInOutCubic = (t) => {
-      t = clamp(t, 0, 1)
-      return t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2
-    }
-
-    const setCanvasSize = () => {
-      const rect = wrap.getBoundingClientRect()
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr))
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr))
-      canvas.style.width = `${rect.width}px`
-      canvas.style.height = `${rect.height}px`
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    }
-
-    const getDisplayRect = (imgWidth = 1, imgHeight = 1) => {
-      const rect = wrap.getBoundingClientRect()
-      const mobile = rect.width < 600
-
-      const maxWidth = mobile
-        ? rect.width * 0.78
-        : Math.min(rect.width * 0.5, 450)
-
-      const sourceRatio = imgWidth / imgHeight
-      const width = maxWidth
-      const height = width / sourceRatio
-
-      return {
-        x: (rect.width - width) / 2,
-        y: Math.max(70, rect.height * 0.12),
-        width,
-        height,
-      }
-    }
-
-    const buildParticles = (image) => {
-      const sourceW = 300
-      const sourceH = Math.round(sourceW * (image.height / image.width))
-
-      const offscreen = document.createElement("canvas")
-      offscreen.width = sourceW
-      offscreen.height = sourceH
-
-      const offCtx = offscreen.getContext("2d", {
-        willReadFrequently: true,
-      })
-
-      if (!offCtx) return
-
-      // Draw whole image to offscreen canvas
-      offCtx.clearRect(0, 0, sourceW, sourceH)
-      offCtx.drawImage(image, 0, 0, sourceW, sourceH)
-
-      const pixels = offCtx.getImageData(
-        0,
-        0,
-        sourceW,
-        sourceH
-      ).data
-
-      const candidates = []
-
-      // Sample every pixel grid
-      for (let y = 0; y < sourceH; y += 2) {
-        for (let x = 0; x < sourceW; x += 2) {
-          const i = (y * sourceW + x) * 4
-          const r = pixels[i]
-          const g = pixels[i + 1]
-          const b = pixels[i + 2]
-          const a = pixels[i + 3]
-
-          if (a < 30) continue
-
-          candidates.push({
-            nx: x / sourceW,
-            ny: y / sourceH,
-            r,
-            g,
-            b,
-            a,
-          })
-        }
-      }
-
-      // Shuffle candidates
-      for (let i = candidates.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[candidates[i], candidates[j]] = [
-          candidates[j],
-          candidates[i],
-        ]
-      }
-
-      const selected = candidates.slice(
-        0,
-        Math.min(CONFIG.particleCount, candidates.length)
-      )
-
-      const rect = getDisplayRect(image.width, image.height)
-      const centerX = rect.x + rect.width / 2
-      const centerY = rect.y + rect.height / 2
-
-      particles = selected.map((point, index) => {
-        const tx = rect.x + point.nx * rect.width
-        const ty = rect.y + point.ny * rect.height
-
-        const angle = random(0, Math.PI * 2)
-        const distance = random(
-          Math.min(rect.width, rect.height) * 0.6,
-          Math.max(rect.width, rect.height) * 1.5
-        )
-
-        const startX =
-          centerX +
-          Math.cos(angle) * distance +
-          random(-100, 100)
-
-        const startY =
-          centerY +
-          Math.sin(angle) * distance +
-          random(-150, 150)
-
-        return {
-          x: startX,
-          y: startY,
-          tx,
-          ty,
-          r: point.r,
-          g: point.g,
-          b: point.b,
-          alpha: point.a / 255,
-          size: random(0.8, 1.8),
-          twinkle: random(0, Math.PI * 2),
-          drift: random(0.3, 1.0),
-          depth: random(0.2, 1),
-          delay: random(0, 800),
-          index,
-        }
-      })
-
-      dust = Array.from(
-        { length: CONFIG.dustCount },
-        () => ({
-          x: random(rect.x - 60, rect.x + rect.width + 60),
-          y: random(
-            rect.y - 80,
-            rect.y + rect.height + 80
-          ),
-          vx: random(-0.15, 0.15),
-          vy: random(-0.35, 0.1),
-          size: random(0.4, 1.2),
-          alpha: random(0.1, 0.5),
-          phase: random(0, Math.PI * 2),
-        })
-      )
-    }
-
-    let loadedImage = null
-
-    const draw = (now) => {
-      if (destroyed) return
-
-      const rect = wrap.getBoundingClientRect()
-      const width = rect.width
-      const height = rect.height
-
-      ctx.clearRect(0, 0, width, height)
-
-      if (!startedAt) startedAt = now
-
-      const elapsed = now - startedAt
-
-      const targetRect = getDisplayRect(
-        loadedImage?.width || 1,
-        loadedImage?.height || 1
-      )
-      const centerX = targetRect.x + targetRect.width / 2
-      const centerY = targetRect.y + targetRect.height / 2
-
-      const revealT = clamp(
-        (elapsed - CONFIG.holdBeforeReveal) /
-          CONFIG.revealDuration,
-        0,
-        1
-      )
-
-      ctx.globalCompositeOperation = "lighter"
-
-      const dustLife = clamp(
-        1 - (elapsed - 1000) / 6000,
-        0,
-        1
-      )
-
-      for (const mote of dust) {
-        mote.x += mote.vx
-        mote.y += mote.vy
-
-        const pulse =
-          0.55 +
-          Math.sin(now * 0.002 + mote.phase) * 0.45
-
-        ctx.beginPath()
-        ctx.fillStyle = `rgba(155,255,236,${
-          mote.alpha * pulse * dustLife
-        })`
-        ctx.arc(
-          mote.x,
-          mote.y,
-          mote.size,
-          0,
-          Math.PI * 2
-        )
-        ctx.fill()
-      }
-
-      for (const particle of particles) {
-        const localT = clamp(
-          (elapsed -
-            CONFIG.holdBeforeReveal -
-            particle.delay) /
-            (CONFIG.revealDuration - 400),
-          0,
-          1
-        )
-
-        const e = easeOutCubic(localT)
-        const startScale = 1.5 - particle.depth * 0.3
-
-        const baseX =
-          particle.x +
-          (particle.tx - particle.x) * e
-
-        const baseY =
-          particle.y +
-          (particle.ty - particle.y) * e
-
-        const distanceFromCenterX = baseX - centerX
-        const distanceFromCenterY = baseY - centerY
-
-        const cinematicZoom = (1 - e) * 0.1 * particle.depth
-
-        const drawX =
-          centerX +
-          distanceFromCenterX * (1 + cinematicZoom)
-
-        const drawY =
-          centerY +
-          distanceFromCenterY * (1 + cinematicZoom)
-
-        const floating =
-          e *
-          Math.sin(
-            now * 0.001 * particle.drift +
-              particle.twinkle
-          ) *
-          0.5
-
-        const finalX = drawX + floating
-        const finalY =
-          drawY +
-          e *
-            Math.cos(
-              now * 0.001 +
-                particle.twinkle
-            ) *
-            0.4
-
-        const twinkle =
-          0.8 +
-          Math.sin(
-            now * 0.003 +
-              particle.twinkle
-          ) *
-            0.2
-
-        const revealBrightness = 0.7 + e * 0.3
-        const size = particle.size * (startScale - e * 0.4)
-        const alpha =
-          particle.alpha *
-          twinkle *
-          revealBrightness *
-          (0.2 + e * 0.8)
-
-        if (alpha <= 0.01) continue
-
-        ctx.beginPath()
-        ctx.fillStyle = `rgba(${particle.r},${particle.g},${particle.b},${alpha})`
-        ctx.shadowBlur = e > 0.7 ? 4 : 7
-        ctx.shadowColor = `rgba(${particle.r},${particle.g},${particle.b},${
-          alpha * 0.8
-        })`
-
-        ctx.arc(
-          finalX,
-          finalY,
-          Math.max(0.4, size),
-          0,
-          Math.PI * 2
-        )
-        ctx.fill()
-      }
-
-      ctx.shadowBlur = 0
-      ctx.globalCompositeOperation = "source-over"
-
-      if (revealT > 0.7) {
-        const shimmerProgress =
-          ((elapsed - 4000) % 5000) / 5000
-
-        const sweepX =
-          targetRect.x -
-          targetRect.width * 0.25 +
-          shimmerProgress *
-            targetRect.width *
-            1.5
-
-        const gradient = ctx.createLinearGradient(
-          sweepX - 50,
-          targetRect.y,
-          sweepX + 50,
-          targetRect.y
-        )
-
-        gradient.addColorStop(0, "rgba(255,255,255,0)")
-        gradient.addColorStop(0.5, "rgba(210,255,246,.12)")
-        gradient.addColorStop(1, "rgba(255,255,255,0)")
-
-        ctx.fillStyle = gradient
-        ctx.fillRect(
-          targetRect.x,
-          targetRect.y,
-          targetRect.width,
-          targetRect.height
-        )
-      }
-
-      animationFrame = requestAnimationFrame(draw)
-    }
-
-    const loadImage = () => {
-      const image = new Image()
-
-      image.onload = () => {
-        if (destroyed) return
-        loadedImage = image
-        setCanvasSize()
-        buildParticles(image)
-        startedAt = performance.now()
-        animationFrame = requestAnimationFrame(draw)
-      }
-
-      image.onerror = () => {
-        console.warn(
-          "Particle portrait image not found. Place portrait-particle-source.png inside /public."
-        )
-      }
-
-      image.src = "/portrait-particle-source.png"
-    }
-
-    setCanvasSize()
-
-    if ("ResizeObserver" in window) {
-      resizeObserver = new ResizeObserver(() => {
-        setCanvasSize()
-      })
-      resizeObserver.observe(wrap)
-    } else {
-      window.addEventListener("resize", setCanvasSize)
-    }
-
-    loadImage()
-
-    return () => {
-      destroyed = true
-      cancelAnimationFrame(animationFrame)
-
-      if (resizeObserver) {
-        resizeObserver.disconnect()
-      } else {
-        window.removeEventListener(
-          "resize",
-          setCanvasSize
-        )
-      }
-    }
-  }, [active])
-
-  return (
-    <div
-      ref={wrapRef}
-      className="absolute inset-0 z-[35] pointer-events-none"
-      style={{
-        opacity: active ? 1 : 0,
-        transition: "opacity 1.4s ease",
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        aria-hidden="true"
-      />
-    </div>
-  )
-}
-
-
-/* =========================================================
-   🌸 VIDEO STYLE FLOWER
-========================================================= */
-
-function GardenFlower({
-  size = 58,
-  delay = 0,
-}) {
+function Flower({ color = "#ff75c8", size = 42 }) {
   const petals = [
-    { x: 0, y: -19, rotate: 0 },
-    { x: 18, y: -8, rotate: 72 },
-    { x: 13, y: 12, rotate: 144 },
-    { x: -13, y: 12, rotate: 216 },
-    { x: -18, y: -8, rotate: 288 },
+    { x: 0, y: -18 },
+    { x: 17, y: -6 },
+    { x: 11, y: 14 },
+    { x: -11, y: 14 },
+    { x: -17, y: -6 },
   ]
 
   return (
@@ -491,89 +33,41 @@ function GardenFlower({
         width: size,
         height: size,
       }}
-      initial={{
-        opacity: 0,
-        scale: 0,
-        y: 12,
-      }}
       animate={{
-        opacity: 1,
-        scale: [0, 1.12, 1],
-        y: [12, -2, 0],
+        rotate: [-2, 2, -2],
       }}
       transition={{
-        duration: 1.15,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 3.5,
+        repeat: Infinity,
+        ease: "easeInOut",
       }}
     >
-      {/* Glow */}
-      <div
-        className="absolute rounded-full"
-        style={{
-          inset: "-35%",
-          background:
-            "radial-gradient(circle, rgba(36,255,220,.32), transparent 65%)",
-          filter: "blur(9px)",
-        }}
-      />
-
-      {/* Petals */}
-      {petals.map((petal, index) => (
-        <motion.div
-          key={index}
-          className="absolute"
+      {petals.map((petal, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
           style={{
-            width: size * 0.40,
+            width: size * 0.48,
             height: size * 0.58,
-            left: `calc(50% + ${petal.x}px - ${size * 0.20}px)`,
+            left: `calc(50% + ${petal.x}px - ${size * 0.24}px)`,
             top: `calc(50% + ${petal.y}px - ${size * 0.29}px)`,
-            borderRadius: "58% 42% 58% 42%",
-            background:
-              index % 2 === 0
-                ? "linear-gradient(145deg,#b8fff1 0%,#35e6ce 45%,#0aa99d 100%)"
-                : "linear-gradient(145deg,#82f9e5 0%,#24d9c4 55%,#078d87 100%)",
-            boxShadow:
-              "0 0 8px rgba(58,240,215,.75), 0 0 18px rgba(26,210,190,.38)",
-            transform: `rotate(${petal.rotate}deg)`,
-            transformOrigin: "50% 82%",
-          }}
-          animate={{
-            scale: [1, 1.025, 1],
-          }}
-          transition={{
-            duration: 2.8,
-            delay: delay + index * 0.05,
-            repeat: Infinity,
-            ease: "easeInOut",
+            background: color,
+            boxShadow: `0 0 14px ${color}99`,
+            transform: `rotate(${i * 72}deg)`,
+            transformOrigin: "50% 80%",
           }}
         />
       ))}
 
-      {/* Center */}
       <div
         className="absolute rounded-full"
         style={{
-          width: size * 0.23,
-          height: size * 0.23,
-          left: "38.5%",
-          top: "38.5%",
-          background:
-            "radial-gradient(circle at 35% 30%,#faffd8,#dfff6d 45%,#71b84b 100%)",
-          boxShadow:
-            "0 0 7px rgba(226,255,120,.95),0 0 16px rgba(151,255,100,.55)",
-        }}
-      />
-
-      <div
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.065,
-          height: size * 0.065,
-          left: "47%",
-          top: "46%",
-          background: "#ffffff",
-          boxShadow: "0 0 5px white",
+          width: size * 0.25,
+          height: size * 0.25,
+          left: "37.5%",
+          top: "37.5%",
+          background: "#ffd45c",
+          boxShadow: "0 0 10px #ffd45c",
         }}
       />
     </motion.div>
@@ -582,85 +76,45 @@ function GardenFlower({
 
 
 /* =========================================================
-   🍃 NATURAL LEAF
+   🌿 LEAF
 ========================================================= */
 
-function GardenLeaf({
-  side = "left",
-  size = 32,
-  top = "50%",
-  color = "#3fae5b",
-  delay = 0,
-}) {
+function Leaf({ side = "left", top = 50, scale = 1 }) {
   return (
     <motion.div
       className="absolute"
       style={{
         top,
-        [side]: "50%",
-        width: size,
-        height: size * 0.52,
-        transformOrigin:
-          side === "left"
-            ? "right center"
-            : "left center",
+        [side]: -18 * scale,
+        transformOrigin: side === "left" ? "right center" : "left center",
       }}
       initial={{
-        opacity: 0,
         scale: 0,
-        rotate:
-          side === "left" ? -15 : 15,
+        opacity: 0,
       }}
       animate={{
+        scale,
         opacity: 1,
-        scale: 1,
-        rotate:
-          side === "left"
-            ? [-15, -10, -15]
-            : [15, 10, 15],
+        rotate: side === "left" ? -18 : 18,
       }}
       transition={{
-        opacity: {
-          duration: 0.65,
-          delay,
-        },
-        scale: {
-          duration: 0.8,
-          delay,
-          ease: "backOut",
-        },
-        rotate: {
-          duration: 4,
-          delay: delay + 0.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        },
+        duration: 0.7,
+        delay: 0.45,
+        ease: "backOut",
       }}
     >
       <div
-        className="w-full h-full"
+        className="rounded-full"
         style={{
-          borderRadius:
-            side === "left"
-              ? "100% 0 100% 0"
-              : "0 100% 0 100%",
+          width: 30 * scale,
+          height: 14 * scale,
           background:
-            `linear-gradient(135deg,#8be67b,${color})`,
-          boxShadow:
-            `0 0 8px ${color}55`,
-        }}
-      />
-
-      {/* Leaf vein */}
-      <div
-        className="absolute top-1/2 left-[10%] right-[10%] h-[1px]"
-        style={{
-          background:
-            "rgba(180,255,170,.45)",
+            "linear-gradient(135deg,#7bdc69,#1d8d49)",
           transform:
             side === "left"
-              ? "rotate(-8deg)"
-              : "rotate(8deg)",
+              ? "rotate(-30deg)"
+              : "rotate(30deg)",
+          boxShadow: "0 0 8px rgba(70,220,100,.25)",
         }}
       />
     </motion.div>
@@ -669,24 +123,25 @@ function GardenLeaf({
 
 
 /* =========================================================
-   🌿 ONE GROWING PLANT
+   🌱 ONE PLANT
 ========================================================= */
 
-function FlowerPlant({
+function Plant({
   left,
-  height = 330,
-  flowerSize = 58,
-  scale = 1,
-  delay = 0,
-  bend = 0,
+  height,
+  flowerColor,
+  flowerSize,
+  delay,
+  curve = 0,
+  flowerTop = 0,
 }) {
   return (
     <motion.div
-      className="absolute bottom-[-5px]"
+      className="absolute bottom-0"
       style={{
         left: `${left}%`,
-        width: 110 * scale,
-        height: height * scale,
+        height,
+        width: 100,
         transform: "translateX(-50%)",
         transformOrigin: "bottom center",
       }}
@@ -699,346 +154,283 @@ function FlowerPlant({
         scaleY: 1,
       }}
       transition={{
-        duration: 1.55,
+        duration: 1.8,
         delay,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      {/* Main curved stem */}
-      <motion.svg
-        width={110 * scale}
-        height={height * scale}
-        viewBox="0 0 110 330"
-        className="absolute inset-0 overflow-visible"
+      <motion.div
+        className="absolute bottom-0 left-1/2"
+        style={{
+          width: 7,
+          height: "100%",
+          transformOrigin: "bottom",
+          borderRadius: 999,
+          background:
+            "linear-gradient(to top,#123f2a,#258a49,#62d76a)",
+          transform: `translateX(-50%) rotate(${curve}deg)`,
+          boxShadow: "0 0 7px rgba(80,220,110,.25)",
+        }}
         animate={{
-          rotate: [
-            bend - 0.7,
-            bend + 0.7,
-            bend - 0.7,
-          ],
+          rotate: [curve - 1, curve + 1, curve - 1],
         }}
         transition={{
-          duration: 5,
-          delay: delay + 1,
+          duration: 4,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-      >
-        <path
-          d="M55 330
-             C53 290 61 255 52 220
-             C45 190 54 155 51 120
-             C48 90 55 55 58 22"
-          fill="none"
-          stroke="#246c42"
-          strokeWidth={5 * scale}
-          strokeLinecap="round"
-        />
-
-        <path
-          d="M55 330
-             C53 290 61 255 52 220
-             C45 190 54 155 51 120
-             C48 90 55 55 58 22"
-          fill="none"
-          stroke="#55c96a"
-          strokeOpacity=".75"
-          strokeWidth={2.2 * scale}
-          strokeLinecap="round"
-        />
-      </motion.svg>
-
-      {/* Left leaves */}
-      <GardenLeaf
-        side="left"
-        top="22%"
-        size={34 * scale}
-        color="#39a957"
-        delay={delay + 0.55}
       />
 
-      <GardenLeaf
-        side="left"
-        top="43%"
-        size={39 * scale}
-        color="#49bd63"
-        delay={delay + 0.72}
-      />
+      <Leaf side="left" top="38%" scale={0.9} />
+      <Leaf side="left" top="58%" scale={0.72} />
+      <Leaf side="left" top="76%" scale={0.62} />
 
-      <GardenLeaf
-        side="left"
-        top="66%"
-        size={31 * scale}
-        color="#29994d"
-        delay={delay + 0.9}
-      />
+      <Leaf side="right" top="45%" scale={0.85} />
+      <Leaf side="right" top="65%" scale={0.7} />
 
-      <GardenLeaf
-        side="left"
-        top="82%"
-        size={27 * scale}
-        color="#237f43"
-        delay={delay + 1.05}
-      />
-
-      {/* Right leaves */}
-      <GardenLeaf
-        side="right"
-        top="31%"
-        size={36 * scale}
-        color="#45b95d"
-        delay={delay + 0.65}
-      />
-
-      <GardenLeaf
-        side="right"
-        top="54%"
-        size={34 * scale}
-        color="#50c767"
-        delay={delay + 0.82}
-      />
-
-      <GardenLeaf
-        side="right"
-        top="73%"
-        size={28 * scale}
-        color="#319f50"
-        delay={delay + 1}
-      />
-
-      {/* Flower */}
-      <div
+      <motion.div
         className="absolute left-1/2"
         style={{
-          top: -8 * scale,
+          top: flowerTop,
           transform: "translateX(-50%)",
         }}
+        initial={{
+          opacity: 0,
+          scale: 0,
+          y: 15,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 1,
+          delay: delay + 1.1,
+          ease: "backOut",
+        }}
       >
-        <GardenFlower
-          size={flowerSize * scale}
-          delay={delay + 1.1}
+        <Flower
+          color={flowerColor}
+          size={flowerSize}
         />
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
 
 
 /* =========================================================
-   🌱 SMALL GRASS
+   🌿 CURLING VINE
 ========================================================= */
 
-function GardenGrass() {
-  const grass = [
-    [3, 19, 0],
-    [7, 25, -8],
-    [11, 18, 8],
-    [15, 28, -5],
-    [20, 21, 5],
-    [24, 31, -8],
-    [29, 20, 7],
-    [34, 27, -5],
-    [39, 22, 8],
-    [44, 30, -7],
-    [49, 20, 5],
-    [54, 28, -8],
-    [59, 21, 7],
-    [64, 30, -6],
-    [69, 20, 8],
-    [74, 27, -5],
-    [79, 21, 7],
-    [84, 30, -8],
-    [89, 19, 5],
-    [94, 26, -7],
-    [98, 20, 5],
-  ]
-
+function Vine({
+  left,
+  height,
+  delay,
+  flip = false,
+}) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[24%] pointer-events-none">
-      {grass.map(
-        ([left, height, rotate], index) => (
-          <motion.div
-            key={index}
-            className="absolute bottom-0 origin-bottom"
-            style={{
-              left: `${left}%`,
-              width: 3,
-              height: `${height}px`,
-              background:
-                "linear-gradient(to top,#123d28,#3ca85a)",
-              borderRadius:
-                "100% 100% 0 0",
-              transform:
-                `rotate(${rotate}deg)`,
-            }}
-            initial={{
-              scaleY: 0,
-              opacity: 0,
-            }}
-            animate={{
-              scaleY: 1,
-              opacity: 0.9,
-            }}
-            transition={{
-              duration: 0.7,
-              delay: index * 0.035,
-              ease: "backOut",
-            }}
-          />
-        )
-      )}
-    </div>
+    <motion.div
+      className="absolute bottom-0"
+      style={{
+        left: `${left}%`,
+        height,
+        width: 120,
+        transform: `translateX(-50%) scaleX(${flip ? -1 : 1})`,
+        transformOrigin: "bottom center",
+      }}
+      initial={{
+        opacity: 0,
+        scaleY: 0,
+      }}
+      animate={{
+        opacity: 1,
+        scaleY: 1,
+      }}
+      transition={{
+        duration: 2,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <motion.div
+        className="absolute bottom-0 left-1/2"
+        style={{
+          width: 5,
+          height: "100%",
+          borderRadius: 999,
+          background:
+            "linear-gradient(to top,#123d28,#39a85a,#75dc72)",
+          transformOrigin: "bottom",
+        }}
+        animate={{
+          rotate: [-3, 3, -3],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="absolute rounded-full border-[4px]"
+        style={{
+          width: 55,
+          height: 55,
+          top: 8,
+          left: 35,
+          borderColor: "#4dbb68",
+          borderLeftColor: "transparent",
+          borderBottomColor: "transparent",
+          transform: "rotate(25deg)",
+        }}
+        animate={{
+          rotate: [25, 32, 25],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <Leaf side="left" top="30%" scale={0.7} />
+      <Leaf side="right" top="48%" scale={0.65} />
+      <Leaf side="left" top="65%" scale={0.6} />
+
+      <motion.div
+        className="absolute"
+        style={{
+          top: -8,
+          left: 28,
+        }}
+        initial={{
+          scale: 0,
+        }}
+        animate={{
+          scale: 1,
+        }}
+        transition={{
+          duration: 0.8,
+          delay: delay + 1.2,
+          ease: "backOut",
+        }}
+      >
+        <Flower color="#c77dff" size={30} />
+      </motion.div>
+    </motion.div>
   )
 }
 
 
 /* =========================================================
-   🌿 DENSE LOWER LEAVES
+   🦋 BUTTERFLY
 ========================================================= */
 
-function GroundLeaves() {
-  const leaves = [
-    [5, 78, 32, -20],
-    [10, 84, 38, 18],
-    [17, 80, 30, -18],
-    [24, 88, 42, 20],
-    [31, 82, 34, -15],
-    [38, 90, 40, 18],
-    [46, 84, 37, -20],
-    [53, 89, 42, 18],
-    [61, 83, 35, -18],
-    [68, 90, 43, 20],
-    [76, 82, 34, -18],
-    [83, 88, 40, 18],
-    [90, 80, 34, -20],
-    [96, 87, 40, 17],
-  ]
-
+function Butterfly({
+  top,
+  left,
+  duration,
+  delay,
+  color1,
+  color2,
+  size,
+}) {
   return (
-    <div className="absolute bottom-[3%] left-0 right-0 h-[25%] pointer-events-none">
-      {leaves.map(
-        ([left, top, size, rotate], index) => (
-          <motion.div
-            key={index}
-            className="absolute"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: size,
-              height: size * 0.45,
-              transform:
-                `rotate(${rotate}deg)`,
-              transformOrigin:
-                rotate < 0
-                  ? "right center"
-                  : "left center",
-            }}
-            initial={{
-              opacity: 0,
-              scale: 0,
-            }}
-            animate={{
-              opacity: 0.95,
-              scale: 1,
-            }}
-            transition={{
-              duration: 0.7,
-              delay: 1 + index * 0.06,
-              ease: "backOut",
-            }}
-          >
-            <div
-              className="w-full h-full"
-              style={{
-                borderRadius:
-                  rotate < 0
-                    ? "100% 0 100% 0"
-                    : "0 100% 0 100%",
-                background:
-                  index % 2 === 0
-                    ? "linear-gradient(135deg,#63d96c,#238d4b)"
-                    : "linear-gradient(135deg,#46bd5b,#176c3b)",
-                boxShadow:
-                  "0 0 7px rgba(55,190,90,.25)",
-              }}
-            />
-          </motion.div>
-        )
-      )}
-    </div>
-  )
-}
+    <motion.div
+      className="absolute pointer-events-none z-30"
+      style={{
+        top: `${top}%`,
+        left: `${left}%`,
+      }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: [0, 1, 1, 1, 0],
+        x: [0, 100, 220, 350, 500],
+        y: [0, -35, 25, -45, 10],
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        repeatDelay: 1.5,
+        ease: "easeInOut",
+      }}
+    >
+      <motion.div
+        style={{
+          width: size,
+          height: size * 0.7,
+          position: "relative",
+        }}
+        animate={{
+          rotate: [-4, 4, -4],
+        }}
+        transition={{
+          duration: 0.35,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <motion.div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: size * 0.05,
+            width: size * 0.48,
+            height: size * 0.58,
+            borderRadius: "70% 30% 70% 30%",
+            background: color1,
+            transformOrigin: "right center",
+            boxShadow: `0 0 14px ${color1}`,
+          }}
+          animate={{
+            rotateY: [0, 55, 0],
+          }}
+          transition={{
+            duration: 0.35,
+            repeat: Infinity,
+          }}
+        />
 
+        <motion.div
+          style={{
+            position: "absolute",
+            right: 0,
+            top: size * 0.05,
+            width: size * 0.48,
+            height: size * 0.58,
+            borderRadius: "30% 70% 30% 70%",
+            background: color2,
+            transformOrigin: "left center",
+            boxShadow: `0 0 14px ${color2}`,
+          }}
+          animate={{
+            rotateY: [0, -55, 0],
+          }}
+          transition={{
+            duration: 0.35,
+            repeat: Infinity,
+          }}
+        />
 
-/* =========================================================
-   ✨ STARS
-========================================================= */
-
-function GardenStars() {
-  const stars = [
-    [4, 9, 2],
-    [9, 18, 2],
-    [15, 7, 2],
-    [21, 14, 2],
-    [28, 5, 3],
-    [34, 20, 2],
-    [41, 9, 2],
-    [48, 16, 3],
-    [55, 6, 2],
-    [62, 22, 2],
-    [69, 10, 3],
-    [76, 5, 2],
-    [83, 18, 2],
-    [90, 9, 3],
-    [96, 24, 2],
-    [12, 31, 2],
-    [25, 27, 2],
-    [38, 35, 2],
-    [51, 30, 2],
-    [65, 34, 2],
-    [78, 29, 2],
-    [93, 35, 2],
-  ]
-
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {stars.map(
-        ([left, top, size], index) => (
-          <motion.div
-            key={index}
-            className="absolute rounded-full bg-white"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: size,
-              height: size,
-              boxShadow:
-                "0 0 6px rgba(255,255,255,.7)",
-            }}
-            animate={{
-              opacity: [
-                0.2,
-                0.9,
-                0.2,
-              ],
-              scale: [
-                0.8,
-                1.25,
-                0.8,
-              ],
-            }}
-            transition={{
-              duration:
-                2.3 + (index % 4) * 0.4,
-              delay:
-                (index % 6) * 0.35,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        )
-      )}
-    </div>
+        <div
+          style={{
+            position: "absolute",
+            left: "46%",
+            top: "18%",
+            width: size * 0.09,
+            height: size * 0.58,
+            borderRadius: 999,
+            background: "#22172c",
+          }}
+        />
+      </motion.div>
+    </motion.div>
   )
 }
 
@@ -1047,481 +439,689 @@ function GardenStars() {
    ✨ FIREFLIES
 ========================================================= */
 
-function GardenFireflies() {
+function Fireflies() {
   const lights = [
-    [6, 38, 3],
-    [13, 50, 2],
-    [19, 28, 3],
-    [27, 44, 2],
-    [34, 32, 3],
-    [42, 48, 2],
-    [49, 29, 3],
-    [57, 42, 2],
-    [64, 30, 3],
-    [72, 47, 2],
-    [80, 34, 3],
-    [88, 27, 2],
-    [95, 45, 3],
-    [10, 66, 2],
-    [25, 59, 3],
-    [39, 67, 2],
-    [55, 62, 3],
-    [70, 69, 2],
-    [85, 61, 3],
+    [8, 35, 2],
+    [16, 54, 3],
+    [25, 28, 2],
+    [33, 48, 3],
+    [43, 35, 2],
+    [52, 58, 3],
+    [62, 31, 2],
+    [70, 50, 3],
+    [79, 27, 2],
+    [88, 43, 3],
+    [94, 58, 2],
+    [13, 72, 2],
+    [29, 65, 3],
+    [48, 73, 2],
+    [67, 69, 3],
+    [84, 67, 2],
   ]
 
   return (
     <>
-      {lights.map(
-        ([left, top, size], index) => (
-          <motion.div
-            key={index}
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: size,
-              height: size,
-              background: "#bffff0",
-              boxShadow:
-                "0 0 10px 3px rgba(75,255,220,.45)",
-            }}
-            animate={{
-              opacity: [
-                0.1,
-                0.9,
-                0.15,
-              ],
-              scale: [
-                0.7,
-                1.5,
-                0.7,
-              ],
-              y: [-5, 6, -5],
-            }}
-            transition={{
-              duration:
-                2.6 + (index % 4) * 0.35,
-              delay:
-                (index % 6) * 0.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        )
-      )}
+      {lights.map(([left, top, size], i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-yellow-200 pointer-events-none"
+          style={{
+            left: `${left}%`,
+            top: `${top}%`,
+            width: size,
+            height: size,
+            boxShadow:
+              "0 0 12px 4px rgba(255,220,100,.5)",
+          }}
+          animate={{
+            opacity: [0.15, 1, 0.2],
+            scale: [0.7, 1.5, 0.7],
+            y: [-5, 5, -5],
+          }}
+          transition={{
+            duration: 2.5 + (i % 4) * 0.4,
+            delay: (i % 5) * 0.4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
     </>
   )
 }
 
 
 /* =========================================================
-   🌌 GARDEN PAGE
+   ✨ DRONE-PARTICLE PHOTO
+   শুধু transparent subject-টাই particles দিয়ে তৈরি হবে।
 ========================================================= */
 
-function GardenPage() {
-  const [growth, setGrowth] = useState(0)
-  const [showPortrait, setShowPortrait] =
-    useState(false)
-
-  const growGarden = () => {
-    setGrowth((previous) =>
-      Math.min(previous + 1, 5)
-    )
-  }
+function DroneParticlePhoto({ active }) {
+  const canvasRef = useRef(null)
 
   useEffect(() => {
-    if (growth < 5) {
-      setShowPortrait(false)
-      return
+    if (!active) return
+
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext("2d", {
+      alpha: true,
+    })
+
+    if (!ctx) return
+
+    let animationFrame
+    let destroyed = false
+
+    const image = new window.Image()
+    image.src = "/garden-subject.png"
+
+    image.onload = () => {
+      if (destroyed) return
+
+      const resize = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+
+        const width = Math.min(
+          window.innerWidth * 0.82,
+          430
+        )
+
+        const height = Math.min(
+          window.innerHeight * 0.38,
+          330
+        )
+
+        canvas.style.width = `${width}px`
+        canvas.style.height = `${height}px`
+
+        canvas.width = Math.floor(width * dpr)
+        canvas.height = Math.floor(height * dpr)
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+        buildParticles(width, height)
+      }
+
+      let particles = []
+
+      const buildParticles = (width, height) => {
+        const offscreen = document.createElement("canvas")
+        const sampleWidth = 250
+        const sampleHeight = Math.round(
+          sampleWidth * (image.height / image.width)
+        )
+
+        offscreen.width = sampleWidth
+        offscreen.height = sampleHeight
+
+        const offCtx = offscreen.getContext("2d")
+
+        if (!offCtx) return
+
+        offCtx.clearRect(
+          0,
+          0,
+          sampleWidth,
+          sampleHeight
+        )
+
+        offCtx.drawImage(
+          image,
+          0,
+          0,
+          sampleWidth,
+          sampleHeight
+        )
+
+        const pixels = offCtx.getImageData(
+          0,
+          0,
+          sampleWidth,
+          sampleHeight
+        ).data
+
+        const possible = []
+
+        /*
+         * Only pixels having strong alpha are selected.
+         * তাই background/transparent অংশ particle হবে না।
+         */
+        for (let y = 0; y < sampleHeight; y += 3) {
+          for (let x = 0; x < sampleWidth; x += 3) {
+            const index =
+              (y * sampleWidth + x) * 4
+
+            const alpha = pixels[index + 3]
+
+            if (alpha > 150) {
+              possible.push({
+                x,
+                y,
+                r: pixels[index],
+                g: pixels[index + 1],
+                b: pixels[index + 2],
+                a: alpha,
+              })
+            }
+          }
+        }
+
+        /*
+         * Particle count সীমিত রাখা হয়েছে
+         * যাতে mobile-এও smooth থাকে।
+         */
+        const maxParticles = 1450
+
+        if (possible.length > maxParticles) {
+          const step =
+            possible.length / maxParticles
+
+          particles = []
+
+          for (
+            let i = 0;
+            i < maxParticles;
+            i++
+          ) {
+            particles.push(
+              possible[Math.floor(i * step)]
+            )
+          }
+        } else {
+          particles = possible
+        }
+
+        const sourceRatio =
+          sampleWidth / sampleHeight
+
+        let targetW = width * 0.82
+        let targetH = targetW / sourceRatio
+
+        if (targetH > height * 0.92) {
+          targetH = height * 0.92
+          targetW = targetH * sourceRatio
+        }
+
+        const offsetX =
+          (width - targetW) / 2
+
+        const offsetY =
+          (height - targetH) / 2
+
+        particles = particles.map(
+          (p, index) => {
+            const tx =
+              offsetX +
+              (p.x / sampleWidth) * targetW
+
+            const ty =
+              offsetY +
+              (p.y / sampleHeight) * targetH
+
+            /*
+             * Deterministic scatter.
+             * Math.random() render-এর মধ্যে নেই।
+             */
+            const seed =
+              (index * 9301 + 49297) % 233280
+
+            const random =
+              seed / 233280
+
+            const seed2 =
+              (index * 49297 + 233280) % 9301
+
+            const random2 =
+              seed2 / 9301
+
+            return {
+              tx,
+              ty,
+              r: p.r,
+              g: p.g,
+              b: p.b,
+              a: p.a / 255,
+
+              sx:
+                width * 0.12 +
+                random * width * 0.76,
+
+              sy:
+                height * 0.05 +
+                random2 * height * 0.85,
+
+              size:
+                0.7 +
+                (index % 4) * 0.35,
+
+              delay:
+                (index % 37) * 0.012,
+            }
+          }
+        )
+      }
+
+      resize()
+
+      window.addEventListener(
+        "resize",
+        resize
+      )
+
+      const startTime = performance.now()
+
+      const animate = (now) => {
+        if (destroyed) return
+
+        const elapsed =
+          (now - startTime) / 1000
+
+        const formationDuration = 4.8
+
+        /*
+         * 0 → 1:
+         * scattered light particles
+         * ধীরে ধীরে subject-এর shape নেয়।
+         */
+        let progress =
+          Math.min(
+            1,
+            Math.max(
+              0,
+              elapsed / formationDuration
+            )
+          )
+
+        /*
+         * Smooth cinematic easing
+         */
+        progress =
+          progress < 0.5
+            ? 4 * progress * progress * progress
+            : 1 -
+              Math.pow(
+                -2 * progress + 2,
+                3
+              ) /
+                2
+
+        ctx.clearRect(
+          0,
+          0,
+          canvas.clientWidth,
+          canvas.clientHeight
+        )
+
+        for (
+          let i = 0;
+          i < particles.length;
+          i++
+        ) {
+          const p = particles[i]
+
+          const localProgress = Math.max(
+            0,
+            Math.min(
+              1,
+              (progress * 1.35) -
+                p.delay
+            )
+          )
+
+          const ease =
+            localProgress *
+            localProgress *
+            (3 - 2 * localProgress)
+
+          /*
+           * Particle target position
+           */
+          let x =
+            p.sx +
+            (p.tx - p.sx) * ease
+
+          let y =
+            p.sy +
+            (p.ty - p.sy) * ease
+
+          /*
+           * After forming the image,
+           * tiny floating movement থাকবে।
+           */
+          if (progress >= 1) {
+            const t =
+              elapsed * 0.75 +
+              i * 0.017
+
+            x += Math.sin(t) * 0.65
+            y += Math.cos(t * 0.9) * 0.55
+          }
+
+          /*
+           * Soft breathing effect
+           */
+          const twinkle =
+            0.72 +
+            Math.sin(
+              elapsed * 2.1 +
+                i * 0.13
+            ) *
+              0.25
+
+          const radius =
+            p.size *
+            (0.85 +
+              Math.sin(
+                elapsed * 1.5 +
+                  i
+              ) *
+                0.12)
+
+          ctx.beginPath()
+
+          ctx.arc(
+            x,
+            y,
+            radius,
+            0,
+            Math.PI * 2
+          )
+
+          ctx.fillStyle =
+            `rgba(${p.r},${p.g},${p.b},${Math.max(
+              0.22,
+              p.a * twinkle
+            )})`
+
+          ctx.shadowBlur =
+            radius > 1.5 ? 5 : 3
+
+          ctx.shadowColor =
+            `rgba(${p.r},${p.g},${p.b},0.75)`
+
+          ctx.fill()
+        }
+
+        ctx.shadowBlur = 0
+
+        animationFrame =
+          requestAnimationFrame(animate)
+      }
+
+      animationFrame =
+        requestAnimationFrame(animate)
+
+      return () => {
+        window.removeEventListener(
+          "resize",
+          resize
+        )
+
+        cancelAnimationFrame(
+          animationFrame
+        )
+      }
     }
 
-    const timer = setTimeout(() => {
-      setShowPortrait(true)
-    }, 2800)
+    image.onerror = () => {
+      console.warn(
+        "garden-subject.png could not be loaded."
+      )
+    }
 
-    return () => clearTimeout(timer)
-  }, [growth])
+    return () => {
+      destroyed = true
+
+      cancelAnimationFrame(
+        animationFrame
+      )
+    }
+  }, [active])
 
   return (
-    <div
-      onClick={growGarden}
-      className="relative w-full h-[100dvh] overflow-hidden cursor-pointer select-none"
-      style={{
-        background:
-          "radial-gradient(ellipse at 50% 70%,rgba(8,89,78,.22),transparent 45%),linear-gradient(to bottom,#010b12 0%,#02151b 40%,#031b20 70%,#02090d 100%)",
-      }}
-    >
-      <GardenStars />
-      <GardenFireflies />
-
-      <div
-        className="absolute inset-x-0 bottom-0 h-[55%] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 100%,rgba(8,120,105,.25),transparent 62%)",
-        }}
-      />
-
-      <motion.div
-        className="absolute top-6 md:top-9 left-0 right-0 z-50 text-center px-5 pointer-events-none"
-        initial={{
-          opacity: 0,
-          y: -20,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 1.2,
-        }}
-      >
-        <motion.h1
-          className="text-[23px] leading-tight md:text-4xl font-medium"
+    <AnimatePresence>
+      {active && (
+        <motion.div
+          className="absolute left-1/2 z-20 pointer-events-none"
           style={{
-            color: "#c8fff4",
+            top: "25%",
+            transform: "translateX(-50%)",
+          }}
+          initial={{
+            opacity: 0,
+            scale: 0.85,
           }}
           animate={{
-            textShadow: [
-              "0 0 8px rgba(60,240,210,.20)",
-              "0 0 25px rgba(60,240,210,.65)",
-              "0 0 8px rgba(60,240,210,.20)",
-            ],
+            opacity: 1,
+            scale: 1,
           }}
           transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
+            duration: 1.4,
+            ease: "easeOut",
           }}
         >
-          Tap anywhere and
-          <br />
-          let the garden bloom 🌱✨
-        </motion.h1>
-
-        <motion.p
-          className="mt-2 text-xs md:text-base"
-          style={{
-            color:
-              "rgba(170,255,238,.68)",
-          }}
-          animate={{
-            opacity: [
-              0.4,
-              1,
-              0.4,
-            ],
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-          }}
-        >
-          {growth < 5
-            ? `${5 - growth} little touches left… 🌱`
-            : showPortrait
-              ? "A little light, carrying a beautiful memory ✨"
-              : "Your little magical garden is complete ✨🌸"}
-        </motion.p>
-      </motion.div>
-
-      {growth >= 1 && (
-        <>
-          <FlowerPlant
-            left={50}
-            height={390}
-            flowerSize={70}
-            scale={1.05}
-            delay={0}
-            bend={0}
-          />
-
-          <FlowerPlant
-            left={27}
-            height={285}
-            flowerSize={52}
-            scale={0.88}
-            delay={0.18}
-            bend={-1}
-          />
-        </>
-      )}
-
-      {growth >= 2 && (
-        <>
-          <FlowerPlant
-            left={73}
-            height={305}
-            flowerSize={55}
-            scale={0.92}
-            delay={0}
-            bend={1}
-          />
-
-          <FlowerPlant
-            left={39}
-            height={315}
-            flowerSize={56}
-            scale={0.92}
-            delay={0.16}
-            bend={-1}
-          />
-        </>
-      )}
-
-      {growth >= 3 && (
-        <FlowerPlant
-          left={12}
-          height={250}
-          flowerSize={47}
-          scale={0.78}
-          delay={0}
-          bend={-1}
-        />
-      )}
-
-      {growth >= 4 && (
-        <FlowerPlant
-          left={88}
-          height={270}
-          flowerSize={49}
-          scale={0.82}
-          delay={0}
-          bend={1}
-        />
-      )}
-
-      {growth >= 5 && (
-        <FlowerPlant
-          left={61}
-          height={350}
-          flowerSize={61}
-          scale={0.98}
-          delay={0}
-          bend={1}
-        />
-      )}
-
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: "25%",
-          background:
-            "radial-gradient(ellipse at 50% 100%,rgba(16,93,54,.62),transparent 67%)",
-        }}
-        animate={{
-          opacity:
-            growth >= 1 ? 1 : 0.35,
-        }}
-      />
-
-      {growth >= 2 && <GardenGrass />}
-      {growth >= 3 && <GroundLeaves />}
-
-      {growth >= 4 && (
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[15%] pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 100%,rgba(32,190,120,.20),transparent 65%)",
-          }}
-        />
-      )}
-
-      <ParticlePortrait
-        active={showPortrait}
-      />
-
-      <AnimatePresence>
-        {growth === 0 && (
+          {/* Soft aura behind the particles */}
           <motion.div
-            className="absolute bottom-8 left-0 right-0 z-50 text-center pointer-events-none px-5"
-            initial={{
-              opacity: 0,
-              y: 20,
+            className="absolute inset-0 rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle,rgba(190,150,255,.12),transparent 68%)",
+              filter: "blur(25px)",
+              transform: "scale(1.25)",
             }}
             animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: 20,
-            }}
-          >
-            <motion.p
-              className="text-lg md:text-xl"
-              style={{
-                color: "#a9fff0",
-              }}
-              animate={{
-                opacity: [
-                  0.55,
-                  1,
-                  0.55,
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-              }}
-            >
-              Touch anywhere… 🌱
-            </motion.p>
-
-            <p
-              className="text-xs md:text-sm mt-2"
-              style={{
-                color:
-                  "rgba(180,255,242,.55)",
-              }}
-            >
-              Watch something beautiful grow ✨
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {growth >= 5 && !showPortrait && (
-          <motion.div
-            className="absolute bottom-7 left-0 right-0 z-50 text-center pointer-events-none px-5"
-            initial={{
-              opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
+              opacity: [0.4, 0.8, 0.4],
+              scale: [1.15, 1.3, 1.15],
             }}
             transition={{
-              duration: 1,
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
             }}
-          >
-            <motion.p
-              className="text-base md:text-xl"
-              style={{
-                color: "#c8fff4",
-              }}
-              animate={{
-                opacity: [
-                  0.7,
-                  1,
-                  0.7,
-                ],
-                textShadow: [
-                  "0 0 5px rgba(50,240,210,.2)",
-                  "0 0 18px rgba(50,240,210,.65)",
-                  "0 0 5px rgba(50,240,210,.2)",
-                ],
-              }}
-              transition={{
-                duration: 2.8,
-                repeat: Infinity,
-              }}
-            >
-              And just like that… your little garden bloomed 🌸✨
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          />
+
+          <canvas
+            ref={canvasRef}
+            className="relative block"
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
 
 /* =========================================================
-   🏠 HOME
+   🌺 GARDEN
 ========================================================= */
 
-export default function Home() {
-  const [currentPage, setCurrentPage] =
-    useState("opening")
+function GardenPage() {
+  const [growth, setGrowth] = useState(0)
 
-  const [musicPlaying, setMusicPlaying] =
-    useState(false)
-
-  const [showMusicPlayer, setShowMusicPlayer] =
-    useState(false)
-
-  const pages = {
-    opening: OpeningPage,
-    diary: DiaryPage,
-    apology: ApologyPage,
-    letter: LetterPage,
-    hug: HugPage,
-    gift: GiftPage,
-    garden: GardenPage,
+  const growGarden = () => {
+    setGrowth((prev) =>
+      Math.min(prev + 1, 5)
+    )
   }
 
-  const CurrentComponent =
-    pages[currentPage]
-
-  const pageVariants = {
-    initial: {
-      opacity: 0,
-      y: 30,
-      scale: 0.97,
+  const plants = [
+    {
+      left: 10,
+      height: "30vh",
+      color: "#ff72c7",
+      size: 42,
+      delay: 0,
+      curve: -4,
+      flowerTop: -15,
+      stage: 1,
+    },
+    {
+      left: 25,
+      height: "38vh",
+      color: "#a978ff",
+      size: 50,
+      delay: 0.2,
+      curve: 4,
+      flowerTop: -12,
+      stage: 1,
+    },
+    {
+      left: 43,
+      height: "32vh",
+      color: "#ff9acb",
+      size: 45,
+      delay: 0.1,
+      curve: -3,
+      flowerTop: -15,
+      stage: 1,
     },
 
-    in: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
+    {
+      left: 57,
+      height: "43vh",
+      color: "#72b9ff",
+      size: 48,
+      delay: 0,
+      curve: 5,
+      flowerTop: -15,
+      stage: 2,
+    },
+    {
+      left: 73,
+      height: "35vh",
+      color: "#ff78d1",
+      size: 44,
+      delay: 0.15,
+      curve: -5,
+      flowerTop: -12,
+      stage: 2,
+    },
+    {
+      left: 91,
+      height: "40vh",
+      color: "#b47cff",
+      size: 48,
+      delay: 0.3,
+      curve: 3,
+      flowerTop: -15,
+      stage: 2,
     },
 
-    out: {
-      opacity: 0,
-      y: -30,
-      scale: 1.02,
+    {
+      left: 5,
+      height: "53vh",
+      color: "#c878ff",
+      size: 56,
+      delay: 0,
+      curve: -5,
+      flowerTop: -15,
+      stage: 3,
     },
-  }
+    {
+      left: 36,
+      height: "58vh",
+      color: "#ff68b9",
+      size: 62,
+      delay: 0.2,
+      curve: 4,
+      flowerTop: -18,
+      stage: 3,
+    },
+    {
+      left: 66,
+      height: "55vh",
+      color: "#ff9c55",
+      size: 55,
+      delay: 0.1,
+      curve: -4,
+      flowerTop: -15,
+      stage: 3,
+    },
+    {
+      left: 84,
+      height: "50vh",
+      color: "#7aa7ff",
+      size: 58,
+      delay: 0.25,
+      curve: 5,
+      flowerTop: -15,
+      stage: 3,
+    },
 
-  const pageTransition = {
-    type: "tween",
-    ease: [
-      0.25,
-      0.46,
-      0.45,
-      0.94,
-    ],
-    duration: 0.6,
-  }
+    {
+      left: 18,
+      height: "67vh",
+      color: "#ff69b4",
+      size: 72,
+      delay: 0,
+      curve: -5,
+      flowerTop: -20,
+      stage: 4,
+    },
+    {
+      left: 48,
+      height: "72vh",
+      color: "#b777ff",
+      size: 76,
+      delay: 0.2,
+      curve: 4,
+      flowerTop: -20,
+      stage: 4,
+    },
+    {
+      left: 78,
+      height: "64vh",
+      color: "#ff83ca",
+      size: 70,
+      delay: 0.1,
+      curve: -4,
+      flowerTop: -18,
+      stage: 4,
+    },
 
-  return (
-    <div className="min-h-screen">
-      {currentPage !== "garden" && (
-        <StarryBackground />
-      )}
-
-      {showMusicPlayer && (
-        <MusicPlayer
-          musicPlaying={musicPlaying}
-          setMusicPlaying={setMusicPlaying}
-        />
-      )}
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentPage}
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={pageTransition}
-          className="relative z-10"
-        >
-          <CurrentComponent
-            setCurrentPage={setCurrentPage}
-            setMusicPlaying={setMusicPlaying}
-            setShowMusicPlayer={
-              setShowMusicPlayer
-            }
-            musicPlaying={musicPlaying}
-          />
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  )
-}
+    {
+      left: 2,
+      height: "78vh",
+      color: "#70b8ff",
+      size: 78,
+      delay: 0,
+      curve: -5,
+      flowerTop: -22,
+      stage: 5,
+    },
+    {
+      left: 30,
+      height: "82vh",
+      color: "#ff72b9",
+      size: 86,
+      delay: 0.15,
+      curve: 4,
+      flowerTop: -23,
+      stage: 5,
+    },
+    {
+      left: 54,
+      height: "76vh",
+      color: "#ff9d52",
+      size: 82,
+      delay: 0.3,
+      curve: -3,
+      flowerTop: -22,
+      stage: 5,
+    },
+    {
+      left: 72,
+      height: "84vh",
+      color: "#9c7aff",
+      size: 88,
+      delay: 0.15,
+      curve: 5,
+      flowerTop: -24,
+      stage: 5,
+    },
+    {
+      left: 96,
+      height: "78vh",
+      color: "#
