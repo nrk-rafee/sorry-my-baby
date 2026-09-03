@@ -628,6 +628,95 @@ function GardenFireflies() {
 
 
 /* =========================================================
+   📸 DRONE PHOTO REVEAL & PARTICLES
+========================================================= */
+
+function PhotoReveal() {
+  // Particle configuration for magic light effect
+  const particles = Array.from({ length: 22 }, (_, i) => ({
+    id: i,
+    x: (Math.random() - 0.5) * 220,
+    y: (Math.random() - 0.5) * 220,
+    size: Math.random() * 5 + 2,
+    delay: Math.random() * 0.8,
+  }))
+
+  return (
+    <motion.div
+      className="absolute top-[18%] md:top-[16%] left-1/2 z-40 -translate-x-1/2 pointer-events-none flex flex-col items-center"
+      initial={{ opacity: 0, scale: 0.3, y: -20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 1.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {/* Light Particles aggregating into photo */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full bg-[#bffff0]"
+            style={{
+              width: p.size,
+              height: p.size,
+              boxShadow: "0 0 10px #35e6ce, 0 0 20px #ffffff",
+            }}
+            initial={{ x: p.x, y: p.y, opacity: 0, scale: 0 }}
+            animate={{
+              x: [p.x, 0],
+              y: [p.y, 0],
+              opacity: [0, 1, 0],
+              scale: [0.5, 1.5, 0],
+            }}
+            transition={{
+              duration: 2.2,
+              delay: p.delay,
+              repeat: Infinity,
+              repeatDelay: 1.5,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Drone Shot Frame with Glow & Rotation Fix */}
+      <motion.div
+        className="relative overflow-hidden rounded-2xl p-[3px] shadow-[0_0_35px_rgba(36,255,220,0.5)]"
+        style={{
+          background: "linear-gradient(135deg, rgba(184,255,241,0.8), rgba(53,230,206,0.3), rgba(7,141,135,0.8))",
+        }}
+        animate={{
+          scale: [0.98, 1.03, 0.98],
+          y: [-4, 4, -4],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <div className="relative w-[190px] h-[250px] md:w-[230px] md:h-[300px] overflow-hidden rounded-[13px] bg-black/40">
+          <img
+            src="/images/file_000000008c448211b1c41b31f3d0250b.png"
+            alt="Special Memory"
+            className="w-full h-full object-cover rounded-[13px]"
+            style={{
+              transform: "rotate(90deg) scale(1.35)", // Rotates image upright & fills container perfectly
+            }}
+          />
+          {/* Subtle light sheen overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "linear-gradient(125deg, rgba(255,255,255,0.2) 0%, transparent 50%, rgba(36,255,220,0.15) 100%)",
+            }}
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+
+/* =========================================================
    🌌 GARDEN PAGE
 ========================================================= */
 
@@ -679,6 +768,15 @@ function GardenPage() {
             "radial-gradient(ellipse at 50% 100%,rgba(8,120,105,.25),transparent 62%)",
         }}
       />
+
+
+      {/* =================================================
+          📸 DRONE PHOTO REVEAL (WHEN FULLY BLOOMED)
+      ================================================= */}
+
+      <AnimatePresence>
+        {growth >= 5 && <PhotoReveal />}
+      </AnimatePresence>
 
 
       {/* =================================================
