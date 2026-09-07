@@ -26,6 +26,9 @@ const pages = {
 export default function Home() {
   const [currentPage, setCurrentPage] = useState("opening")
 
+  const [musicPlaying, setMusicPlaying] = useState(false)
+  const [showMusicPlayer, setShowMusicPlayer] = useState(true)
+
   const CurrentPage = pages[currentPage]
 
   const isGarden = currentPage === "garden"
@@ -57,11 +60,20 @@ export default function Home() {
         >
           <CurrentPage
             setCurrentPage={setCurrentPage}
+            musicPlaying={musicPlaying}
+            setMusicPlaying={setMusicPlaying}
+            showMusicPlayer={showMusicPlayer}
+            setShowMusicPlayer={setShowMusicPlayer}
           />
         </motion.div>
       </AnimatePresence>
 
-      {!isGarden && <MusicPlayer />}
+      {!isGarden && showMusicPlayer && (
+        <MusicPlayer
+          musicPlaying={musicPlaying}
+          setMusicPlaying={setMusicPlaying}
+        />
+      )}
     </main>
   )
 }
