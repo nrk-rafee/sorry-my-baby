@@ -1371,6 +1371,321 @@ function GardenPage() {
               "0 0 8px rgba(255,120,210,.2)",
             ],
           }}
-          transition={{
+                    transition={{
             duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          Tap anywhere and
+          <br />
+          let the garden bloom 🌱✨
+        </motion.h1>
+
+        <motion.p
+          className="mt-3 text-sm md:text-base text-purple-200/80"
+          animate={{
+            opacity: [0.45, 1, 0.45],
+          }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+          }}
+        >
+          {growth < 5
+            ? `${5 - growth} little touches left… 🦋`
+            : "Your little magical garden is complete ✨🌸"}
+        </motion.p>
+      </motion.div>
+
+      {/* 🌱 GARDEN GROUND GLOW */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[34vh] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center bottom,rgba(50,180,100,.2),transparent 65%)",
+        }}
+      />
+
+      {/* 🌱 PLANTS */}
+      <AnimatePresence>
+        {plants
+          .filter((plant) => growth >= plant.stage)
+          .map((plant) => (
+            <Plant
+              key={`${plant.left}-${plant.stage}`}
+              left={plant.left}
+              height={plant.height}
+              flowerColor={plant.color}
+              flowerSize={plant.size}
+              delay={plant.delay}
+              curve={plant.curve}
+              flowerTop={plant.flowerTop}
+            />
+          ))}
+      </AnimatePresence>
+
+      {/* 🌿 VINES */}
+      {growth >= 2 && (
+        <AnimatePresence>
+          {vines
+            .slice(
+              0,
+              growth >= 4
+                ? 4
+                : growth >= 3
+                  ? 3
+                  : 2
+            )
+            .map((vine, i) => (
+              <Vine
+                key={i}
+                left={vine.left}
+                height={vine.height}
+                delay={vine.delay}
+                flip={vine.flip}
+              />
+            ))}
+        </AnimatePresence>
+      )}
+
+      {/* 🍃 LOW GRASS / GROUND COVER */}
+      {growth >= 3 && (
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[18vh] pointer-events-none"
+          initial={{
+            opacity: 0,
+            scaleY: 0,
+          }}
+          animate={{
+            opacity: 1,
+            scaleY: 1,
+          }}
+          transition={{
+            duration: 1.5,
+          }}
+          style={{
+            transformOrigin: "bottom",
+            background:
+              "radial-gradient(ellipse at bottom,rgba(38,125,68,.7),transparent 68%)",
+          }}
+        >
+          <div className="absolute bottom-2 left-[5%] text-4xl">
+            🍃
+          </div>
+
+          <div className="absolute bottom-1 left-[18%] text-3xl">
+            🌿
+          </div>
+
+          <div className="absolute bottom-0 left-[35%] text-4xl">
+            🍃
+          </div>
+
+          <div className="absolute bottom-2 left-[58%] text-3xl">
+            🌿
+          </div>
+
+          <div className="absolute bottom-1 left-[76%] text-4xl">
+            🍃
+          </div>
+
+          <div className="absolute bottom-0 right-[3%] text-3xl">
+            🌿
+          </div>
+        </motion.div>
+      )}
+
+      {/* ✨ GROUND SPARKLES */}
+      {growth >= 4 && (
+        <>
+          {[12, 23, 38, 51, 67, 82, 93].map(
+            (left, i) => (
+              <motion.div
+                key={i}
+                className="absolute bottom-[15%] pointer-events-none text-lg"
+                style={{
+                  left: `${left}%`,
+                }}
+                animate={{
+                  y: [0, -20, 0],
+                  opacity: [0.2, 1, 0.2],
+                  scale: [0.7, 1.2, 0.7],
+                }}
+                transition={{
+                  duration: 2 + (i % 3),
+                  delay: i * 0.25,
+                  repeat: Infinity,
+                }}
+              >
+                ✨
+              </motion.div>
+            )
+          )}
+        </>
+      )}
+
+      {/* 📸 DRONE LIGHT PHOTO */}
+      {growth >= 5 && (
+        <AnimatePresence>
+          <DronePortrait />
+        </AnimatePresence>
+      )}
+
+      {/* 💗 TOUCH MESSAGE */}
+      <AnimatePresence>
+        {growth === 0 && (
+          <motion.div
+            className="absolute bottom-10 left-0 right-0 z-50 text-center pointer-events-none px-5"
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: 20,
+            }}
+          >
+            <p className="text-pink-200 text-lg">
+              Touch anywhere… 🌱
+            </p>
+
+            <p className="text-purple-200/70 text-sm mt-2">
+              Watch something beautiful grow ✨
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🌸 FINISHED MESSAGE */}
+      <AnimatePresence>
+        {growth >= 5 && (
+          <motion.div
+            className="absolute bottom-8 left-0 right-0 z-50 text-center pointer-events-none px-5"
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 1,
+            }}
+          >
+            <motion.p
+              className="text-pink-200 text-lg md:text-xl"
+              animate={{
+                opacity: [0.7, 1, 0.7],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+              }}
+            >
+              And just like that… your little garden bloomed 🌸🦋
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+/* =========================================================
+   🏠 HOME
+========================================================= */
+
+export default function Home() {
+  const [currentPage, setCurrentPage] =
+    useState("opening")
+
+  const [musicPlaying, setMusicPlaying] =
+    useState(false)
+
+  const [showMusicPlayer, setShowMusicPlayer] =
+    useState(false)
+
+  const pages = {
+    opening: OpeningPage,
+    diary: DiaryPage,
+    apology: ApologyPage,
+    letter: LetterPage,
+    hug: HugPage,
+    gift: GiftPage,
+    garden: GardenPage,
+  }
+
+  const CurrentComponent =
+    pages[currentPage]
+
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      y: 30,
+      scale: 0.97,
+    },
+
+    in: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+    },
+
+    out: {
+      opacity: 0,
+      y: -30,
+      scale: 1.02,
+    },
+  }
+
+  const pageTransition = {
+    type: "tween",
+    ease: [0.25, 0.46, 0.45, 0.94],
+    duration: 0.6,
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden">
+
+      {/* Background */}
+      {currentPage !== "garden" && (
+        <StarryBackground />
+      )}
+
+      {/* Music */}
+      {showMusicPlayer && (
+        <MusicPlayer
+          musicPlaying={musicPlaying}
+          setMusicPlaying={setMusicPlaying}
+        />
+      )}
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          transition={pageTransition}
+          className="relative z-10"
+        >
+          <CurrentComponent
+            setCurrentPage={setCurrentPage}
+            setMusicPlaying={setMusicPlaying}
+            setShowMusicPlayer={setShowMusicPlayer}
+            musicPlaying={musicPlaying}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+    </div>
+  )
+}
            
