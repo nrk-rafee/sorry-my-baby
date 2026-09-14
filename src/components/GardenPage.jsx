@@ -1,71 +1,59 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { motion } from "framer-motion"
-import "./flower-animation.css"
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import "./flower-animation.css";
 
-const stars = [
-  [5, 10],
-  [12, 22],
-  [18, 8],
-  [25, 18],
-  [33, 7],
-  [41, 14],
-  [49, 6],
-  [57, 20],
-  [65, 9],
-  [73, 17],
-  [82, 7],
-  [90, 23],
-  [96, 11],
-  [8, 38],
-  [21, 31],
-  [31, 43],
-  [45, 35],
-  [60, 40],
-  [76, 34],
-  [88, 42],
-]
+/* =========================
+   STARS
+========================= */
 
-/* =========================================================
-   FLOWER DATA
-   ========================================================= */
+const stars = Array.from({ length: 75 }, (_, i) => ({
+  id: i,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 72}%`,
+  size: Math.random() > 0.9 ? 3 : Math.random() > 0.6 ? 2 : 1,
+  delay: `${Math.random() * 4}s`,
+}));
+
+/* =========================
+   FLOWERS
+========================= */
 
 const flowers = [
   {
-    left: "39%",
-    scale: "0.78",
-    delay: "0.15s",
+    left: "38%",
+    scale: "0.82",
+    delay: "0.25s",
     className: "flower--1",
   },
   {
     left: "50%",
-    scale: "0.95",
+    scale: "1",
     delay: "0s",
     className: "flower--2",
   },
   {
-    left: "61%",
-    scale: "0.78",
-    delay: "0.3s",
+    left: "62%",
+    scale: "0.82",
+    delay: "0.45s",
     className: "flower--3",
   },
   {
-    left: "70%",
-    scale: "0.62",
-    delay: "0.55s",
+    left: "71%",
+    scale: "0.68",
+    delay: "0.7s",
     className: "flower--4",
   },
-]
+];
 
-/* =========================================================
-   ONE VIDEO-STYLE FLOWER
-   ========================================================= */
+/* =========================
+   FLOWER COMPONENT
+========================= */
 
 function Flower({ className }) {
   return (
     <div className={`flower ${className}`}>
-      {/* FLOWER HEAD */}
       <div className="flower__leafs">
         <div className="flower__leaf flower__leaf--1" />
         <div className="flower__leaf flower__leaf--2" />
@@ -84,7 +72,6 @@ function Flower({ className }) {
         <div className="flower__light flower__light--8" />
       </div>
 
-      {/* STEM */}
       <div className="flower__line">
         <div className="flower__line__leaf flower__line__leaf--1" />
         <div className="flower__line__leaf flower__line__leaf--2" />
@@ -94,25 +81,32 @@ function Flower({ className }) {
         <div className="flower__line__leaf flower__line__leaf--6" />
       </div>
     </div>
-  )
+  );
 }
 
-/* =========================================================
-   LONG FLOWER / GRASS
-   ========================================================= */
+/* =========================
+   LONG FLOWER
+========================= */
 
 function LongFlower() {
   return (
-    <div className="flower__g-long grow-ans">
-      <div className="flower__g-long__top" />
-      <div className="flower__g-long__bottom" />
+    <div
+      className="grow-ans"
+      style={{ "--d": "1.2s" }}
+    >
+      <div className="flower__g-long">
+        <div className="flower__g-long__top" />
+        <div className="flower__g-long__bottom" />
+      </div>
     </div>
-  )
+  );
 }
 
-function GrowingGrass() {
-  const leaves = Array.from({ length: 8 }, (_, i) => i + 1)
+/* =========================
+   GRASS
+========================= */
 
+function GrowingGrass() {
   return (
     <>
       <div className="growing-grass">
@@ -120,98 +114,128 @@ function GrowingGrass() {
           <div className="flower__grass--top" />
           <div className="flower__grass--bottom" />
 
-          {leaves.map((i) => (
-            <div
-              key={i}
-              className={`flower__grass__leaf flower__grass__leaf--${i}`}
-            />
-          ))}
-
-          <div className="flower__grass__overlay" />
+          <div className="flower__grass__leaf flower__grass__leaf--1" />
+          <div className="flower__grass__leaf flower__grass__leaf--2" />
+          <div className="flower__grass__leaf flower__grass__leaf--3" />
+          <div className="flower__grass__leaf flower__grass__leaf--4" />
+          <div className="flower__grass__leaf flower__grass__leaf--5" />
+          <div className="flower__grass__leaf flower__grass__leaf--6" />
         </div>
+      </div>
 
+      <div className="growing-grass">
         <div className="flower__grass flower__grass--2">
           <div className="flower__grass--top" />
           <div className="flower__grass--bottom" />
 
-          {leaves.map((i) => (
-            <div
-              key={i}
-              className={`flower__grass__leaf flower__grass__leaf--${i}`}
-            />
-          ))}
-
-          <div className="flower__grass__overlay" />
+          <div className="flower__grass__leaf flower__grass__leaf--1" />
+          <div className="flower__grass__leaf flower__grass__leaf--2" />
+          <div className="flower__grass__leaf flower__grass__leaf--3" />
+          <div className="flower__grass__leaf flower__grass__leaf--4" />
+          <div className="flower__grass__leaf flower__grass__leaf--5" />
+          <div className="flower__grass__leaf flower__grass__leaf--6" />
         </div>
       </div>
     </>
-  )
+  );
 }
 
-/* =========================================================
-   BACKGROUND FOLIAGE
-   ========================================================= */
+/* =========================
+   RIGHT FOLIAGE
+========================= */
 
 function RightFoliage() {
   return (
-    <div className="flower__g-right">
-      <div className="leaf flower__g-right--1" />
-      <div className="leaf flower__g-right--2" />
-    </div>
-  )
+    <>
+      <div
+        className="grow-ans"
+        style={{ "--d": "2.4s" }}
+      >
+        <div className="flower__g-right flower__g-right--1">
+          <div className="leaf" />
+        </div>
+      </div>
+
+      <div
+        className="grow-ans"
+        style={{ "--d": "2.8s" }}
+      >
+        <div className="flower__g-right flower__g-right--2">
+          <div className="leaf" />
+        </div>
+      </div>
+    </>
+  );
 }
+
+/* =========================
+   FRONT FOLIAGE
+========================= */
 
 function FrontFoliage() {
   return (
-    <div className="flower__g-front">
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
-      </div>
-
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
-      </div>
-
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
-      </div>
-
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
-      </div>
-
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
-      </div>
-
-      <div className="flower__g-front__leaf-wrapper">
-        <div className="flower__g-front__leaf" />
+    <div
+      className="grow-ans"
+      style={{ "--d": "2.8s" }}
+    >
+      <div className="flower__g-front">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div
+            className="flower__g-front__leaf-wrapper"
+            key={index}
+            style={{
+              left: `${index * 2.5}vmin`,
+              top: `${(index % 3) * 4}vmin`,
+              transform:
+                index % 2 === 0
+                  ? "rotate(12deg)"
+                  : "rotateY(-180deg) rotate(5deg)",
+            }}
+          >
+            <div className="flower__g-front__leaf" />
+          </div>
+        ))}
       </div>
     </div>
-  )
+  );
 }
+
+/* =========================
+   FRONT BRANCH
+========================= */
 
 function FrontBranch() {
   return (
-    <div className="flower__g-fr">
-      <div className="leaf" />
+    <div
+      className="grow-ans"
+      style={{ "--d": "3.2s" }}
+    >
+      <div className="flower__g-fr">
+        <div className="leaf" />
 
-      <div className="flower__g-fr__leaf flower__g-fr__leaf--1" />
-      <div className="flower__g-fr__leaf flower__g-fr__leaf--2" />
-      <div className="flower__g-fr__leaf flower__g-fr__leaf--3" />
-      <div className="flower__g-fr__leaf flower__g-fr__leaf--4" />
-      <div className="flower__g-fr__leaf flower__g-fr__leaf--5" />
+        <div className="flower__g-fr__leaf flower__g-fr__leaf--1" />
+        <div className="flower__g-fr__leaf flower__g-fr__leaf--2" />
+        <div className="flower__g-fr__leaf flower__g-fr__leaf--3" />
+        <div className="flower__g-fr__leaf flower__g-fr__leaf--4" />
+        <div className="flower__g-fr__leaf flower__g-fr__leaf--5" />
+      </div>
     </div>
-  )
+  );
 }
 
+/* =========================
+   LONG GRASS
+========================= */
+
 function LongGrass() {
+  const groups = Array.from({ length: 8 });
+
   return (
     <>
-      {Array.from({ length: 8 }, (_, index) => (
+      {groups.map((_, index) => (
         <div
-          key={index}
           className={`long-g long-g--${index}`}
+          key={index}
         >
           <div className="leaf leaf--0" />
           <div className="leaf leaf--1" />
@@ -220,21 +244,23 @@ function LongGrass() {
         </div>
       ))}
     </>
-  )
+  );
 }
 
-/* =========================================================
-   COMPLETE FLOWER SCENE
-   ========================================================= */
+/* =========================
+   FLOWER SCENE
+========================= */
 
 function FlowerScene() {
+  const grass = Array.from({ length: 34 });
+
   return (
     <div className="video-flower-stage">
       <div className="flowers">
         {flowers.map((flower) => (
           <div
-            key={flower.className}
             className="flower-wrap"
+            key={flower.className}
             style={{
               "--flower-left": flower.left,
               "--flower-scale": flower.scale,
@@ -245,10 +271,7 @@ function FlowerScene() {
           </div>
         ))}
 
-        {/* BACK / SIDE FOLIAGE */}
         <LongFlower />
-        <LongFlower />
-
         <GrowingGrass />
         <RightFoliage />
         <FrontFoliage />
@@ -256,16 +279,18 @@ function FlowerScene() {
         <LongGrass />
       </div>
 
-      {/* FRONT GRASS */}
       <div className="video-grass">
-        {Array.from({ length: 30 }, (_, index) => (
-          <span
-            key={index}
+        {grass.map((_, index) => (
+          <div
             className="video-grass__blade"
+            key={index}
             style={{
-              left: `${(index / 29) * 100}%`,
-              height: `${28 + (index % 5) * 7}px`,
-              transform: `rotate(${(index % 5) - 2}deg)`,
+              left: `${index * 3.05 + Math.random() * 1.4}%`,
+              height: `${5 + Math.random() * 9}vmin`,
+              animationDelay: `${Math.random() * 2}s`,
+              transform: `rotate(${
+                -8 + Math.random() * 16
+              }deg)`,
             }}
           />
         ))}
@@ -273,250 +298,245 @@ function FlowerScene() {
 
       <div className="video-ground-glow" />
     </div>
-  )
+  );
 }
 
-/* =========================================================
-   FIREFLIES
-   ========================================================= */
+/* =========================
+   BIRD SOUND
+========================= */
 
-function Fireflies() {
-  const lights = [
-    [13, 35],
-    [22, 53],
-    [31, 28],
-    [69, 34],
-    [78, 50],
-    [88, 30],
-    [16, 67],
-    [84, 66],
-  ]
+function playBirdChirp(audioRef) {
+  try {
+    const ctx = audioRef.current;
 
-  return (
-    <>
-      {lights.map(([left, top], index) => (
-        <motion.div
-          key={index}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            left: `${left}%`,
-            top: `${top}%`,
-            width: 3,
-            height: 3,
-            background: "#b9fff0",
-            boxShadow: "0 0 12px 4px rgba(110,255,220,.55)",
-          }}
-          animate={{
-            opacity: [0.15, 1, 0.2],
-            scale: [0.7, 1.5, 0.7],
-            y: [-5, 5, -5],
-          }}
-          transition={{
-            duration: 2.5 + (index % 3) * 0.5,
-            delay: (index % 4) * 0.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </>
-  )
+    if (!ctx || ctx.state === "closed") {
+      return;
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+
+    const notes = [
+      { frequency: 1200, start: 0, duration: 0.11 },
+      { frequency: 1650, start: 0.12, duration: 0.1 },
+      { frequency: 1350, start: 0.24, duration: 0.14 },
+    ];
+
+    notes.forEach((note) => {
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        note.frequency,
+        now + note.start
+      );
+
+      oscillator.frequency.exponentialRampToValueAtTime(
+        note.frequency * 1.12,
+        now + note.start + note.duration
+      );
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now + note.start
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.055,
+        now + note.start + 0.025
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + note.start + note.duration
+      );
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+      oscillator.start(now + note.start);
+      oscillator.stop(
+        now + note.start + note.duration + 0.02
+      );
+    });
+  } catch {
+    /* audio failure should never break the garden */
+  }
 }
 
-/* =========================================================
-   BIRDS + BUTTERFLIES
-   ========================================================= */
+/* =========================
+   SKY
+========================= */
 
-function SkyCreatures({ active }) {
-  const [bird, setBird] = useState(0)
-  const audioRef = useRef(null)
+function SkyCreatures({ active, audioRef }) {
+  const [bird, setBird] = useState(0);
 
   useEffect(() => {
-    if (!active) return
+    if (!active) return;
 
-    /*
-      Bird sound is generated locally with Web Audio.
-      No audio file / external URL needed.
-    */
-    const playBirdCall = () => {
-      try {
-        const AudioContext =
-          window.AudioContext || window.webkitAudioContext
+    let mounted = true;
 
-        if (!AudioContext) return
+    const firstTimer = setTimeout(() => {
+      if (!mounted) return;
 
-        if (!audioRef.current) {
-          audioRef.current = new AudioContext()
-        }
-
-        const ctx = audioRef.current
-
-        if (ctx.state === "suspended") {
-          ctx.resume()
-        }
-
-        const now = ctx.currentTime
-
-        const notes = [1100, 1450, 1180]
-
-        notes.forEach((frequency, index) => {
-          const oscillator = ctx.createOscillator()
-          const gain = ctx.createGain()
-
-          oscillator.type = "sine"
-          oscillator.frequency.setValueAtTime(
-            frequency,
-            now + index * 0.11
-          )
-
-          gain.gain.setValueAtTime(
-            0.0001,
-            now + index * 0.11
-          )
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.045,
-            now + index * 0.11 + 0.025
-          )
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            now + index * 0.11 + 0.13
-          )
-
-          oscillator.connect(gain)
-          gain.connect(ctx.destination)
-
-          oscillator.start(now + index * 0.11)
-          oscillator.stop(now + index * 0.11 + 0.15)
-        })
-      } catch {
-        // Audio is optional; visual animation continues.
-      }
-    }
+      setBird((value) => value + 1);
+      playBirdChirp(audioRef);
+    }, 1200);
 
     const interval = setInterval(() => {
-      setBird((value) => value + 1)
-      playBirdCall()
-    }, 1700)
+      if (!mounted) return;
+
+      setBird((value) => value + 1);
+      playBirdChirp(audioRef);
+    }, 5600);
 
     return () => {
-      clearInterval(interval)
-    }
-  }, [active])
-
-  if (!active) return null
+      mounted = false;
+      clearTimeout(firstTimer);
+      clearInterval(interval);
+    };
+  }, [active, audioRef]);
 
   return (
     <>
+      {active && (
+        <div
+          key={`bird-${bird}`}
+          className="garden-bird"
+          style={{
+            "--bird-top": `${16 + (bird % 4) * 4}%`,
+          }}
+          aria-hidden="true"
+        >
+          🕊️
+        </div>
+      )}
+
       <div
-        key={`bird-${bird}`}
-        className="garden-bird"
+        className="garden-butterfly garden-butterfly--1"
         aria-hidden="true"
       >
-        🕊️
-      </div>
-
-      <div className="garden-butterfly garden-butterfly--1">
         🦋
       </div>
 
-      <div className="garden-butterfly garden-butterfly--2">
+      <div
+        className="garden-butterfly garden-butterfly--2"
+        aria-hidden="true"
+      >
         🦋
       </div>
     </>
-  )
+  );
 }
 
-/* =========================================================
+/* =========================
    MAIN PAGE
-   ========================================================= */
+========================= */
 
 export default function GardenPage() {
-  const [bloomed, setBloomed] = useState(false)
+  const [bloomed, setBloomed] = useState(false);
+
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (
+        audioRef.current &&
+        audioRef.current.state !== "closed"
+      ) {
+        audioRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
 
   const handleBloom = () => {
-    if (!bloomed) {
-      setBloomed(true)
+    if (bloomed) return;
+
+    /*
+      Create AudioContext from the user's tap.
+      This is important for mobile browser autoplay rules.
+    */
+    try {
+      const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (AudioContextClass) {
+        const ctx = new AudioContextClass();
+        audioRef.current = ctx;
+
+        if (ctx.state === "suspended") {
+          ctx.resume().catch(() => {});
+        }
+      }
+    } catch {
+      audioRef.current = null;
     }
-  }
+
+    setBloomed(true);
+  };
 
   return (
     <main
+      className="relative min-h-screen overflow-hidden bg-[#020b18] text-white"
       onPointerDown={handleBloom}
-      className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none video-garden"
-      style={{
-        background: `
-          radial-gradient(
-            circle at 50% 62%,
-            rgba(20,105,110,.25),
-            transparent 32%
-          ),
-          radial-gradient(
-            circle at 50% 100%,
-            rgba(10,75,65,.35),
-            transparent 55%
-          ),
-          linear-gradient(
-            to bottom,
-            #020718 0%,
-            #061326 48%,
-            #071d2a 75%,
-            #020b12 100%
-          )
-        `,
-      }}
     >
-      {/* STARS */}
-      <div className="absolute inset-0 pointer-events-none">
-        {stars.map(([left, top], index) => (
-          <motion.div
-            key={index}
+      {/* =========================
+          SKY BACKGROUND
+      ========================= */}
+
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_85%,rgba(12,112,130,.32),transparent_48%),linear-gradient(to_bottom,#020617,#031426_60%,#04252d)]" />
+
+      {/* =========================
+          STARS
+      ========================= */}
+
+      <div className="absolute inset-0 z-[2] pointer-events-none">
+        {stars.map((star) => (
+          <span
+            key={star.id}
             className="absolute rounded-full bg-white"
             style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: index % 4 === 0 ? 3 : 2,
-              height: index % 4 === 0 ? 3 : 2,
-            }}
-            animate={{
-              opacity: [0.2, 0.9, 0.2],
-              scale: [0.7, 1.3, 0.7],
-            }}
-            transition={{
-              duration: 2.5 + (index % 4),
-              delay: (index % 5) * 0.4,
-              repeat: Infinity,
-              ease: "easeInOut",
+              left: star.left,
+              top: star.top,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              opacity: 0.35 + Math.random() * 0.55,
+              boxShadow:
+                star.size > 2
+                  ? "0 0 8px rgba(255,255,255,.65)"
+                  : "none",
+              animation:
+                `twinkle 3s ${star.delay} ease-in-out infinite`,
             }}
           />
         ))}
       </div>
 
-      {/* MOON */}
-      <motion.div
-        className="absolute top-[13%] right-[10%] w-12 h-12 rounded-full pointer-events-none"
+      {/* =========================
+          MOON
+      ========================= */}
+
+      <div
+        className="absolute z-[4] right-[14%] top-[15%] h-[72px] w-[72px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 35% 35%,#ffffff,#d9ffff 55%,#7ab7c5)",
-          boxShadow: "0 0 35px rgba(160,240,255,.45)",
-        }}
-        animate={{
-          opacity: [0.75, 1, 0.75],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
+            "radial-gradient(circle at 35% 30%, #fff, #dffcff 48%, #b5e7ed)",
+          boxShadow:
+            "0 0 25px rgba(190,245,255,.65), 0 0 70px rgba(90,220,240,.18)",
         }}
       />
 
-      {/* FIREFLIES */}
-      <Fireflies />
+      {/* =========================
+          TITLE
+      ========================= */}
 
-      {/* TITLE */}
-      <motion.div
-        className="absolute top-8 left-0 right-0 z-50 text-center px-5 pointer-events-none"
+      <motion.h1
         initial={{
           opacity: 0,
           y: -15,
@@ -526,94 +546,149 @@ export default function GardenPage() {
           y: 0,
         }}
         transition={{
-          duration: 1,
+          duration: 1.2,
+        }}
+        className="absolute z-[200] top-[4%] left-0 right-0 text-center text-3xl md:text-5xl italic tracking-wide text-cyan-200"
+        style={{
+          textShadow:
+            "0 0 12px rgba(90,240,255,.65)",
         }}
       >
-        <h1
-          className="text-2xl md:text-4xl font-medium"
-          style={{
-            color: "#baf9f3",
-            textShadow: "0 0 12px rgba(80,230,220,.45)",
-          }}
-        >
-          A LITTLE GARDEN
-        </h1>
+        A LITTLE GARDEN
+      </motion.h1>
 
-        {!bloomed && (
-          <motion.p
-            className="mt-3 text-sm md:text-base"
+      {/* =========================
+          FLOWERS
+      ========================= */}
+
+      {bloomed && <FlowerScene />}
+
+      {/* =========================
+          BIRDS + BUTTERFLIES
+      ========================= */}
+
+      <SkyCreatures
+        active={bloomed}
+        audioRef={audioRef}
+      />
+
+      {/* =========================
+          FIREFLIES
+      ========================= */}
+
+      <div className="absolute inset-0 z-[8] pointer-events-none">
+        {Array.from({ length: 22 }).map((_, index) => (
+          <span
+            key={index}
+            className="absolute h-1.5 w-1.5 rounded-full bg-cyan-200"
             style={{
-              color: "rgba(210,255,250,.75)",
+              left: `${5 + Math.random() * 90}%`,
+              top: `${42 + Math.random() * 42}%`,
+              boxShadow:
+                "0 0 10px rgba(90,255,240,.9)",
+              animation:
+                `firefly 4s ${Math.random() * 3}s ease-in-out infinite`,
             }}
-            animate={{
-              opacity: [0.45, 1, 0.45],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-          >
-            Tap anywhere and let the garden bloom 🌱✨
-          </motion.p>
-        )}
-      </motion.div>
+          />
+        ))}
+      </div>
 
-      {/* =====================================================
-          FLOWER SCENE
-          ===================================================== */}
+      {/* =========================
+          MEMORY TEXT
+      ========================= */}
 
-      {bloomed && (
-        <>
-          <FlowerScene />
-
-          <SkyCreatures active={bloomed} />
-
-          {/* MEMORY TEXT */}
-          <motion.p
-            className="absolute bottom-24 left-0 right-0 z-[200] text-center px-6 pointer-events-none"
-            style={{
-              color: "rgba(210,255,250,.72)",
-            }}
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 2.2,
-              duration: 1,
-            }}
-          >
-            Every flower here is a memory worth cherishing.
-          </motion.p>
-        </>
-      )}
-
-      {/* FOOTER */}
-      <motion.div
-        className="absolute bottom-5 left-0 right-0 z-[250] text-center pointer-events-none"
+      <motion.p
         initial={{
           opacity: 0,
         }}
         animate={{
-          opacity: 1,
+          opacity: bloomed ? 1 : 0,
         }}
         transition={{
-          delay: 0.8,
+          delay: 2,
+          duration: 1.5,
+        }}
+        className="absolute z-[210] bottom-[12%] left-0 right-0 px-6 text-center text-lg md:text-2xl italic text-white/85"
+        style={{
+          textShadow:
+            "0 0 10px rgba(0,0,0,.9)",
         }}
       >
-        <span
-          className="text-xs md:text-sm"
-          style={{
-            color: "rgba(180,245,235,.5)",
-          }}
-        >
-          A little garden, made with a little touch. 🌸
-        </span>
+        Every flower here is a memory worth cherishing.
+      </motion.p>
+
+      {/* =========================
+          FOOTER
+      ========================= */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: bloomed ? 0.7 : 0,
+        }}
+        transition={{
+          delay: 3,
+          duration: 1.5,
+        }}
+        className="absolute z-[220] bottom-[3%] left-0 right-0 text-center text-xs md:text-sm italic text-white/60"
+      >
+        A little garden made with a little touch. 🌸
       </motion.div>
+
+      {/* =========================
+          FIRST TAP HINT
+      ========================= */}
+
+      {!bloomed && (
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            delay: 1,
+          }}
+          className="absolute z-[300] bottom-[10%] left-0 right-0 text-center text-sm text-cyan-100/70"
+        >
+          Tap anywhere to grow the garden
+        </motion.div>
+      )}
+
+      <style jsx>{`
+        @keyframes twinkle {
+          0%,
+          100% {
+            opacity: 0.25;
+            transform: scale(0.8);
+          }
+
+          50% {
+            opacity: 1;
+            transform: scale(1.3);
+          }
+        }
+
+        @keyframes firefly {
+          0%,
+          100% {
+            opacity: 0.15;
+            transform: translate(0, 0) scale(0.7);
+          }
+
+          50% {
+            opacity: 1;
+            transform: translate(
+                10px,
+                -15px
+              )
+              scale(1.2);
+          }
+        }
+      `}</style>
     </main>
-  )
+  );
 }
