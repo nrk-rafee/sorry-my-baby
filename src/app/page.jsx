@@ -68,7 +68,8 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
 
-      {!isGarden && showMusicPlayer && (
+      {/* MusicPlayer stays mounted even on Garden page */}
+      {showMusicPlayer && (
         <MusicPlayer
           musicPlaying={musicPlaying}
           setMusicPlaying={setMusicPlaying}
