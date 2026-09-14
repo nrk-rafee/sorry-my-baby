@@ -46,138 +46,151 @@ const grass = [
   [96, -2],
 ]
 
+/* =========================================================
+   VIDEO STYLE FLOWERS
+   ========================================================= */
+
 const flowers = [
   {
     left: "39%",
-    size: 48,
+    size: 56,
     height: "31vh",
-    delay: 0.05,
-    rotate: -5,
+    delay: 0.35,
+    rotate: -4,
   },
   {
     left: "50%",
-    size: 58,
-    height: "37vh",
+    size: 70,
+    height: "39vh",
     delay: 0,
     rotate: 0,
   },
   {
     left: "61%",
-    size: 48,
+    size: 55,
     height: "30vh",
-    delay: 0.12,
-    rotate: 5,
+    delay: 0.55,
+    rotate: 4,
+  },
+  {
+    left: "69%",
+    size: 42,
+    height: "25vh",
+    delay: 0.85,
+    rotate: 6,
   },
 ]
 
-function Flower({ size = 50 }) {
+function VideoFlower({ size = 60, delay = 0 }) {
   const petals = [
-    { x: 0, y: -0.42, rotate: 0 },
-    { x: 0.32, y: -0.15, rotate: 72 },
-    { x: 0.2, y: 0.27, rotate: 144 },
-    { x: -0.2, y: 0.27, rotate: 216 },
-    { x: -0.32, y: -0.15, rotate: 288 },
+    {
+      className: "video-flower__leaf video-flower__leaf--1",
+      delay: delay + 0.15,
+    },
+    {
+      className: "video-flower__leaf video-flower__leaf--2",
+      delay: delay + 0.25,
+    },
+    {
+      className: "video-flower__leaf video-flower__leaf--3",
+      delay: delay + 0.35,
+    },
+    {
+      className: "video-flower__leaf video-flower__leaf--4",
+      delay: delay + 0.45,
+    },
+    {
+      className: "video-flower__leaf video-flower__leaf--5",
+      delay: delay + 0.55,
+    },
   ]
 
   return (
-    <motion.div
-      className="relative"
+    <div
+      className="video-flower"
       style={{
         width: size,
         height: size,
       }}
-      animate={{
-        rotate: [-2, 2, -2],
-      }}
-      transition={{
-        duration: 3.8,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
     >
-      {petals.map((petal, index) => (
-        <div
-          key={index}
-          className="absolute rounded-full"
-          style={{
-            width: size * 0.48,
-            height: size * 0.64,
-            left: `calc(50% + ${petal.x * size}px - ${
-              size * 0.24
-            }px)`,
-            top: `calc(50% + ${petal.y * size}px - ${
-              size * 0.32
-            }px)`,
-            background:
-              "linear-gradient(180deg, #42e8e0 0%, #16aeb4 100%)",
-            boxShadow:
-              "0 0 12px rgba(40,220,215,.45)",
-            transform: `rotate(${petal.rotate}deg)`,
-            transformOrigin: "50% 80%",
+      <div className="video-flower__leafs">
+        {petals.map((petal, index) => (
+          <motion.div
+            key={index}
+            className={petal.className}
+            initial={{
+              opacity: 0,
+              scale: 0,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.55,
+              delay: petal.delay,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          />
+        ))}
+
+        <motion.div
+          className="video-flower__white-circle"
+          initial={{
+            opacity: 0,
+            scale: 0,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          transition={{
+            duration: 0.5,
+            delay: delay + 0.7,
+            ease: "backOut",
           }}
         />
-      ))}
 
-      <div
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.25,
-          height: size * 0.25,
-          left: "37.5%",
-          top: "37.5%",
-          background:
-            "radial-gradient(circle at 35% 35%, #fff38a, #f4c928 70%)",
-          boxShadow:
-            "0 0 12px rgba(255,220,70,.7)",
-        }}
-      />
-    </motion.div>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <span
+            key={index}
+            className={`video-flower__light video-flower__light--${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 
-function Leaf({ side = "left", top = "55%" }) {
+function VideoLeaf({ side = "left", top = "55%", delay = 0 }) {
   return (
     <motion.div
-      className="absolute"
+      className={`video-plant-leaf video-plant-leaf--${side}`}
       style={{
         top,
-        [side]: side === "left" ? "-5px" : "-7px",
+      }}
+      initial={{
+        opacity: 0,
+        scale: 0,
+        rotate: side === "left" ? -20 : 20,
       }}
       animate={{
-        rotate:
-          side === "left"
-            ? [-8, -2, -8]
-            : [8, 2, 8],
+        opacity: 1,
+        scale: 1,
+        rotate: side === "left" ? -10 : 10,
       }}
       transition={{
-        duration: 3.5,
-        repeat: Infinity,
-        ease: "easeInOut",
+        duration: 0.7,
+        delay,
+        ease: "backOut",
       }}
     >
-      <div
-        style={{
-          width: 28,
-          height: 13,
-          borderRadius:
-            side === "left"
-              ? "100% 0 100% 0"
-              : "0 100% 0 100%",
-          background:
-            "linear-gradient(135deg,#32b77a,#15745a)",
-          transform:
-            side === "left"
-              ? "rotate(-18deg)"
-              : "rotate(18deg)",
-          boxShadow:
-            "0 0 7px rgba(40,190,130,.25)",
-        }}
-      />
+      <span />
     </motion.div>
   )
 }
 
-function FlowerPlant({
+function VideoFlowerPlant({
   left,
   height,
   size,
@@ -185,71 +198,52 @@ function FlowerPlant({
   rotate,
 }) {
   return (
-    <motion.div
-      className="absolute bottom-0"
+    <div
+      className="video-flower-plant"
       style={{
         left,
         height,
-        width: 100,
-        transform: "translateX(-50%)",
-        transformOrigin: "bottom center",
-      }}
-      initial={{
-        opacity: 0,
-        scaleY: 0,
-      }}
-      animate={{
-        opacity: 1,
-        scaleY: 1,
-      }}
-      transition={{
-        duration: 1.7,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
+        "--plant-rotate": `${rotate}deg`,
       }}
     >
-      {/* curved stem */}
+      {/* STEM */}
       <motion.div
-        className="absolute bottom-0 left-1/2"
-        style={{
-          width: 5,
-          height: "100%",
-          transform: `translateX(-50%) rotate(${rotate}deg)`,
-          transformOrigin: "bottom center",
-          borderRadius: 999,
-          background:
-            "linear-gradient(to top,#15513b,#23875e,#40c486)",
-          boxShadow:
-            "0 0 7px rgba(40,190,130,.25)",
+        className="video-flower__line"
+        initial={{
+          height: 0,
+          opacity: 0,
         }}
         animate={{
-          rotate: [
-            rotate - 1,
-            rotate + 1,
-            rotate - 1,
-          ],
+          height: "100%",
+          opacity: 1,
         }}
         transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
+          duration: 1.25,
+          delay,
+          ease: [0.22, 1, 0.36, 1],
         }}
       />
 
-      <Leaf side="left" top="54%" />
-      <Leaf side="right" top="67%" />
+      {/* LEAVES */}
+      <VideoLeaf
+        side="left"
+        top="48%"
+        delay={delay + 0.65}
+      />
 
-      {/* flower */}
+      <VideoLeaf
+        side="right"
+        top="67%"
+        delay={delay + 0.8}
+      />
+
+      {/* FLOWER HEAD */}
       <motion.div
-        className="absolute left-1/2"
-        style={{
-          top: -size * 0.45,
-          transform: "translateX(-50%)",
-        }}
+        className="video-flower-head"
         initial={{
           opacity: 0,
           scale: 0,
-          y: 10,
+          y: 18,
         }}
         animate={{
           opacity: 1,
@@ -259,39 +253,40 @@ function FlowerPlant({
         transition={{
           duration: 0.9,
           delay: delay + 0.95,
-          ease: "backOut",
+          ease: [0.22, 1, 0.36, 1],
         }}
       >
-        <Flower size={size} />
+        <VideoFlower
+          size={size}
+          delay={delay + 0.95}
+        />
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 
-function Grass() {
+function VideoGrass() {
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none">
+    <div className="video-grass">
       {grass.map(([left, tilt], index) => (
-        <motion.div
+        <motion.span
           key={index}
-          className="absolute bottom-0"
+          className="video-grass__blade"
           style={{
             left: `${left}%`,
-            width: 3,
-            height: 25 + (index % 3) * 8,
-            borderRadius: "100% 0 100% 0",
-            background:
-              "linear-gradient(to top,#104f3a,#35ad70)",
+            height: `${28 + (index % 4) * 9}px`,
             transform: `rotate(${tilt}deg)`,
-            transformOrigin: "bottom center",
+          }}
+          initial={{
+            scaleY: 0,
           }}
           animate={{
-            rotate: [tilt - 3, tilt + 3, tilt - 3],
+            scaleY: 1,
           }}
           transition={{
-            duration: 2.5 + (index % 3) * 0.4,
-            repeat: Infinity,
-            ease: "easeInOut",
+            duration: 0.7,
+            delay: 0.4 + index * 0.025,
+            ease: "easeOut",
           }}
         />
       ))}
@@ -353,204 +348,240 @@ export default function GardenPage() {
   }
 
   return (
-    <main
-      onPointerDown={handleBloom}
-      className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none"
-      style={{
-        background: `
-          radial-gradient(
-            circle at 50% 62%,
-            rgba(20,105,110,.25),
-            transparent 32%
-          ),
-          radial-gradient(
-            circle at 50% 100%,
-            rgba(10,75,65,.35),
-            transparent 55%
-          ),
-          linear-gradient(
-            to bottom,
-            #020718 0%,
-            #061326 48%,
-            #071d2a 75%,
-            #020b12 100%
-          )
-        `,
-      }}
-    >
-      {/* STARS */}
-      <div className="absolute inset-0 pointer-events-none">
-        {stars.map(([left, top], index) => (
-          <motion.div
-            key={index}
-            className="absolute rounded-full bg-white"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: index % 4 === 0 ? 3 : 2,
-              height: index % 4 === 0 ? 3 : 2,
-            }}
-            animate={{
-              opacity: [0.2, 0.9, 0.2],
-              scale: [0.7, 1.3, 0.7],
-            }}
-            transition={{
-              duration: 2.5 + (index % 4),
-              delay: (index % 5) * 0.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* MOON */}
-      <motion.div
-        className="absolute top-[13%] right-[10%] w-12 h-12 rounded-full pointer-events-none"
+    <>
+      <main
+        onPointerDown={handleBloom}
+        className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none video-garden"
         style={{
-          background:
-            "radial-gradient(circle at 35% 35%,#ffffff,#d9ffff 55%,#7ab7c5)",
-          boxShadow:
-            "0 0 35px rgba(160,240,255,.45)",
-        }}
-        animate={{
-          opacity: [0.75, 1, 0.75],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      <Fireflies />
-
-      {/* TITLE */}
-      <motion.div
-        className="absolute top-8 left-0 right-0 z-50 text-center px-5 pointer-events-none"
-        initial={{
-          opacity: 0,
-          y: -15,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 1,
+          background: `
+            radial-gradient(
+              circle at 50% 62%,
+              rgba(20,105,110,.25),
+              transparent 32%
+            ),
+            radial-gradient(
+              circle at 50% 100%,
+              rgba(10,75,65,.35),
+              transparent 55%
+            ),
+            linear-gradient(
+              to bottom,
+              #020718 0%,
+              #061326 48%,
+              #071d2a 75%,
+              #020b12 100%
+            )
+          `,
         }}
       >
-        <h1
-          className="text-2xl md:text-4xl font-medium"
-          style={{
-            color: "#baf9f3",
-            textShadow:
-              "0 0 12px rgba(80,230,220,.45)",
-          }}
-        >
-          A LITTLE GARDEN
-        </h1>
-
-        {!bloomed && (
-          <motion.p
-            className="mt-3 text-sm md:text-base"
-            style={{
-              color: "rgba(210,255,250,.75)",
-            }}
-            animate={{
-              opacity: [0.45, 1, 0.45],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-          >
-            Tap anywhere and let the garden bloom 🌱✨
-          </motion.p>
-        )}
-      </motion.div>
-
-      {/* FLOWERS */}
-      {bloomed && (
-        <>
-          {flowers.map((flower, index) => (
-            <FlowerPlant
+        {/* STARS */}
+        <div className="absolute inset-0 pointer-events-none">
+          {stars.map(([left, top], index) => (
+            <motion.div
               key={index}
-              {...flower}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+                width: index % 4 === 0 ? 3 : 2,
+                height: index % 4 === 0 ? 3 : 2,
+              }}
+              animate={{
+                opacity: [0.2, 0.9, 0.2],
+                scale: [0.7, 1.3, 0.7],
+              }}
+              transition={{
+                duration: 2.5 + (index % 4),
+                delay: (index % 5) * 0.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
           ))}
+        </div>
 
-          <Grass />
-
-          {/* soft ground glow */}
-          <motion.div
-            className="absolute bottom-0 left-1/2 pointer-events-none"
-            style={{
-              width: "70%",
-              height: 90,
-              transform: "translateX(-50%)",
-              background:
-                "radial-gradient(ellipse,rgba(55,210,175,.18),transparent 70%)",
-              filter: "blur(10px)",
-            }}
-            initial={{
-              opacity: 0,
-              scale: 0.5,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 1.5,
-            }}
-          />
-
-          <motion.p
-            className="absolute bottom-24 left-0 right-0 text-center px-6 pointer-events-none"
-            style={{
-              color: "rgba(210,255,250,.72)",
-            }}
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 1.7,
-              duration: 1,
-            }}
-          >
-            Every flower here is a memory worth cherishing.
-          </motion.p>
-        </>
-      )}
-
-      {/* FOOTER */}
-      <motion.div
-        className="absolute bottom-5 left-0 right-0 text-center pointer-events-none"
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          delay: 0.8,
-        }}
-      >
-        <span
-          className="text-xs md:text-sm"
+        {/* MOON */}
+        <motion.div
+          className="absolute top-[13%] right-[10%] w-12 h-12 rounded-full pointer-events-none"
           style={{
-            color: "rgba(180,245,235,.5)",
+            background:
+              "radial-gradient(circle at 35% 35%,#ffffff,#d9ffff 55%,#7ab7c5)",
+            boxShadow:
+              "0 0 35px rgba(160,240,255,.45)",
+          }}
+          animate={{
+            opacity: [0.75, 1, 0.75],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* FIREFLIES */}
+        <Fireflies />
+
+        {/* TITLE */}
+        <motion.div
+          className="absolute top-8 left-0 right-0 z-50 text-center px-5 pointer-events-none"
+          initial={{
+            opacity: 0,
+            y: -15,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 1,
           }}
         >
-          A little garden, made with a little touch. 🌸
-        </span>
-      </motion.div>
-    </main>
-  )
-}
+          <h1
+            className="text-2xl md:text-4xl font-medium"
+            style={{
+              color: "#baf9f3",
+              textShadow:
+                "0 0 12px rgba(80,230,220,.45)",
+            }}
+          >
+            A LITTLE GARDEN
+          </h1>
+
+          {!bloomed && (
+            <motion.p
+              className="mt-3 text-sm md:text-base"
+              style={{
+                color: "rgba(210,255,250,.75)",
+              }}
+              animate={{
+                opacity: [0.45, 1, 0.45],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+              }}
+            >
+              Tap anywhere and let the garden bloom 🌱✨
+            </motion.p>
+          )}
+        </motion.div>
+
+        {/* =====================================================
+            VIDEO STYLE FLOWER GARDEN
+            ===================================================== */}
+
+        {bloomed && (
+          <>
+            <div className="video-flower-stage">
+              {flowers.map((flower, index) => (
+                <VideoFlowerPlant
+                  key={index}
+                  {...flower}
+                />
+              ))}
+
+              <VideoGrass />
+
+              {/* GROUND GLOW */}
+              <motion.div
+                className="video-ground-glow"
+                initial={{
+                  opacity: 0,
+                  scale: 0.4,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 1.6,
+                  delay: 0.4,
+                }}
+              />
+            </div>
+
+            {/* MEMORY TEXT */}
+            <motion.p
+              className="absolute bottom-24 left-0 right-0 z-30 text-center px-6 pointer-events-none"
+              style={{
+                color: "rgba(210,255,250,.72)",
+              }}
+              initial={{
+                opacity: 0,
+                y: 15,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 1.7,
+                duration: 1,
+              }}
+            >
+              Every flower here is a memory worth cherishing.
+            </motion.p>
+          </>
+        )}
+
+        {/* FOOTER */}
+        <motion.div
+          className="absolute bottom-5 left-0 right-0 z-40 text-center pointer-events-none"
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            delay: 0.8,
+          }}
+        >
+          <span
+            className="text-xs md:text-sm"
+            style={{
+              color: "rgba(180,245,235,.5)",
+            }}
+          >
+            A little garden, made with a little touch. 🌸
+          </span>
+        </motion.div>
+      </main>
+
+      {/* =====================================================
+          VIDEO FLOWER CSS
+          ===================================================== */}
+
+      <style jsx>{`
+        .video-garden {
+          isolation: isolate;
+        }
+
+        .video-flower-stage {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 10;
+        }
+
+        /* -----------------------------------------------------
+           FLOWER PLANT
+           ----------------------------------------------------- */
+
+        .video-flower-plant {
+          position: absolute;
+          bottom: 0;
+          width: 100px;
+          transform: translateX(-50%);
+          transform-origin: bottom center;
+          animation: plantSway 5s ease-in-out infinite;
+        }
+
+        .video-flower__line {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          width: 5px;
+          border
