@@ -585,3 +585,114 @@ export default function GardenPage() {
           left: 50%;
           width: 5px;
           border
+          border-radius: 50%;
+
+          background:
+            radial-gradient(
+              ellipse,
+              rgba(30,220,180,.20) 0%,
+              rgba(20,160,145,.10) 35%,
+              transparent 72%
+            );
+
+          filter: blur(12px);
+        }
+
+        /* =====================================================
+           ANIMATIONS
+           ===================================================== */
+
+        @keyframes plantSway {
+          0%,
+          100% {
+            transform:
+              translateX(-50%)
+              rotate(-0.7deg);
+          }
+
+          50% {
+            transform:
+              translateX(-50%)
+              rotate(0.7deg);
+          }
+        }
+
+        @keyframes flowerFloat {
+          0%,
+          100% {
+            margin-top: 0;
+            transform: translateX(-50%) rotate(-1deg);
+          }
+
+          50% {
+            margin-top: -3px;
+            transform: translateX(-50%) rotate(1deg);
+          }
+        }
+
+        @keyframes flowerRotate {
+          0%,
+          100% {
+            transform: rotate(-1deg);
+          }
+
+          50% {
+            transform: rotate(1deg);
+          }
+        }
+
+        @keyframes flowerLight {
+          0%,
+          100% {
+            opacity: .25;
+            transform: scale(.7);
+          }
+
+          50% {
+            opacity: 1;
+            transform: scale(1.5);
+          }
+        }
+
+        @keyframes grassSway {
+          0%,
+          100% {
+            transform: rotate(-3deg);
+          }
+
+          50% {
+            transform: rotate(3deg);
+          }
+        }
+
+        @media (max-width: 600px) {
+          .video-flower-plant {
+            width: 80px;
+          }
+
+          .video-flower__line {
+            width: 4px;
+          }
+
+          .video-plant-leaf {
+            width: 31px;
+            height: 17px;
+          }
+
+          .video-flower__light {
+            width: 3px;
+            height: 3px;
+          }
+
+          .video-ground-glow {
+            width: 95%;
+          }
+
+          .video-grass {
+            height: 55px;
+          }
+        }
+      `}</style>
+    </>
+  )
+}
