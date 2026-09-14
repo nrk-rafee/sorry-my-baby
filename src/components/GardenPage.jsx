@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import "./flower-animation.css"
 
@@ -27,56 +27,45 @@ const stars = [
   [88, 42],
 ]
 
-const grass = [
-  [4, 0],
-  [8, 3],
-  [13, -2],
-  [18, 2],
-  [24, -1],
-  [30, 3],
-  [36, -2],
-  [42, 1],
-  [48, -2],
-  [54, 2],
-  [60, -1],
-  [66, 3],
-  [72, -2],
-  [78, 2],
-  [84, -1],
-  [90, 3],
-  [96, -2],
-]
+/* =========================================================
+   FLOWER DATA
+   ========================================================= */
 
-const flowerData = [
+const flowers = [
   {
-    cls: "flower--1",
-    left: "28%",
-    scale: "0.82",
-    delay: "0s",
-  },
-  {
-    cls: "flower--2",
-    left: "50%",
-    scale: "1",
+    left: "39%",
+    scale: "0.78",
     delay: "0.15s",
+    className: "flower--1",
   },
   {
-    cls: "flower--3",
-    left: "70%",
-    scale: "0.82",
+    left: "50%",
+    scale: "0.95",
+    delay: "0s",
+    className: "flower--2",
+  },
+  {
+    left: "61%",
+    scale: "0.78",
     delay: "0.3s",
+    className: "flower--3",
   },
   {
-    cls: "flower--4",
-    left: "84%",
+    left: "70%",
     scale: "0.62",
-    delay: "0.5s",
+    delay: "0.55s",
+    className: "flower--4",
   },
 ]
 
-function FlowerHead({ className }) {
+/* =========================================================
+   ONE VIDEO-STYLE FLOWER
+   ========================================================= */
+
+function Flower({ className }) {
   return (
     <div className={`flower ${className}`}>
+      {/* FLOWER HEAD */}
       <div className="flower__leafs">
         <div className="flower__leaf flower__leaf--1" />
         <div className="flower__leaf flower__leaf--2" />
@@ -85,14 +74,17 @@ function FlowerHead({ className }) {
 
         <div className="flower__white-circle" />
 
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div
-            key={index}
-            className={`flower__light flower__light--${index + 1}`}
-          />
-        ))}
+        <div className="flower__light flower__light--1" />
+        <div className="flower__light flower__light--2" />
+        <div className="flower__light flower__light--3" />
+        <div className="flower__light flower__light--4" />
+        <div className="flower__light flower__light--5" />
+        <div className="flower__light flower__light--6" />
+        <div className="flower__light flower__light--7" />
+        <div className="flower__light flower__light--8" />
       </div>
 
+      {/* STEM */}
       <div className="flower__line">
         <div className="flower__line__leaf flower__line__leaf--1" />
         <div className="flower__line__leaf flower__line__leaf--2" />
@@ -105,16 +97,143 @@ function FlowerHead({ className }) {
   )
 }
 
-function FlowerAnimation() {
+/* =========================================================
+   LONG FLOWER / GRASS
+   ========================================================= */
+
+function LongFlower() {
+  return (
+    <div className="flower__g-long grow-ans">
+      <div className="flower__g-long__top" />
+      <div className="flower__g-long__bottom" />
+    </div>
+  )
+}
+
+function GrowingGrass() {
+  const leaves = Array.from({ length: 8 }, (_, i) => i + 1)
+
+  return (
+    <>
+      <div className="growing-grass">
+        <div className="flower__grass flower__grass--1">
+          <div className="flower__grass--top" />
+          <div className="flower__grass--bottom" />
+
+          {leaves.map((i) => (
+            <div
+              key={i}
+              className={`flower__grass__leaf flower__grass__leaf--${i}`}
+            />
+          ))}
+
+          <div className="flower__grass__overlay" />
+        </div>
+
+        <div className="flower__grass flower__grass--2">
+          <div className="flower__grass--top" />
+          <div className="flower__grass--bottom" />
+
+          {leaves.map((i) => (
+            <div
+              key={i}
+              className={`flower__grass__leaf flower__grass__leaf--${i}`}
+            />
+          ))}
+
+          <div className="flower__grass__overlay" />
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* =========================================================
+   BACKGROUND FOLIAGE
+   ========================================================= */
+
+function RightFoliage() {
+  return (
+    <div className="flower__g-right">
+      <div className="leaf flower__g-right--1" />
+      <div className="leaf flower__g-right--2" />
+    </div>
+  )
+}
+
+function FrontFoliage() {
+  return (
+    <div className="flower__g-front">
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+
+      <div className="flower__g-front__leaf-wrapper">
+        <div className="flower__g-front__leaf" />
+      </div>
+    </div>
+  )
+}
+
+function FrontBranch() {
+  return (
+    <div className="flower__g-fr">
+      <div className="leaf" />
+
+      <div className="flower__g-fr__leaf flower__g-fr__leaf--1" />
+      <div className="flower__g-fr__leaf flower__g-fr__leaf--2" />
+      <div className="flower__g-fr__leaf flower__g-fr__leaf--3" />
+      <div className="flower__g-fr__leaf flower__g-fr__leaf--4" />
+      <div className="flower__g-fr__leaf flower__g-fr__leaf--5" />
+    </div>
+  )
+}
+
+function LongGrass() {
+  return (
+    <>
+      {Array.from({ length: 8 }, (_, index) => (
+        <div
+          key={index}
+          className={`long-g long-g--${index}`}
+        >
+          <div className="leaf leaf--0" />
+          <div className="leaf leaf--1" />
+          <div className="leaf leaf--2" />
+          <div className="leaf leaf--3" />
+        </div>
+      ))}
+    </>
+  )
+}
+
+/* =========================================================
+   COMPLETE FLOWER SCENE
+   ========================================================= */
+
+function FlowerScene() {
   return (
     <div className="video-flower-stage">
       <div className="flowers">
-
-        {/* MAIN FLOWERS */}
-
-        {flowerData.map((flower) => (
+        {flowers.map((flower) => (
           <div
-            key={flower.cls}
+            key={flower.className}
             className="flower-wrap"
             style={{
               "--flower-left": flower.left,
@@ -122,144 +241,31 @@ function FlowerAnimation() {
               "--flower-delay": flower.delay,
             }}
           >
-            <FlowerHead className={flower.cls} />
+            <Flower className={flower.className} />
           </div>
         ))}
 
-        {/* LONG STEM */}
+        {/* BACK / SIDE FOLIAGE */}
+        <LongFlower />
+        <LongFlower />
 
-        <div
-          className="grow-ans"
-          style={{ "--d": "1.2s" }}
-        >
-          <div className="flower__g-long">
-            <div className="flower__g-long__top" />
-            <div className="flower__g-long__bottom" />
-          </div>
-        </div>
-
-        {/* GRASS 1 */}
-
-        <div className="growing-grass">
-          <div className="flower__grass flower__grass--1">
-            <div className="flower__grass--top" />
-            <div className="flower__grass--bottom" />
-
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className={`flower__grass__leaf flower__grass__leaf--${
-                  index + 1
-                }`}
-              />
-            ))}
-
-            <div className="flower__grass__overlay" />
-          </div>
-        </div>
-
-        {/* GRASS 2 */}
-
-        <div className="growing-grass">
-          <div className="flower__grass flower__grass--2">
-            <div className="flower__grass--top" />
-            <div className="flower__grass--bottom" />
-
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className={`flower__grass__leaf flower__grass__leaf--${
-                  index + 1
-                }`}
-              />
-            ))}
-
-            <div className="flower__grass__overlay" />
-          </div>
-        </div>
-
-        {/* RIGHT FOLIAGE */}
-
-        <div
-          className="grow-ans"
-          style={{ "--d": "2.4s" }}
-        >
-          <div className="flower__g-right flower__g-right--1">
-            <div className="leaf" />
-          </div>
-        </div>
-
-        <div
-          className="grow-ans"
-          style={{ "--d": "2.8s" }}
-        >
-          <div className="flower__g-right flower__g-right--2">
-            <div className="leaf" />
-          </div>
-        </div>
-
-        {/* FRONT FOLIAGE */}
-
-        <div
-          className="grow-ans"
-          style={{ "--d": "2.8s" }}
-        >
-          <div className="flower__g-front">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className={`flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--${
-                  index + 1
-                }`}
-              >
-                <div className="flower__g-front__leaf" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* FRONT BRANCH */}
-
-        <div className="flower__g-fr">
-          <div className="leaf" />
-
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div
-              key={index}
-              className={`flower__g-fr__leaf flower__g-fr__leaf--${
-                index + 1
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* LONG GRASS GROUPS */}
-
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div
-            key={index}
-            className={`long-g long-g--${index}`}
-          >
-            <div className="leaf leaf--0" />
-            <div className="leaf leaf--1" />
-            <div className="leaf leaf--2" />
-            <div className="leaf leaf--3" />
-          </div>
-        ))}
+        <GrowingGrass />
+        <RightFoliage />
+        <FrontFoliage />
+        <FrontBranch />
+        <LongGrass />
       </div>
 
       {/* FRONT GRASS */}
-
       <div className="video-grass">
-        {grass.map(([left, rotation], index) => (
+        {Array.from({ length: 30 }, (_, index) => (
           <span
             key={index}
             className="video-grass__blade"
             style={{
-              left: `${left}%`,
-              height: `${28 + (index % 4) * 9}px`,
-              transform: `rotate(${rotation}deg)`,
-              animationDelay: `${index * 0.04}s`,
+              left: `${(index / 29) * 100}%`,
+              height: `${28 + (index % 5) * 7}px`,
+              transform: `rotate(${(index % 5) - 2}deg)`,
             }}
           />
         ))}
@@ -269,6 +275,10 @@ function FlowerAnimation() {
     </div>
   )
 }
+
+/* =========================================================
+   FIREFLIES
+   ========================================================= */
 
 function Fireflies() {
   const lights = [
@@ -313,17 +323,128 @@ function Fireflies() {
   )
 }
 
+/* =========================================================
+   BIRDS + BUTTERFLIES
+   ========================================================= */
+
+function SkyCreatures({ active }) {
+  const [bird, setBird] = useState(0)
+  const audioRef = useRef(null)
+
+  useEffect(() => {
+    if (!active) return
+
+    /*
+      Bird sound is generated locally with Web Audio.
+      No audio file / external URL needed.
+    */
+    const playBirdCall = () => {
+      try {
+        const AudioContext =
+          window.AudioContext || window.webkitAudioContext
+
+        if (!AudioContext) return
+
+        if (!audioRef.current) {
+          audioRef.current = new AudioContext()
+        }
+
+        const ctx = audioRef.current
+
+        if (ctx.state === "suspended") {
+          ctx.resume()
+        }
+
+        const now = ctx.currentTime
+
+        const notes = [1100, 1450, 1180]
+
+        notes.forEach((frequency, index) => {
+          const oscillator = ctx.createOscillator()
+          const gain = ctx.createGain()
+
+          oscillator.type = "sine"
+          oscillator.frequency.setValueAtTime(
+            frequency,
+            now + index * 0.11
+          )
+
+          gain.gain.setValueAtTime(
+            0.0001,
+            now + index * 0.11
+          )
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.045,
+            now + index * 0.11 + 0.025
+          )
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            now + index * 0.11 + 0.13
+          )
+
+          oscillator.connect(gain)
+          gain.connect(ctx.destination)
+
+          oscillator.start(now + index * 0.11)
+          oscillator.stop(now + index * 0.11 + 0.15)
+        })
+      } catch {
+        // Audio is optional; visual animation continues.
+      }
+    }
+
+    const interval = setInterval(() => {
+      setBird((value) => value + 1)
+      playBirdCall()
+    }, 1700)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [active])
+
+  if (!active) return null
+
+  return (
+    <>
+      <div
+        key={`bird-${bird}`}
+        className="garden-bird"
+        aria-hidden="true"
+      >
+        🕊️
+      </div>
+
+      <div className="garden-butterfly garden-butterfly--1">
+        🦋
+      </div>
+
+      <div className="garden-butterfly garden-butterfly--2">
+        🦋
+      </div>
+    </>
+  )
+}
+
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
+
 export default function GardenPage() {
   const [bloomed, setBloomed] = useState(false)
 
   const handleBloom = () => {
-    setBloomed(true)
+    if (!bloomed) {
+      setBloomed(true)
+    }
   }
 
   return (
     <main
       onPointerDown={handleBloom}
-      className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none"
+      className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none video-garden"
       style={{
         background: `
           radial-gradient(
@@ -346,9 +467,7 @@ export default function GardenPage() {
         `,
       }}
     >
-
       {/* STARS */}
-
       <div className="absolute inset-0 pointer-events-none">
         {stars.map(([left, top], index) => (
           <motion.div
@@ -375,7 +494,6 @@ export default function GardenPage() {
       </div>
 
       {/* MOON */}
-
       <motion.div
         className="absolute top-[13%] right-[10%] w-12 h-12 rounded-full pointer-events-none"
         style={{
@@ -394,11 +512,9 @@ export default function GardenPage() {
       />
 
       {/* FIREFLIES */}
-
       <Fireflies />
 
       {/* TITLE */}
-
       <motion.div
         className="absolute top-8 left-0 right-0 z-50 text-center px-5 pointer-events-none"
         initial={{
@@ -417,8 +533,7 @@ export default function GardenPage() {
           className="text-2xl md:text-4xl font-medium"
           style={{
             color: "#baf9f3",
-            textShadow:
-              "0 0 12px rgba(80,230,220,.45)",
+            textShadow: "0 0 12px rgba(80,230,220,.45)",
           }}
         >
           A LITTLE GARDEN
@@ -443,39 +558,43 @@ export default function GardenPage() {
         )}
       </motion.div>
 
-      {/* FLOWER ANIMATION */}
-
-      {bloomed && <FlowerAnimation />}
-
-      {/* MEMORY TEXT */}
+      {/* =====================================================
+          FLOWER SCENE
+          ===================================================== */}
 
       {bloomed && (
-        <motion.p
-          className="absolute bottom-24 left-0 right-0 z-30 text-center px-6 pointer-events-none"
-          style={{
-            color: "rgba(210,255,250,.72)",
-          }}
-          initial={{
-            opacity: 0,
-            y: 15,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 1.7,
-            duration: 1,
-          }}
-        >
-          Every flower here is a memory worth cherishing.
-        </motion.p>
+        <>
+          <FlowerScene />
+
+          <SkyCreatures active={bloomed} />
+
+          {/* MEMORY TEXT */}
+          <motion.p
+            className="absolute bottom-24 left-0 right-0 z-[200] text-center px-6 pointer-events-none"
+            style={{
+              color: "rgba(210,255,250,.72)",
+            }}
+            initial={{
+              opacity: 0,
+              y: 15,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              delay: 2.2,
+              duration: 1,
+            }}
+          >
+            Every flower here is a memory worth cherishing.
+          </motion.p>
+        </>
       )}
 
       {/* FOOTER */}
-
       <motion.div
-        className="absolute bottom-5 left-0 right-0 z-40 text-center pointer-events-none"
+        className="absolute bottom-5 left-0 right-0 z-[250] text-center pointer-events-none"
         initial={{
           opacity: 0,
         }}
