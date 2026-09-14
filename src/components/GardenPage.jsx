@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import "./flower-animation.css";
 
-/* =========================
+/* =====================================================
    STARS
-========================= */
+===================================================== */
 
 const stars = Array.from({ length: 75 }, (_, i) => ({
   id: i,
@@ -16,40 +16,40 @@ const stars = Array.from({ length: 75 }, (_, i) => ({
   delay: `${Math.random() * 4}s`,
 }));
 
-/* =========================
+/* =====================================================
    FLOWERS
-========================= */
+===================================================== */
 
 const flowers = [
   {
-    left: "38%",
-    scale: "0.82",
+    left: "37%",
+    scale: "1.08",
     delay: "0.25s",
     className: "flower--1",
   },
   {
     left: "50%",
-    scale: "1",
+    scale: "1.2",
     delay: "0s",
     className: "flower--2",
   },
   {
-    left: "62%",
-    scale: "0.82",
+    left: "63%",
+    scale: "1.08",
     delay: "0.45s",
     className: "flower--3",
   },
   {
-    left: "71%",
-    scale: "0.68",
+    left: "73%",
+    scale: "0.9",
     delay: "0.7s",
     className: "flower--4",
   },
 ];
 
-/* =========================
-   FLOWER COMPONENT
-========================= */
+/* =====================================================
+   FLOWER
+===================================================== */
 
 function Flower({ className }) {
   return (
@@ -84,16 +84,13 @@ function Flower({ className }) {
   );
 }
 
-/* =========================
+/* =====================================================
    LONG FLOWER
-========================= */
+===================================================== */
 
 function LongFlower() {
   return (
-    <div
-      className="grow-ans"
-      style={{ "--d": "1.2s" }}
-    >
+    <div className="grow-ans" style={{ "--d": "1.2s" }}>
       <div className="flower__g-long">
         <div className="flower__g-long__top" />
         <div className="flower__g-long__bottom" />
@@ -102,9 +99,9 @@ function LongFlower() {
   );
 }
 
-/* =========================
+/* =====================================================
    GRASS
-========================= */
+===================================================== */
 
 function GrowingGrass() {
   return (
@@ -140,26 +137,20 @@ function GrowingGrass() {
   );
 }
 
-/* =========================
+/* =====================================================
    RIGHT FOLIAGE
-========================= */
+===================================================== */
 
 function RightFoliage() {
   return (
     <>
-      <div
-        className="grow-ans"
-        style={{ "--d": "2.4s" }}
-      >
+      <div className="grow-ans" style={{ "--d": "2.4s" }}>
         <div className="flower__g-right flower__g-right--1">
           <div className="leaf" />
         </div>
       </div>
 
-      <div
-        className="grow-ans"
-        style={{ "--d": "2.8s" }}
-      >
+      <div className="grow-ans" style={{ "--d": "2.8s" }}>
         <div className="flower__g-right flower__g-right--2">
           <div className="leaf" />
         </div>
@@ -168,28 +159,21 @@ function RightFoliage() {
   );
 }
 
-/* =========================
+/* =====================================================
    FRONT FOLIAGE
-========================= */
+===================================================== */
 
 function FrontFoliage() {
   return (
-    <div
-      className="grow-ans"
-      style={{ "--d": "2.8s" }}
-    >
+    <div className="grow-ans" style={{ "--d": "2.8s" }}>
       <div className="flower__g-front">
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             className="flower__g-front__leaf-wrapper"
             key={index}
             style={{
-              left: `${index * 2.5}vmin`,
+              left: `${index * 2.8}vmin`,
               top: `${(index % 3) * 4}vmin`,
-              transform:
-                index % 2 === 0
-                  ? "rotate(12deg)"
-                  : "rotateY(-180deg) rotate(5deg)",
             }}
           >
             <div className="flower__g-front__leaf" />
@@ -200,16 +184,13 @@ function FrontFoliage() {
   );
 }
 
-/* =========================
+/* =====================================================
    FRONT BRANCH
-========================= */
+===================================================== */
 
 function FrontBranch() {
   return (
-    <div
-      className="grow-ans"
-      style={{ "--d": "3.2s" }}
-    >
+    <div className="grow-ans" style={{ "--d": "3.2s" }}>
       <div className="flower__g-fr">
         <div className="leaf" />
 
@@ -223,16 +204,14 @@ function FrontBranch() {
   );
 }
 
-/* =========================
+/* =====================================================
    LONG GRASS
-========================= */
+===================================================== */
 
 function LongGrass() {
-  const groups = Array.from({ length: 8 });
-
   return (
     <>
-      {groups.map((_, index) => (
+      {Array.from({ length: 8 }).map((_, index) => (
         <div
           className={`long-g long-g--${index}`}
           key={index}
@@ -247,12 +226,12 @@ function LongGrass() {
   );
 }
 
-/* =========================
+/* =====================================================
    FLOWER SCENE
-========================= */
+===================================================== */
 
 function FlowerScene() {
-  const grass = Array.from({ length: 34 });
+  const grass = Array.from({ length: 38 });
 
   return (
     <div className="video-flower-stage">
@@ -285,11 +264,11 @@ function FlowerScene() {
             className="video-grass__blade"
             key={index}
             style={{
-              left: `${index * 3.05 + Math.random() * 1.4}%`,
-              height: `${5 + Math.random() * 9}vmin`,
-              animationDelay: `${Math.random() * 2}s`,
+              left: `${index * 2.7 + Math.random() * 1.5}%`,
+              height: `${6 + Math.random() * 10}vmin`,
+              animationDelay: `${Math.random() * 2.5}s`,
               transform: `rotate(${
-                -8 + Math.random() * 16
+                -9 + Math.random() * 18
               }deg)`,
             }}
           />
@@ -301,17 +280,15 @@ function FlowerScene() {
   );
 }
 
-/* =========================
+/* =====================================================
    BIRD SOUND
-========================= */
+===================================================== */
 
 function playBirdChirp(audioRef) {
   try {
     const ctx = audioRef.current;
 
-    if (!ctx || ctx.state === "closed") {
-      return;
-    }
+    if (!ctx || ctx.state === "closed") return;
 
     if (ctx.state === "suspended") {
       ctx.resume().catch(() => {});
@@ -320,9 +297,21 @@ function playBirdChirp(audioRef) {
     const now = ctx.currentTime;
 
     const notes = [
-      { frequency: 1200, start: 0, duration: 0.11 },
-      { frequency: 1650, start: 0.12, duration: 0.1 },
-      { frequency: 1350, start: 0.24, duration: 0.14 },
+      {
+        frequency: 1150,
+        start: 0,
+        duration: 0.13,
+      },
+      {
+        frequency: 1580,
+        start: 0.14,
+        duration: 0.12,
+      },
+      {
+        frequency: 1320,
+        start: 0.28,
+        duration: 0.16,
+      },
     ];
 
     notes.forEach((note) => {
@@ -360,18 +349,85 @@ function playBirdChirp(audioRef) {
       gain.connect(ctx.destination);
 
       oscillator.start(now + note.start);
+
       oscillator.stop(
-        now + note.start + note.duration + 0.02
+        now +
+          note.start +
+          note.duration +
+          0.03
       );
     });
   } catch {
-    /* audio failure should never break the garden */
+    /* don't break page if audio fails */
   }
 }
 
-/* =========================
-   SKY
-========================= */
+/* =====================================================
+   REAL FLYING BIRD
+===================================================== */
+
+function FlyingBird({ top }) {
+  return (
+    <div
+      className="garden-bird"
+      style={{
+        "--bird-top": `${top}%`,
+      }}
+      aria-hidden="true"
+    >
+      <svg
+        className="bird-svg"
+        viewBox="0 0 120 70"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* body */}
+        <ellipse
+          cx="59"
+          cy="37"
+          rx="19"
+          ry="10"
+          className="bird-body"
+        />
+
+        {/* head */}
+        <circle
+          cx="76"
+          cy="29"
+          r="8"
+          className="bird-body"
+        />
+
+        {/* beak */}
+        <path
+          d="M83 29 L96 34 L83 36 Z"
+          className="bird-beak"
+        />
+
+        {/* left wing */}
+        <path
+          className="bird-wing bird-wing-left"
+          d="M54 34 C42 13 25 8 12 12 C28 22 34 34 51 41 Z"
+        />
+
+        {/* right wing */}
+        <path
+          className="bird-wing bird-wing-right"
+          d="M59 34 C70 13 86 8 103 13 C89 22 81 34 62 42 Z"
+        />
+
+        {/* tail */}
+        <path
+          d="M43 38 L25 29 L34 43 L22 49 L47 48 Z"
+          className="bird-body"
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* =====================================================
+   BIRDS + BUTTERFLIES
+===================================================== */
 
 function SkyCreatures({ active, audioRef }) {
   const [bird, setBird] = useState(0);
@@ -386,14 +442,18 @@ function SkyCreatures({ active, audioRef }) {
 
       setBird((value) => value + 1);
       playBirdChirp(audioRef);
-    }, 1200);
+    }, 1600);
 
+    /*
+      Bird takes about 5.2 seconds to cross the sky.
+      Next bird starts after it has almost finished.
+    */
     const interval = setInterval(() => {
       if (!mounted) return;
 
       setBird((value) => value + 1);
       playBirdChirp(audioRef);
-    }, 5600);
+    }, 5800);
 
     return () => {
       mounted = false;
@@ -405,16 +465,10 @@ function SkyCreatures({ active, audioRef }) {
   return (
     <>
       {active && (
-        <div
+        <FlyingBird
           key={`bird-${bird}`}
-          className="garden-bird"
-          style={{
-            "--bird-top": `${16 + (bird % 4) * 4}%`,
-          }}
-          aria-hidden="true"
-        >
-          🕊️
-        </div>
+          top={15 + (bird % 4) * 6}
+        />
       )}
 
       <div
@@ -434,9 +488,9 @@ function SkyCreatures({ active, audioRef }) {
   );
 }
 
-/* =========================
-   MAIN PAGE
-========================= */
+/* =====================================================
+   MAIN GARDEN PAGE
+===================================================== */
 
 export default function GardenPage() {
   const [bloomed, setBloomed] = useState(false);
@@ -458,8 +512,7 @@ export default function GardenPage() {
     if (bloomed) return;
 
     /*
-      Create AudioContext from the user's tap.
-      This is important for mobile browser autoplay rules.
+      Unlock audio from user's tap.
     */
     try {
       const AudioContextClass =
@@ -468,6 +521,7 @@ export default function GardenPage() {
 
       if (AudioContextClass) {
         const ctx = new AudioContextClass();
+
         audioRef.current = ctx;
 
         if (ctx.state === "suspended") {
@@ -487,7 +541,7 @@ export default function GardenPage() {
       onPointerDown={handleBloom}
     >
       {/* =========================
-          SKY BACKGROUND
+          BACKGROUND
       ========================= */}
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_85%,rgba(12,112,130,.32),transparent_48%),linear-gradient(to_bottom,#020617,#031426_60%,#04252d)]" />
@@ -506,7 +560,8 @@ export default function GardenPage() {
               top: star.top,
               width: `${star.size}px`,
               height: `${star.size}px`,
-              opacity: 0.35 + Math.random() * 0.55,
+              opacity:
+                0.35 + Math.random() * 0.55,
               boxShadow:
                 star.size > 2
                   ? "0 0 8px rgba(255,255,255,.65)"
@@ -564,7 +619,7 @@ export default function GardenPage() {
       {bloomed && <FlowerScene />}
 
       {/* =========================
-          BIRDS + BUTTERFLIES
+          BIRDS
       ========================= */}
 
       <SkyCreatures
@@ -594,7 +649,7 @@ export default function GardenPage() {
       </div>
 
       {/* =========================
-          MEMORY TEXT
+          MEMORY
       ========================= */}
 
       <motion.p
@@ -638,7 +693,7 @@ export default function GardenPage() {
       </motion.div>
 
       {/* =========================
-          FIRST TAP HINT
+          TAP HINT
       ========================= */}
 
       {!bloomed && (
@@ -681,10 +736,7 @@ export default function GardenPage() {
 
           50% {
             opacity: 1;
-            transform: translate(
-                10px,
-                -15px
-              )
+            transform: translate(10px, -15px)
               scale(1.2);
           }
         }
