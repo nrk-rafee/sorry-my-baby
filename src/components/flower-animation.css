@@ -1,3 +1,7 @@
+/* =====================================================
+   FLOWER GARDEN
+===================================================== */
+
 .video-flower-stage {
   position: absolute;
   inset: 0;
@@ -14,22 +18,29 @@
   box-sizing: border-box;
 }
 
-/* =========================
-   FLOWERS
-========================= */
+/* =====================================================
+   FLOWERS CONTAINER
+===================================================== */
 
 .video-flower-stage .flowers {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   transform-origin: bottom center;
 }
 
+/* =====================================================
+   FLOWER WRAPPER
+===================================================== */
+
 .video-flower-stage .flower-wrap {
   position: absolute;
+
   left: var(--flower-left);
-  bottom: 8vmin;
+  bottom: 7vmin;
 
   transform:
     translateX(-50%)
@@ -41,39 +52,63 @@
 
   animation:
     flower-wrap-grow
-    2.2s
+    2.4s
     var(--flower-delay)
     both
     ease-out;
 }
 
+/* =====================================================
+   MAIN FLOWER
+===================================================== */
+
 .video-flower-stage .flower {
   position: relative;
+
   transform-origin: bottom center;
 }
 
+/*
+   Gentle wind movement.
+   The whole flower moves slowly,
+   not violently.
+*/
+
 .video-flower-stage .flower--1 {
-  animation: moving-flower-1 5s ease-in-out infinite;
+  animation:
+    flower-wind-1
+    5.8s
+    ease-in-out
+    infinite;
 }
 
 .video-flower-stage .flower--2 {
-  transform: rotate(12deg);
-  animation: moving-flower-2 5.5s ease-in-out infinite;
+  animation:
+    flower-wind-2
+    6.4s
+    ease-in-out
+    infinite;
 }
 
 .video-flower-stage .flower--3 {
-  transform: rotate(-10deg);
-  animation: moving-flower-3 5.2s ease-in-out infinite;
+  animation:
+    flower-wind-3
+    6.1s
+    ease-in-out
+    infinite;
 }
 
 .video-flower-stage .flower--4 {
-  transform: rotate(8deg) scale(.82);
-  animation: moving-flower-2 5.8s ease-in-out infinite;
+  animation:
+    flower-wind-4
+    6.8s
+    ease-in-out
+    infinite;
 }
 
-/* =========================
+/* =====================================================
    FLOWER HEAD
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__leafs {
   position: relative;
@@ -85,6 +120,10 @@
 
   z-index: 20;
 }
+
+/* =====================================================
+   PETALS
+===================================================== */
 
 .video-flower-stage .flower__leaf {
   --petal-rotate: 0deg;
@@ -104,14 +143,14 @@
   background:
     linear-gradient(
       to top,
-      #43cfd8 0%,
-      #159faa 70%,
-      #68edf0 100%
+      #35cbd5 0%,
+      #159faa 68%,
+      #65e9ed 100%
     );
 
   box-shadow:
     inset 0 0 1.5vmin rgba(255,255,255,.18),
-    0 0 1.5vmin rgba(35,240,255,.15);
+    0 0 1.5vmin rgba(35,240,255,.12);
 
   opacity: 0;
 
@@ -120,14 +159,19 @@
     rotate(var(--petal-rotate))
     scale(.05);
 
+  transform-origin: bottom center;
+
+  /*
+     BOTH is important:
+     flower stays visible after blooming.
+  */
+
   animation:
     petal-bloom
     1.35s
     1.05s
     both
     cubic-bezier(.2,.8,.2,1);
-
-  transform-origin: bottom center;
 }
 
 .video-flower-stage .flower__leaf--1 {
@@ -146,9 +190,9 @@
   --petal-rotate: 135deg;
 }
 
-/* =========================
+/* =====================================================
    FLOWER CENTER
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__white-circle {
   position: absolute;
@@ -156,8 +200,8 @@
   left: 50%;
   bottom: 1.5vmin;
 
-  width: 4.3vmin;
-  height: 4.3vmin;
+  width: 4.5vmin;
+  height: 4.5vmin;
 
   transform:
     translateX(-50%)
@@ -169,14 +213,14 @@
     radial-gradient(
       circle at 35% 30%,
       #ffffff 0%,
-      #fffbd0 35%,
-      #ffe95c 65%,
-      #f2c400 100%
+      #fffbd0 30%,
+      #ffe94f 65%,
+      #efc000 100%
     );
 
   box-shadow:
     0 0 1vmin #fff8a0,
-    0 0 3vmin rgba(255,220,50,.75);
+    0 0 3vmin rgba(255,220,50,.8);
 
   z-index: 40;
 
@@ -188,9 +232,9 @@
     cubic-bezier(.2,.9,.2,1);
 }
 
-/* =========================
+/* =====================================================
    FLOWER LIGHTS
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__light {
   position: absolute;
@@ -263,9 +307,9 @@
   --light-delay: 4.5s;
 }
 
-/* =========================
+/* =====================================================
    STEM
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__line {
   position: relative;
@@ -275,21 +319,24 @@
 
   margin-left: -.75vmin;
 
+  border-radius: 999px;
+
   background:
     linear-gradient(
       to right,
-      rgba(0,0,0,.25),
-      rgba(70,220,220,.8),
-      rgba(0,0,0,.18)
+      #075d62,
+      #29c5cc,
+      #0a686d
     );
 
-  border-radius: 999px;
+  box-shadow:
+    0 0 1vmin rgba(40,220,220,.12);
 
   transform-origin: bottom center;
 
   animation:
     stem-grow
-    2.4s
+    2.5s
     .2s
     both
     ease-out;
@@ -300,20 +347,20 @@
 }
 
 .video-flower-stage .flower--2 .flower__line {
-  height: 61vmin;
+  height: 62vmin;
 }
 
 .video-flower-stage .flower--3 .flower__line {
-  height: 57vmin;
+  height: 58vmin;
 }
 
 .video-flower-stage .flower--4 .flower__line {
-  height: 47vmin;
+  height: 49vmin;
 }
 
-/* =========================
+/* =====================================================
    STEM LEAVES
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__line__leaf {
   --leaf-delay: 1.5s;
@@ -332,8 +379,8 @@
   background:
     linear-gradient(
       135deg,
-      #5de4e8,
-      #087b80
+      #4bdce0,
+      #08787e
     );
 
   transform-origin: bottom left;
@@ -408,9 +455,9 @@
   --leaf-delay: 2.4s;
 }
 
-/* =========================
+/* =====================================================
    LONG FLOWER
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__g-long {
   position: absolute;
@@ -424,8 +471,8 @@
   transform-origin: bottom center;
 
   animation:
-    long-flower-sway
-    5s
+    long-flower-wind
+    6s
     ease-in-out
     infinite;
 }
@@ -458,9 +505,9 @@
     );
 }
 
-/* =========================
-   GRASS
-========================= */
+/* =====================================================
+   GREEN GRASS
+===================================================== */
 
 .video-flower-stage .growing-grass {
   position: absolute;
@@ -481,11 +528,10 @@
   height: 32vmin;
 
   animation:
-    grass-grow
-    2s
-    1s
-    both
-    ease-out;
+    grass-group-wind
+    5s
+    ease-in-out
+    infinite;
 }
 
 .video-flower-stage .flower__grass--1 {
@@ -494,7 +540,10 @@
 
 .video-flower-stage .flower__grass--2 {
   right: 5%;
+
   transform: scaleX(-1);
+
+  animation-delay: -1.5s;
 }
 
 .video-flower-stage .flower__grass--top {
@@ -504,14 +553,13 @@
   height: 12vmin;
 
   border-top-right-radius: 100%;
-  border-right: .8vmin solid #159faa;
+  border-right: .8vmin solid #238c3a;
 }
 
 .video-flower-stage .flower__grass--bottom {
   position: absolute;
 
   bottom: 0;
-
   left: 3vmin;
 
   width: 1.5vmin;
@@ -521,7 +569,7 @@
     linear-gradient(
       to top,
       transparent,
-      #079097
+      #187a32
     );
 }
 
@@ -539,8 +587,8 @@
   background:
     linear-gradient(
       to top,
-      transparent,
-      #159faa
+      #0c5426,
+      #2f9e45
     );
 }
 
@@ -580,9 +628,9 @@
   transform: rotate(15deg);
 }
 
-/* =========================
+/* =====================================================
    RIGHT FOLIAGE
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__g-right {
   position: absolute;
@@ -598,34 +646,34 @@
   height: 48vmin;
 
   border-top-left-radius: 100%;
-  border-left: 2vmin solid #079097;
+  border-left: 2vmin solid #187b39;
 
   background:
     linear-gradient(
       to bottom,
       transparent,
-      #064d55
+      #0b5425
     );
 
   -webkit-mask-image:
     linear-gradient(
       to top,
       transparent 20%,
-      #079097 60%
+      #187b39 60%
     );
 
   mask-image:
     linear-gradient(
       to top,
       transparent 20%,
-      #079097 60%
+      #187b39 60%
     );
 }
 
 .video-flower-stage .flower__g-right--1 {
   animation:
-    foliage-sway
-    5s
+    foliage-wind-1
+    5.5s
     ease-in-out
     infinite;
 }
@@ -636,15 +684,15 @@
   transform: rotateY(180deg);
 
   animation:
-    foliage-sway-2
-    6s
+    foliage-wind-2
+    6.2s
     ease-in-out
     infinite;
 }
 
-/* =========================
+/* =====================================================
    FRONT FOLIAGE
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__g-front {
   position: absolute;
@@ -657,8 +705,8 @@
   transform-origin: bottom center;
 
   animation:
-    front-foliage-sway
-    5s
+    front-foliage-wind
+    5.8s
     ease-in-out
     infinite;
 }
@@ -667,6 +715,12 @@
   position: absolute;
 
   transform-origin: bottom left;
+}
+
+.video-flower-stage .flower__g-front__leaf-wrapper:nth-child(even) {
+  transform:
+    rotateY(-180deg)
+    rotate(5deg);
 }
 
 .video-flower-stage .flower__g-front__leaf {
@@ -680,8 +734,8 @@
   background:
     linear-gradient(
       135deg,
-      #39d5d9,
-      #075a61
+      #35c95c,
+      #075f27
     );
 
   -webkit-mask-image:
@@ -699,9 +753,9 @@
     );
 }
 
-/* =========================
+/* =====================================================
    FRONT BRANCH
-========================= */
+===================================================== */
 
 .video-flower-stage .flower__g-fr {
   position: absolute;
@@ -712,8 +766,8 @@
   z-index: 70;
 
   animation:
-    front-branch-sway
-    5s
+    front-branch-wind
+    5.5s
     ease-in-out
     infinite;
 }
@@ -723,20 +777,20 @@
   height: 48vmin;
 
   border-top-left-radius: 100%;
-  border-left: 2vmin solid #079097;
+  border-left: 2vmin solid #187b39;
 
   -webkit-mask-image:
     linear-gradient(
       to top,
       transparent 20%,
-      #079097 55%
+      #187b39 55%
     );
 
   mask-image:
     linear-gradient(
       to top,
       transparent 20%,
-      #079097 55%
+      #187b39 55%
     );
 }
 
@@ -753,8 +807,8 @@
   background:
     linear-gradient(
       135deg,
-      #35d9df,
-      #075c62
+      #36c95a,
+      #075d27
     );
 
   -webkit-mask-image:
@@ -805,15 +859,22 @@
   transform: rotate(55deg);
 }
 
-/* =========================
+/* =====================================================
    LONG GRASS
-========================= */
+===================================================== */
 
 .video-flower-stage .long-g {
   position: absolute;
+
   bottom: 0;
 
   z-index: 5;
+
+  animation:
+    long-grass-wind
+    5s
+    ease-in-out
+    infinite;
 }
 
 .video-flower-stage .long-g--0 {
@@ -823,36 +884,43 @@
 .video-flower-stage .long-g--1 {
   left: 18vmin;
   transform: scale(.8);
+  animation-delay: -.8s;
 }
 
 .video-flower-stage .long-g--2 {
   left: 32vmin;
   transform: scale(.65);
+  animation-delay: -1.5s;
 }
 
 .video-flower-stage .long-g--3 {
   left: 48vmin;
   transform: scale(.85);
+  animation-delay: -2s;
 }
 
 .video-flower-stage .long-g--4 {
   right: 38vmin;
   transform: scale(.7);
+  animation-delay: -1.2s;
 }
 
 .video-flower-stage .long-g--5 {
   right: 22vmin;
   transform: scale(.8);
+  animation-delay: -2.3s;
 }
 
 .video-flower-stage .long-g--6 {
   right: 8vmin;
   transform: scale(.65);
+  animation-delay: -.5s;
 }
 
 .video-flower-stage .long-g--7 {
   right: -4vmin;
   transform: scale(.75);
+  animation-delay: -1.8s;
 }
 
 .video-flower-stage .long-g .leaf {
@@ -866,7 +934,7 @@
   height: var(--h);
 
   border-top-left-radius: 100%;
-  border-left: 1.8vmin solid #159faa;
+  border-left: 1.8vmin solid #258e3d;
 
   transform-origin: bottom center;
 
@@ -874,21 +942,15 @@
     linear-gradient(
       to top,
       transparent 15%,
-      #159faa 55%
+      #258e3d 55%
     );
 
   mask-image:
     linear-gradient(
       to top,
       transparent 15%,
-      #159faa 55%
+      #258e3d 55%
     );
-
-  animation:
-    long-grass-sway
-    4s
-    ease-in-out
-    infinite;
 }
 
 .video-flower-stage .long-g .leaf--1 {
@@ -899,20 +961,22 @@
 .video-flower-stage .long-g .leaf--2 {
   --w: 8vmin;
   --h: 34vmin;
+
   transform: rotateY(180deg);
 }
 
 .video-flower-stage .long-g .leaf--3 {
   --w: 5vmin;
   --h: 28vmin;
+
   transform:
     rotate(-10deg)
     rotateY(-180deg);
 }
 
-/* =========================
-   GROUND
-========================= */
+/* =====================================================
+   FRONT GROUND GRASS
+===================================================== */
 
 .video-flower-stage .video-grass {
   position: absolute;
@@ -921,7 +985,7 @@
   right: 0;
   bottom: 0;
 
-  height: 13vmin;
+  height: 14vmin;
 
   z-index: 120;
 }
@@ -937,21 +1001,30 @@
   border-radius:
     100% 0 100% 0;
 
+  /*
+     Natural green grass
+  */
+
   background:
     linear-gradient(
       to top,
-      #064d3d,
-      #2bc77b
+      #064d25 0%,
+      #128535 55%,
+      #35b957 100%
     );
 
   transform-origin: bottom center;
 
   animation:
-    ground-grass-sway
-    2.8s
+    ground-grass-wind
+    3.2s
     ease-in-out
     infinite;
 }
+
+/* =====================================================
+   GROUND GLOW
+===================================================== */
 
 .video-flower-stage .video-ground-glow {
   position: absolute;
@@ -984,113 +1057,183 @@
     infinite;
 }
 
-/* =========================
-   BIRD
-========================= */
+/* =====================================================
+   REAL BIRD
+===================================================== */
 
 .garden-bird {
   position: absolute;
 
-  left: -15vw;
+  left: -16vw;
+  top: var(--bird-top, 20%);
 
-  top: var(--bird-top, 22%);
+  width: clamp(52px, 9vw, 82px);
+  height: auto;
 
   z-index: 180;
 
-  font-size:
-    clamp(
-      24px,
-      4vw,
-      38px
-    );
-
-  line-height: 1;
-
   pointer-events: none;
 
-  filter:
-    drop-shadow(
-      0 0 8px
-      rgba(220,255,255,.35)
-    );
-
   animation:
-    real-bird-fly
+    real-bird-flight
     5.2s
     linear
     forwards;
 }
 
-@keyframes real-bird-fly {
+.bird-svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  overflow: visible;
+
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(255,255,255,.35)
+    );
+}
+
+.bird-body {
+  fill: #eef5f2;
+}
+
+.bird-beak {
+  fill: #d5a13b;
+}
+
+.bird-wing {
+  fill: #ffffff;
+
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.bird-wing-left {
+  animation:
+    bird-wing-left-flap
+    .34s
+    ease-in-out
+    infinite;
+}
+
+.bird-wing-right {
+  animation:
+    bird-wing-right-flap
+    .34s
+    ease-in-out
+    infinite;
+}
+
+/* =====================================================
+   BIRD FLIGHT
+===================================================== */
+
+@keyframes real-bird-flight {
   0% {
-    left: -15vw;
+    left: -16vw;
 
     transform:
       translateY(5px)
-      scale(.72)
-      rotate(-3deg);
+      scale(.72);
 
     opacity: 0;
   }
 
-  7% {
+  8% {
     opacity: 1;
   }
 
   18% {
     transform:
-      translateY(-10px)
-      scale(.82)
-      rotate(2deg);
-  }
-
-  32% {
-    transform:
-      translateY(8px)
-      scale(.9)
-      rotate(-2deg);
-  }
-
-  47% {
-    transform:
-      translateY(-12px)
-      scale(.95)
-      rotate(2deg);
-  }
-
-  62% {
-    transform:
-      translateY(6px)
-      scale(.92)
-      rotate(-2deg);
-  }
-
-  77% {
-    transform:
       translateY(-9px)
-      scale(.86)
-      rotate(2deg);
+      scale(.8);
   }
 
-  90% {
+  30% {
+    transform:
+      translateY(7px)
+      scale(.87);
+  }
+
+  42% {
+    transform:
+      translateY(-10px)
+      scale(.94);
+  }
+
+  54% {
+    transform:
+      translateY(7px)
+      scale(.96);
+  }
+
+  67% {
+    transform:
+      translateY(-8px)
+      scale(.92);
+  }
+
+  80% {
+    transform:
+      translateY(5px)
+      scale(.86);
+  }
+
+  92% {
     opacity: 1;
   }
 
   100% {
-    left: 115vw;
+    left: 116vw;
 
     transform:
-      translateY(4px)
-      scale(.72)
-      rotate(-2deg);
+      translateY(-2px)
+      scale(.74);
 
     opacity: 0;
   }
 }
 
-/* =========================
+/* =====================================================
+   BIRD WING FLAP
+===================================================== */
+
+@keyframes bird-wing-left-flap {
+  0%,
+  100% {
+    transform:
+      rotateX(8deg)
+      rotateZ(-2deg);
+  }
+
+  50% {
+    transform:
+      rotateX(62deg)
+      rotateZ(-6deg);
+  }
+}
+
+@keyframes bird-wing-right-flap {
+  0%,
+  100% {
+    transform:
+      rotateX(8deg)
+      rotateZ(2deg);
+  }
+
+  50% {
+    transform:
+      rotateX(62deg)
+      rotateZ(6deg);
+  }
+}
+
+/* =====================================================
    BUTTERFLIES
-========================= */
+===================================================== */
 
 .garden-butterfly {
   position: absolute;
@@ -1143,8 +1286,12 @@
   0% {
     left: -10vw;
     top: 48%;
+
     opacity: 0;
-    transform: rotate(-8deg) scale(.7);
+
+    transform:
+      rotate(-8deg)
+      scale(.7);
   }
 
   10% {
@@ -1153,29 +1300,45 @@
 
   25% {
     top: 43%;
-    transform: rotate(8deg) scale(.82);
+
+    transform:
+      rotate(8deg)
+      scale(.82);
   }
 
   45% {
     top: 51%;
-    transform: rotate(-5deg) scale(.9);
+
+    transform:
+      rotate(-5deg)
+      scale(.9);
   }
 
   65% {
     top: 41%;
-    transform: rotate(8deg) scale(.86);
+
+    transform:
+      rotate(8deg)
+      scale(.86);
   }
 
   82% {
     top: 48%;
-    transform: rotate(-5deg) scale(.8);
+
+    transform:
+      rotate(-5deg)
+      scale(.8);
   }
 
   100% {
     left: 110vw;
     top: 44%;
+
     opacity: 0;
-    transform: rotate(8deg) scale(.7);
+
+    transform:
+      rotate(8deg)
+      scale(.7);
   }
 }
 
@@ -1183,7 +1346,9 @@
   0% {
     left: 110vw;
     top: 38%;
+
     opacity: 0;
+
     transform: scale(.7);
   }
 
@@ -1193,34 +1358,40 @@
 
   28% {
     top: 45%;
+
     transform: scale(.82);
   }
 
   50% {
     top: 35%;
+
     transform: scale(.9);
   }
 
   72% {
     top: 47%;
+
     transform: scale(.82);
   }
 
   100% {
     left: -10vw;
     top: 40%;
+
     opacity: 0;
+
     transform: scale(.7);
   }
 }
 
-/* =========================
-   KEYFRAMES
-========================= */
+/* =====================================================
+   FLOWER BLOOM
+===================================================== */
 
 @keyframes flower-wrap-grow {
   0% {
     opacity: 0;
+
     transform:
       translateX(-50%)
       scale(var(--flower-scale))
@@ -1229,6 +1400,7 @@
 
   100% {
     opacity: 1;
+
     transform:
       translateX(-50%)
       scale(var(--flower-scale))
@@ -1252,7 +1424,7 @@
     transform:
       translateX(-50%)
       rotate(var(--petal-rotate))
-      scale(1.08);
+      scale(1.1);
   }
 
   100% {
@@ -1288,11 +1460,13 @@
 @keyframes stem-grow {
   0% {
     transform: scaleY(0);
+
     opacity: 0;
   }
 
   100% {
     transform: scaleY(1);
+
     opacity: 1;
   }
 }
@@ -1325,61 +1499,107 @@
   }
 }
 
-@keyframes flower-light {
-  0% {
-    opacity: 0;
-    transform: translateY(0) scale(.5);
-  }
+/* =====================================================
+   WIND
+===================================================== */
 
-  25% {
-    opacity: 1;
-  }
-
+@keyframes flower-wind-1 {
+  0%,
   100% {
-    opacity: 0;
     transform:
-      translateY(-24vmin)
-      translateX(3vmin)
-      scale(1.2);
-  }
-}
-
-@keyframes long-flower-sway {
-  0%,
-  100% {
-    transform: rotate(-3deg);
+      rotate(-1.5deg);
   }
 
   50% {
-    transform: rotate(4deg);
+    transform:
+      rotate(2deg)
+      translateX(.4vmin);
   }
 }
 
-@keyframes grass-grow {
-  0% {
-    transform: scaleY(0);
-    transform-origin: bottom;
-    opacity: 0;
-  }
-
-  100% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}
-
-@keyframes foliage-sway {
+@keyframes flower-wind-2 {
   0%,
   100% {
-    transform: rotate(18deg);
+    transform:
+      rotate(10deg);
   }
 
   50% {
-    transform: rotate(23deg);
+    transform:
+      rotate(14deg)
+      translateX(.5vmin);
   }
 }
 
-@keyframes foliage-sway-2 {
+@keyframes flower-wind-3 {
+  0%,
+  100% {
+    transform:
+      rotate(-8deg);
+  }
+
+  50% {
+    transform:
+      rotate(-4deg)
+      translateX(-.4vmin);
+  }
+}
+
+@keyframes flower-wind-4 {
+  0%,
+  100% {
+    transform:
+      rotate(6deg);
+  }
+
+  50% {
+    transform:
+      rotate(10deg)
+      translateX(.3vmin);
+  }
+}
+
+@keyframes long-flower-wind {
+  0%,
+  100% {
+    transform:
+      rotate(-3deg);
+  }
+
+  50% {
+    transform:
+      rotate(4deg);
+  }
+}
+
+@keyframes grass-group-wind {
+  0%,
+  100% {
+    transform:
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      rotate(3deg)
+      translateX(.4vmin);
+  }
+}
+
+@keyframes foliage-wind-1 {
+  0%,
+  100% {
+    transform:
+      rotate(18deg);
+  }
+
+  50% {
+    transform:
+      rotate(23deg);
+  }
+}
+
+@keyframes foliage-wind-2 {
   0%,
   100% {
     transform:
@@ -1390,15 +1610,15 @@
   50% {
     transform:
       rotateY(180deg)
-      rotate(5deg);
+      rotate(4deg);
   }
 }
 
-@keyframes front-foliage-sway {
+@keyframes front-foliage-wind {
   0%,
   100% {
     transform:
-      rotate(-4deg)
+      rotate(-3deg)
       rotateY(12deg);
   }
 
@@ -1409,18 +1629,20 @@
   }
 }
 
-@keyframes front-branch-sway {
+@keyframes front-branch-wind {
   0%,
   100% {
-    transform: rotate(1deg);
+    transform:
+      rotate(1deg);
   }
 
   50% {
-    transform: rotate(4deg);
+    transform:
+      rotate(4deg);
   }
 }
 
-@keyframes long-grass-sway {
+@keyframes long-grass-wind {
   0%,
   100% {
     margin-left: 0;
@@ -1431,14 +1653,43 @@
   }
 }
 
-@keyframes ground-grass-sway {
+@keyframes ground-grass-wind {
   0%,
   100% {
-    transform: rotate(-3deg);
+    transform:
+      rotate(-3deg);
   }
 
   50% {
-    transform: rotate(4deg);
+    transform:
+      rotate(4deg);
+  }
+}
+
+/* =====================================================
+   LIGHTS
+===================================================== */
+
+@keyframes flower-light {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateY(0)
+      scale(.5);
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateY(-24vmin)
+      translateX(3vmin)
+      scale(1.2);
   }
 }
 
@@ -1446,6 +1697,7 @@
   0%,
   100% {
     opacity: .55;
+
     transform:
       translateX(-50%)
       scale(.96);
@@ -1453,28 +1705,29 @@
 
   50% {
     opacity: 1;
+
     transform:
       translateX(-50%)
       scale(1.05);
   }
 }
 
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 
 @media (max-width: 600px) {
   .video-flower-stage .flowers {
-    transform: scale(.78);
+    transform: scale(.88);
     transform-origin: bottom center;
   }
 
   .video-flower-stage .flower-wrap {
-    bottom: 7vmin;
+    bottom: 6vmin;
   }
 
   .garden-bird {
-    font-size: 27px;
+    width: 58px;
   }
 
   .garden-butterfly--1 {
@@ -1483,5 +1736,18 @@
 
   .garden-butterfly--2 {
     top: 43%;
+  }
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .video-flower-stage *,
+  .garden-bird,
+  .garden-butterfly {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
