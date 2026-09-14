@@ -1,938 +1,1095 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { useState } from "react"
+import { motion } from "framer-motion"
 
-const STARS = [
-  [5, 12, 2],
-  [11, 25, 1],
-  [17, 8, 2],
-  [23, 18, 1],
-  [29, 7, 2],
-  [36, 22, 1],
-  [43, 10, 2],
-  [49, 27, 1],
-  [56, 8, 2],
-  [63, 19, 1],
-  [70, 11, 2],
-  [77, 25, 1],
-  [84, 7, 2],
-  [91, 18, 1],
-  [96, 31, 2],
-  [8, 42, 1],
-  [20, 35, 2],
-  [32, 45, 1],
-  [68, 39, 2],
-  [80, 43, 1],
-  [92, 37, 2],
+const stars = [
+  [5, 10],
+  [12, 22],
+  [18, 8],
+  [25, 18],
+  [33, 7],
+  [41, 14],
+  [49, 6],
+  [57, 20],
+  [65, 9],
+  [73, 17],
+  [82, 7],
+  [90, 23],
+  [96, 11],
+  [8, 38],
+  [21, 31],
+  [31, 43],
+  [45, 35],
+  [60, 40],
+  [76, 34],
+  [88, 42],
 ]
 
-const GRASS = [
-  [3, 25, -8],
-  [7, 31, 7],
-  [12, 22, -5],
-  [17, 28, 8],
-  [22, 20, -7],
-  [27, 29, 5],
-  [33, 23, -6],
-  [39, 30, 7],
-  [45, 21, -5],
-  [51, 28, 6],
-  [57, 23, -7],
-  [63, 30, 5],
-  [69, 22, -6],
-  [75, 29, 7],
-  [81, 23, -5],
-  [87, 30, 6],
-  [93, 22, -7],
-  [98, 28, 5],
-]
+/* -------------------------------------------------------
+   VIDEO STYLE FLOWER
+------------------------------------------------------- */
 
-const FLOWER_POSITIONS = [
-  {
-    left: "39%",
-    height: 220,
-    size: 46,
-    delay: 0.45,
-    tilt: -7,
-  },
-  {
-    left: "50%",
-    height: 270,
-    size: 58,
-    delay: 0.05,
-    tilt: 0,
-  },
-  {
-    left: "61%",
-    height: 225,
-    size: 46,
-    delay: 0.7,
-    tilt: 7,
-  },
-]
-
-const HEARTS = [
-  {
-    left: "8%",
-    top: "72%",
-    size: 18,
-    delay: 1.3,
-    drift: -18,
-  },
-  {
-    left: "18%",
-    top: "38%",
-    size: 31,
-    delay: 1.8,
-    drift: 16,
-  },
-  {
-    left: "77%",
-    top: "39%",
-    size: 25,
-    delay: 2.2,
-    drift: -13,
-  },
-  {
-    left: "88%",
-    top: "70%",
-    size: 17,
-    delay: 2.7,
-    drift: 20,
-  },
-  {
-    left: "73%",
-    top: "60%",
-    size: 15,
-    delay: 3.1,
-    drift: -10,
-  },
-]
-
-const RINGS = [
-  {
-    left: "7%",
-    top: "52%",
-    size: 48,
-    delay: 1.0,
-  },
-  {
-    left: "28%",
-    top: "45%",
-    size: 78,
-    delay: 1.7,
-  },
-  {
-    left: "76%",
-    top: "25%",
-    size: 70,
-    delay: 2.2,
-  },
-  {
-    left: "91%",
-    top: "52%",
-    size: 58,
-    delay: 2.8,
-  },
-  {
-    left: "20%",
-    top: "82%",
-    size: 82,
-    delay: 3.3,
-  },
-]
-
-function FlowerHead({ size, delay = 0 }) {
-  const petals = [
-    {
-      rotate: 0,
-      x: 0,
-      y: -15,
-    },
-    {
-      rotate: 72,
-      x: 13,
-      y: -5,
-    },
-    {
-      rotate: 144,
-      x: 8,
-      y: 10,
-    },
-    {
-      rotate: 216,
-      x: -8,
-      y: 10,
-    },
-    {
-      rotate: 288,
-      x: -13,
-      y: -5,
-    },
-  ]
+function VideoFlower({ number }) {
+  const lights = Array.from({ length: 8 })
 
   return (
-    <motion.div
-      className="relative"
-      style={{
-        width: size,
-        height: size,
-      }}
-      initial={{
-        opacity: 0,
-        scale: 0.35,
-        y: 8,
-      }}
-      animate={{
-        opacity: 1,
-        scale: [0.35, 1.08, 1],
-        y: 0,
-      }}
-      transition={{
-        duration: 1.15,
-        delay,
-        times: [0, 0.72, 1],
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      {petals.map((petal, index) => (
-        <motion.div
-          key={index}
-          className="absolute rounded-[55%] origin-bottom"
-          style={{
-            width: size * 0.42,
-            height: size * 0.62,
-            left: `calc(50% + ${petal.x}px - ${
-              size * 0.21
-            }px)`,
-            top: `calc(50% + ${petal.y}px - ${
-              size * 0.31
-            }px)`,
-            background:
-              "linear-gradient(180deg, #ffd0e3 0%, #f28ab4 55%, #df4f8b 100%)",
-            boxShadow:
-              "0 0 15px rgba(255,125,185,.35)",
-            transform: `rotate(${petal.rotate}deg)`,
-          }}
-          initial={{
-            opacity: 0,
-            scale: 0.08,
-            rotate:
-              petal.rotate -
-              (petal.rotate === 0 ? 0 : 18),
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            rotate: petal.rotate,
-          }}
-          transition={{
-            duration: 0.72,
-            delay: delay + 0.08 + index * 0.11,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        />
-      ))}
+    <div className={`vf-flower vf-flower--${number}`}>
+      <div className={`vf-flower__leafs vf-flower__leafs--${number}`}>
+        <div className="vf-flower__leaf vf-flower__leaf--1" />
+        <div className="vf-flower__leaf vf-flower__leaf--2" />
+        <div className="vf-flower__leaf vf-flower__leaf--3" />
+        <div className="vf-flower__leaf vf-flower__leaf--4" />
 
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.28,
-          height: size * 0.18,
-          left: "36%",
-          top: "53%",
-          background:
-            "radial-gradient(ellipse, #fff9e8 0%, #ffd7ec 48%, #ef79ad 100%)",
-          boxShadow:
-            "0 0 10px rgba(255,190,225,.55)",
-        }}
-        initial={{
-          opacity: 0,
-          scale: 0,
-        }}
-        animate={{
-          opacity: 1,
-          scale: [0, 1.18, 1],
-        }}
-        transition={{
-          duration: 0.65,
-          delay: delay + 0.65,
-          ease: "backOut",
-        }}
-      />
+        <div className="vf-flower__white-circle" />
 
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.18,
-          height: size * 0.18,
-          left: "41%",
-          top: "49%",
-          background: "#f3b94b",
-          boxShadow:
-            "0 0 9px rgba(255,215,90,.75)",
-        }}
-        initial={{
-          opacity: 0,
-          scale: 0,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-        }}
-        transition={{
-          duration: 0.45,
-          delay: delay + 0.8,
-          ease: "backOut",
-        }}
-      />
-    </motion.div>
-  )
-}
-
-function Leaf({ side, bottom, delay }) {
-  return (
-    <motion.div
-      className="absolute"
-      style={{
-        left:
-          side === "left"
-            ? "50%"
-            : "auto",
-        right:
-          side === "right"
-            ? "50%"
-            : "auto",
-        bottom,
-        width: 34,
-        height: 16,
-        borderRadius:
-          side === "left"
-            ? "100% 0 100% 0"
-            : "0 100% 0 100%",
-        background:
-          "linear-gradient(135deg, #48d68b 0%, #1ca766 48%, #07583e 100%)",
-        transformOrigin:
-          side === "left"
-            ? "right center"
-            : "left center",
-        boxShadow:
-          "0 0 8px rgba(35,190,110,.2)",
-      }}
-      initial={{
-        opacity: 0,
-        scale: 0,
-        rotate:
-          side === "left"
-            ? -45
-            : 45,
-      }}
-      animate={{
-        opacity: 1,
-        scale: [0, 1.12, 1],
-        rotate:
-          side === "left"
-            ? [-45, -8, -12]
-            : [45, 8, 12],
-      }}
-      transition={{
-        duration: 0.8,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    />
-  )
-}
-
-function FlowerPlant({
-  left,
-  height,
-  size,
-  delay,
-  tilt,
-}) {
-  return (
-    <motion.div
-      className="absolute bottom-0"
-      style={{
-        left,
-        width: 110,
-        height,
-        transform: "translateX(-50%)",
-        transformOrigin: "bottom center",
-      }}
-    >
-      {/* STEM */}
-      <motion.div
-        className="absolute bottom-0 left-1/2 rounded-full"
-        style={{
-          width: 5,
-          height: "100%",
-          background:
-            "linear-gradient(to top, #0c4934, #1ca765 55%, #43d58c)",
-          transform: `translateX(-50%) rotate(${tilt}deg)`,
-          transformOrigin: "bottom center",
-          boxShadow:
-            "0 0 8px rgba(39,190,125,.25)",
-        }}
-        initial={{
-          scaleY: 0,
-        }}
-        animate={{
-          scaleY: 1,
-        }}
-        transition={{
-          duration: 1.35,
-          delay,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      />
-
-      {/* LITTLE SIDE SHOOTS */}
-      <motion.div
-        className="absolute bottom-[38%] left-1/2 rounded-full"
-        style={{
-          width: 3,
-          height: "31%",
-          background: "#15925d",
-          transformOrigin: "bottom center",
-          transform:
-            "translateX(-50%) rotate(-25deg)",
-        }}
-        initial={{
-          scaleY: 0,
-        }}
-        animate={{
-          scaleY: 1,
-        }}
-        transition={{
-          duration: 0.65,
-          delay: delay + 0.7,
-          ease: "easeOut",
-        }}
-      />
-
-      <motion.div
-        className="absolute bottom-[45%] left-1/2 rounded-full"
-        style={{
-          width: 3,
-          height: "25%",
-          background: "#15925d",
-          transformOrigin: "bottom center",
-          transform:
-            "translateX(-50%) rotate(27deg)",
-        }}
-        initial={{
-          scaleY: 0,
-        }}
-        animate={{
-          scaleY: 1,
-        }}
-        transition={{
-          duration: 0.65,
-          delay: delay + 0.82,
-          ease: "easeOut",
-        }}
-      />
-
-      {/* LEAVES */}
-      <Leaf
-        side="left"
-        bottom="31%"
-        delay={delay + 0.78}
-      />
-
-      <Leaf
-        side="right"
-        bottom="45%"
-        delay={delay + 0.92}
-      />
-
-      <Leaf
-        side="left"
-        bottom="55%"
-        delay={delay + 1.05}
-      />
-
-      <Leaf
-        side="right"
-        bottom="63%"
-        delay={delay + 1.18}
-      />
-
-      {/* CLOSED BUD -> OPEN FLOWER */}
-      <motion.div
-        className="absolute left-1/2"
-        style={{
-          top: -size * 0.35,
-          transform: "translateX(-50%)",
-          transformOrigin: "bottom center",
-        }}
-        initial={{
-          opacity: 0,
-          scale: 0.35,
-          y: 14,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.8,
-          delay: delay + 1.25,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
-        <motion.div
-          initial={{
-            scale: 0.18,
-            rotate: -7,
-          }}
-          animate={{
-            scale: [0.18, 0.72, 1],
-            rotate: [-7, 3, 0],
-          }}
-          transition={{
-            duration: 0.75,
-            delay: delay + 1.28,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          <FlowerHead
-            size={size}
-            delay={delay + 1.28}
-          />
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
-function Grass() {
-  return (
-    <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none">
-      {GRASS.map(
-        ([left, height, rotate], index) => (
-          <motion.div
+        {lights.map((_, index) => (
+          <div
             key={index}
-            className="absolute bottom-0 origin-bottom rounded-full"
-            style={{
-              left: `${left}%`,
-              width: 3,
-              height,
-              background:
-                "linear-gradient(to top, #0b4935, #2dbd77)",
-              transform:
-                `rotate(${rotate}deg)`,
-            }}
-            animate={{
-              rotate: [
-                rotate - 3,
-                rotate + 3,
-                rotate - 3,
-              ],
-            }}
-            transition={{
-              duration:
-                2.8 +
-                (index % 3) * 0.3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            className={`vf-flower__light vf-flower__light--${index + 1}`}
           />
-        ),
-      )}
+        ))}
+      </div>
+
+      <div className="vf-flower__line">
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--1" />
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--2" />
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--3" />
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--4" />
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--5" />
+        <div className="vf-flower__line-leaf vf-flower__line-leaf--6" />
+      </div>
     </div>
   )
 }
 
-function FloatingDecorations() {
+function VideoGrass({ className = "" }) {
   return (
-    <>
-      {RINGS.map((ring, index) => (
-        <motion.div
-          key={`ring-${index}`}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            left: ring.left,
-            top: ring.top,
-            width: ring.size,
-            height: ring.size,
-            border:
-              "2px solid rgba(45,230,130,.8)",
-            boxShadow:
-              "0 0 9px rgba(35,235,135,.15)",
-          }}
-          initial={{
-            opacity: 0,
-            scale: 0.15,
-          }}
-          animate={{
-            opacity: [
-              0,
-              0.75,
-              0.45,
-              0,
-            ],
-            scale: [
-              0.15,
-              1,
-              1.08,
-              1.15,
-            ],
-            y: [
-              12,
-              0,
-              -5,
-              -14,
-            ],
-          }}
-          transition={{
-            duration: 4.2,
-            delay: ring.delay,
-            repeat: Infinity,
-            repeatDelay:
-              2.5 + index * 0.4,
-            ease: "easeOut",
-          }}
+    <div className={`vf-growing-grass ${className}`}>
+      <div className="vf-grass-top" />
+      <div className="vf-grass-bottom" />
+
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div
+          key={index}
+          className={`vf-grass-leaf vf-grass-leaf--${index + 1}`}
         />
       ))}
 
-      {HEARTS.map((heart, index) => (
-        <motion.div
-          key={`heart-${index}`}
-          className="absolute pointer-events-none"
-          style={{
-            left: heart.left,
-            top: heart.top,
-            fontSize: heart.size,
-            lineHeight: 1,
-            filter:
-              "drop-shadow(0 0 8px rgba(255,55,120,.35))",
-          }}
-          initial={{
-            opacity: 0,
-            scale: 0,
-            y: 15,
-          }}
-          animate={{
-            opacity: [
-              0,
-              0.95,
-              0.65,
-              0,
-            ],
-            scale: [
-              0,
-              1.12,
-              1,
-              0.8,
-            ],
-            x: [
-              0,
-              heart.drift,
-              heart.drift * 0.4,
-            ],
-            y: [
-              15,
-              -8,
-              -32,
-            ],
-          }}
-          transition={{
-            duration: 4.4,
-            delay: heart.delay,
-            repeat: Infinity,
-            repeatDelay:
-              2 + index * 0.45,
-            ease: "easeInOut",
-          }}
-        >
-          ❤️
-        </motion.div>
-      ))}
-    </>
+      <div className="vf-grass-overlay" />
+    </div>
   )
 }
 
-function Fireflies() {
-  const fireflies = [
-    [13, 34],
-    [22, 52],
-    [30, 27],
-    [70, 32],
-    [79, 50],
-    [89, 29],
-    [17, 64],
-    [84, 65],
-  ]
+function VideoLongGrass({ index }) {
+  return (
+    <div className={`vf-long-g vf-long-g--${index}`}>
+      <div className="vf-grow vf-grow--1">
+        <div className="vf-leaf vf-leaf--0" />
+      </div>
 
+      <div className="vf-grow vf-grow--2">
+        <div className="vf-leaf vf-leaf--1" />
+      </div>
+
+      <div className="vf-grow vf-grow--3">
+        <div className="vf-leaf vf-leaf--2" />
+      </div>
+
+      <div className="vf-grow vf-grow--4">
+        <div className="vf-leaf vf-leaf--3" />
+      </div>
+    </div>
+  )
+}
+
+function VideoFlowerGarden() {
   return (
     <>
-      {fireflies.map(
-        ([left, top], index) => (
-          <motion.div
-            key={index}
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              left: `${left}%`,
-              top: `${top}%`,
-              width: 3,
-              height: 3,
-              background: "#bffff0",
-              boxShadow:
-                "0 0 12px 4px rgba(100,255,220,.55)",
-            }}
-            animate={{
-              opacity: [
-                0.15,
-                1,
-                0.2,
-              ],
-              scale: [
-                0.7,
-                1.5,
-                0.7,
-              ],
-              y: [
-                -5,
-                5,
-                -5,
-              ],
-            }}
-            transition={{
-              duration:
-                2.5 +
-                (index % 3) * 0.5,
-              delay:
-                (index % 4) * 0.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ),
-      )}
-    </>
-  )
-}
+      <div className="vf-flowers">
+        {/* Main flowers */}
+        <VideoFlower number={1} />
+        <VideoFlower number={2} />
+        <VideoFlower number={3} />
+        <VideoFlower number={4} />
 
-export default function GardenPage() {
-  const [bloomed, setBloomed] =
-    useState(false)
+        {/* Long center stem */}
+        <div className="vf-grow vf-center-grow">
+          <div className="vf-g-long">
+            <div className="vf-g-long-top" />
+            <div className="vf-g-long-bottom" />
+          </div>
+        </div>
 
-  const handleBloom = () => {
-    if (!bloomed) {
-      setBloomed(true)
-    }
-  }
+        {/* Grass */}
+        <div className="vf-grass-holder vf-grass-holder--1">
+          <VideoGrass />
+        </div>
 
-  return (
-    <main
-      onPointerDown={handleBloom}
-      className="relative min-h-[100dvh] w-full overflow-hidden cursor-pointer select-none"
-      style={{
-        background:
-          "radial-gradient(circle at 50% 65%, rgba(20,100,110,.22), transparent 35%), linear-gradient(to bottom, #020716 0%, #061426 50%, #071e29 78%, #020a11 100%)",
-      }}
-    >
-      {/* STARS */}
-      <div className="absolute inset-0 pointer-events-none">
-        {STARS.map(
-          ([left, top, size], index) => (
-            <motion.div
-              key={index}
-              className="absolute rounded-full bg-white"
-              style={{
-                left: `${left}%`,
-                top: `${top}%`,
-                width: size,
-                height: size,
-              }}
-              animate={{
-                opacity: [
-                  0.2,
-                  0.9,
-                  0.2,
-                ],
-                scale: [
-                  0.8,
-                  1.3,
-                  0.8,
-                ],
-              }}
-              transition={{
-                duration:
-                  2.5 +
-                  (index % 4) * 0.4,
-                delay:
-                  (index % 5) * 0.3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ),
-        )}
-      </div>
+        <div className="vf-grass-holder vf-grass-holder--2">
+          <VideoGrass />
+        </div>
 
-      {/* MOON */}
-      <motion.div
-        className="absolute top-[12%] right-[10%] w-12 h-12 rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at 35% 30%, #ffffff, #d8ffff 58%, #80b8c4)",
-          boxShadow:
-            "0 0 32px rgba(170,245,255,.42)",
-        }}
-        animate={{
-          opacity: [
-            0.75,
-            1,
-            0.75,
-          ],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+        {/* Side leaves */}
+        <div className="vf-grow vf-side-grow vf-side-grow--1">
+          <div className="vf-g-right">
+            <div className="vf-big-leaf" />
+          </div>
+        </div>
 
-      <Fireflies />
+        <div className="vf-grow vf-side-grow vf-side-grow--2">
+          <div className="vf-g-right">
+            <div className="vf-big-leaf" />
+          </div>
+        </div>
 
-      {/* TITLE */}
-      <motion.div
-        className="absolute top-10 left-0 right-0 z-40 text-center px-5 pointer-events-none"
-        initial={{
-          opacity: 0,
-          y: -15,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.8,
-        }}
-      >
-        <h1
-          className="text-2xl md:text-4xl font-medium"
-          style={{
-            color: "#baf8f2",
-            textShadow:
-              "0 0 13px rgba(75,230,220,.45)",
-          }}
-        >
-          A LITTLE GARDEN
-        </h1>
-
-        {!bloomed && (
-          <motion.p
-            className="mt-3 text-sm md:text-base"
-            style={{
-              color:
-                "rgba(215,255,250,.75)",
-            }}
-            animate={{
-              opacity: [
-                0.45,
-                1,
-                0.45,
-              ],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-          >
-            Tap anywhere and let the garden
-            bloom 🌱✨
-          </motion.p>
-        )}
-      </motion.div>
-
-      {/* FLOWERS */}
-      {bloomed && (
-        <>
-          <FloatingDecorations />
-
-          {FLOWER_POSITIONS.map(
-            (flower, index) => (
-              <FlowerPlant
+        {/* Front leaves */}
+        <div className="vf-grow vf-front-grow">
+          <div className="vf-g-front">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div
                 key={index}
-                {...flower}
+                className={`vf-front-leaf-wrapper vf-front-leaf-wrapper--${
+                  index + 1
+                }`}
+              >
+                <div className="vf-front-leaf" />
+              </div>
+            ))}
+            <div className="vf-front-line" />
+          </div>
+        </div>
+
+        {/* Back leaves */}
+        <div className="vf-grow vf-back-grow">
+          <div className="vf-g-fr">
+            <div className="vf-big-leaf" />
+
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={index}
+                className={`vf-back-leaf vf-back-leaf--${index + 1}`}
               />
-            ),
-          )}
+            ))}
+          </div>
+        </div>
 
-          <Grass />
-
-          {/* SOFT GROUND GLOW */}
-          <motion.div
-            className="absolute bottom-0 left-1/2 pointer-events-none"
-            style={{
-              width: "78%",
-              height: 120,
-              transform:
-                "translateX(-50%)",
-              background:
-                "radial-gradient(ellipse, rgba(50,205,170,.18), transparent 70%)",
-              filter: "blur(11px)",
-            }}
-            initial={{
-              opacity: 0,
-              scale: 0.45,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 1.6,
-              delay: 0.2,
-            }}
-          />
-
-          {/* MESSAGE */}
-          <motion.p
-            className="absolute bottom-24 left-0 right-0 text-center px-6 pointer-events-none"
-            style={{
-              color:
-                "rgba(215,255,250,.72)",
-            }}
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 3.1,
-              duration: 1,
-            }}
-          >
-            Every flower here is a memory worth
-            cherishing.
-          </motion.p>
-        </>
-      )}
-
-      {/* FOOTER */}
-      <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none">
-        <span
-          className="text-xs md:text-sm"
-          style={{
-            color:
-              "rgba(180,245,235,.5)",
-          }}
-        >
-          A little garden, made with a little
-          touch. 🌸
-        </span>
+        {/* Long grass around garden */}
+        {Array.from({ length: 8 }).map((_, index) => (
+          <VideoLongGrass key={index} index={index} />
+        ))}
       </div>
-    </main>
-  )
-}
+
+      <style jsx global>{`
+        /* =====================================================
+           VIDEO FLOWER ANIMATION
+        ===================================================== */
+
+        .vf-flowers {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 68vh;
+          min-height: 430px;
+          transform: scale(0.9);
+          transform-origin: bottom center;
+          perspective: 1000px;
+          pointer-events: none;
+          overflow: visible;
+        }
+
+        .vf-flower {
+          position: absolute;
+          bottom: 8vmin;
+          transform-origin: bottom center;
+          z-index: 20;
+          --fl-speed: 0.8s;
+        }
+
+        .vf-flower--1 {
+          left: 30%;
+          animation: vf-moving-flower-1 4s linear infinite;
+        }
+
+        .vf-flower--2 {
+          left: 50%;
+          transform: rotate(20deg);
+          animation: vf-moving-flower-2 4s linear infinite;
+        }
+
+        .vf-flower--3 {
+          left: 68%;
+          transform: rotate(-15deg);
+          animation: vf-moving-flower-3 4s linear infinite;
+        }
+
+        .vf-flower--4 {
+          left: 83%;
+          bottom: 5vmin;
+          transform: scale(0.72) rotate(12deg);
+          animation: vf-moving-flower-4 4s linear infinite;
+        }
+
+        /* ---------------- FLOWER HEAD ---------------- */
+
+        .vf-flower__leafs {
+          position: relative;
+          width: 8vmin;
+          height: 8vmin;
+          animation: vf-blooming-flower 2s backwards;
+        }
+
+        .vf-flower__leafs--1 {
+          animation-delay: 1.1s;
+        }
+
+        .vf-flower__leafs--2 {
+          animation-delay: 1.4s;
+        }
+
+        .vf-flower__leafs--3 {
+          animation-delay: 1.7s;
+        }
+
+        .vf-flower__leafs--4 {
+          animation-delay: 2s;
+        }
+
+        .vf-flower__leafs::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          transform: translate(-50%, -100%);
+          width: 8vmin;
+          height: 8vmin;
+          background: #6bf0ff;
+          filter: blur(10vmin);
+        }
+
+        .vf-flower__leaf {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          width: 8vmin;
+          height: 11vmin;
+          border-radius: 51% 49% 47% 53% / 44% 45% 55% 69%;
+          background-color: #a7ffee;
+          background-image: linear-gradient(
+            to top,
+            #54b8aa,
+            #a7ffee
+          );
+          transform-origin: bottom center;
+          opacity: 0.9;
+          box-shadow: inset 0 0 2vmin rgba(255, 255, 255, 0.5);
+        }
+
+        .vf-flower__leaf--1 {
+          transform: translate(-10%, 1%) rotateY(40deg) rotateX(-50deg);
+        }
+
+        .vf-flower__leaf--2 {
+          transform: translate(-50%, -4%) rotateX(40deg);
+        }
+
+        .vf-flower__leaf--3 {
+          transform: translate(-90%, 0%) rotateY(45deg) rotateX(50deg);
+        }
+
+        .vf-flower__leaf--4 {
+          width: 8vmin;
+          height: 8vmin;
+          transform-origin: bottom left;
+          border-radius: 4vmin 10vmin 4vmin 4vmin;
+          transform: translate(0%, 18%) rotateX(70deg) rotate(-43deg);
+          background-image: linear-gradient(
+            to top,
+            #39c6d6,
+            #a7ffee
+          );
+          z-index: 1;
+          opacity: 0.8;
+        }
+
+        .vf-flower__white-circle {
+          position: absolute;
+          left: -3.5vmin;
+          top: -3vmin;
+          width: 9vmin;
+          height: 4vmin;
+          border-radius: 50%;
+          background: #fff;
+        }
+
+        .vf-flower__white-circle::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 45%;
+          transform: translate(-50%, -50%);
+          width: 60%;
+          height: 60%;
+          border-radius: inherit;
+          background: #f6c945;
+          box-shadow: 0 0 1.5vmin rgba(255, 220, 70, 0.9);
+        }
+
+        /* ---------------- FLOWER LIGHTS ---------------- */
+
+        .vf-flower__light {
+          position: absolute;
+          bottom: 0;
+          width: 1vmin;
+          height: 1vmin;
+          border-radius: 50%;
+          background: #fff;
+          filter: blur(0.2vmin);
+          animation: vf-flower-light 4s linear infinite backwards;
+        }
+
+        .vf-flower__light--1 {
+          left: -2vmin;
+          animation-delay: 1s;
+        }
+
+        .vf-flower__light--2 {
+          left: 3vmin;
+          top: -1vmin;
+          animation-delay: 1.5s;
+        }
+
+        .vf-flower__light--3 {
+          left: 6vmin;
+          top: 3vmin;
+          animation-delay: 2s;
+        }
+
+        .vf-flower__light--4 {
+          left: -1vmin;
+          top: 5vmin;
+          animation-delay: 2.5s;
+        }
+
+        .vf-flower__light--5 {
+          left: 7vmin;
+          top: 6vmin;
+          animation-delay: 3s;
+        }
+
+        .vf-flower__light--6 {
+          left: 2vmin;
+          top: 8vmin;
+          animation-delay: 3.5s;
+        }
+
+        .vf-flower__light--7 {
+          left: -3vmin;
+          top: 2vmin;
+          animation-delay: 4s;
+        }
+
+        .vf-flower__light--8 {
+          left: 5vmin;
+          top: 10vmin;
+          animation-delay: 4.5s;
+        }
+
+        /* ---------------- STEM ---------------- */
+
+        .vf-flower__line {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          width: 1.5vmin;
+          height: 58vmin;
+          transform-origin: bottom center;
+          background-image: linear-gradient(
+            to top,
+            transparent 10%,
+            #079097,
+            #159faa
+          );
+          box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
+          clip-path: polygon(35% 0, 65% 1%, 100% 100%, 0% 100%);
+          animation: vf-growing-stem 2s backwards;
+        }
+
+        .vf-flower--1 .vf-flower__line {
+          height: 64vmin;
+          animation-delay: 0.3s;
+        }
+
+        .vf-flower--2 .vf-flower__line {
+          height: 57vmin;
+          animation-delay: 0.6s;
+        }
+
+        .vf-flower--3 .vf-flower__line {
+          height: 60vmin;
+          animation-delay: 0.9s;
+        }
+
+        .vf-flower--4 .vf-flower__line {
+          height: 47vmin;
+          animation-delay: 1.1s;
+        }
+
+        /* ---------------- STEM LEAVES ---------------- */
+
+        .vf-flower__line-leaf {
+          position: absolute;
+          width: 8vmin;
+          height: 8vmin;
+          border-radius: 100% 0% 0% 100% / 100% 100% 0% 0%;
+          background-image: linear-gradient(
+            to bottom left,
+            transparent,
+            #079097
+          );
+          transform-origin: bottom left;
+        }
+
+        .vf-flower__line-leaf--1 {
+          left: 0;
+          top: 20%;
+          transform: rotate(70deg) rotateY(30deg);
+          animation: vf-leaf-right 0.8s 1.6s backwards;
+        }
+
+        .vf-flower__line-leaf--2 {
+          left: -1vmin;
+          top: 35%;
+          transform: rotate(70deg) rotateY(30deg);
+          animation: vf-leaf-right 0.8s 1.4s backwards;
+        }
+
+        .vf-flower__line-leaf--3 {
+          left: -1vmin;
+          top: 50%;
+          transform: rotate(-70deg) rotateY(30deg);
+          animation: vf-leaf-left 0.8s 1.2s backwards;
+        }
+
+        .vf-flower__line-leaf--4 {
+          left: 0;
+          top: 60%;
+          transform: rotate(-70deg) rotateY(30deg);
+          animation: vf-leaf-left 0.8s 1s backwards;
+        }
+
+        .vf-flower__line-leaf--5 {
+          left: 0;
+          top: 72%;
+          transform: rotate(70deg) rotateY(30deg);
+          animation: vf-leaf-right 0.8s 1.8s backwards;
+        }
+
+        .vf-flower__line-leaf--6 {
+          left: -1vmin;
+          top: 82%;
+          transform: rotate(-70deg) rotateY(30deg);
+          animation: vf-leaf-left 0.8s 2s backwards;
+        }
+
+        /* ---------------- CENTER LONG GRASS ---------------- */
+
+        .vf-g-long {
+          --w: 2vmin;
+          --h: 6vmin;
+          --c: #159faa;
+          position: absolute;
+          bottom: 8vmin;
+          left: -3vmin;
+          transform-origin: bottom center;
+          transform: rotate(-30deg) rotateY(-20deg);
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          animation: vf-g-long-sway 3s linear infinite;
+        }
+
+        .vf-g-long-top {
+          top: calc(var(--h) * -1);
+          width: calc(var(--w) + 1vmin);
+          height: var(--h);
+          border-top-right-radius: 100%;
+          border-right: 0.7vmin solid var(--c);
+          transform: translate(-0.7vmin, 1vmin);
+        }
+
+        .vf-g-long-bottom {
+          width: var(--w);
+          height: 50vmin;
+          transform-origin: bottom center;
+          background-image: linear-gradient(
+            to top,
+            transparent 30%,
+            var(--c)
+          );
+          clip-path: polygon(
+            35% 0,
+            65% 1%,
+            100% 100%,
+            0% 100%
+          );
+        }
+
+        /* ---------------- GRASS ---------------- */
+
+        .vf-grass-holder {
+          position: absolute;
+          bottom: 0;
+          z-index: 5;
+        }
+
+        .vf-grass-holder--1 {
+          left: 25%;
+          transform: scale(0.9);
+        }
+
+        .vf-grass-holder--2 {
+          right: 24%;
+          transform: scale(0.75);
+        }
+
+        .vf-growing-grass {
+          position: relative;
+          width: 16vmin;
+          height: 20vmin;
+          transform-origin: bottom center;
+          animation: vf-grow-grass 2s 1.8s backwards;
+        }
+
+        .vf-grass-top {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 4vmin;
+          height: 13vmin;
+          border-radius: 100%;
+          border-left: 1vmin solid #159faa;
+          transform: rotate(15deg);
+        }
+
+        .vf-grass-bottom {
+          position: absolute;
+          bottom: 0;
+          left: 30%;
+          width: 8vmin;
+          height: 13vmin;
+          background: linear-gradient(
+            to top,
+            #079097,
+            transparent
+          );
+          clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        }
+
+        .vf-grass-leaf {
+          position: absolute;
+          width: 5vmin;
+          height: 9vmin;
+          border-radius: 100% 0 100% 0;
+          background: linear-gradient(
+            to top,
+            #079097,
+            #23c7c7
+          );
+          transform-origin: bottom;
+        }
+
+        .vf-grass-leaf--1 {
+          left: 1vmin;
+          bottom: 2vmin;
+          transform: rotate(-35deg);
+        }
+
+        .vf-grass-leaf--2 {
+          left: 5vmin;
+          bottom: 1vmin;
+          transform: rotate(20deg);
+        }
+
+        .vf-grass-leaf--3 {
+          left: 9vmin;
+          bottom: 3vmin;
+          transform: rotate(55deg);
+        }
+
+        .vf-grass-leaf--4 {
+          left: 2vmin;
+          bottom: 7vmin;
+          transform: rotate(-55deg);
+        }
+
+        .vf-grass-leaf--5 {
+          left: 8vmin;
+          bottom: 8vmin;
+          transform: rotate(45deg);
+        }
+
+        .vf-grass-leaf--6 {
+          left: 12vmin;
+          bottom: 5vmin;
+          transform: rotate(65deg);
+        }
+
+        .vf-grass-leaf--7 {
+          left: 5vmin;
+          bottom: 11vmin;
+          transform: rotate(-25deg);
+        }
+
+        .vf-grass-leaf--8 {
+          left: 10vmin;
+          bottom: 12vmin;
+          transform: rotate(35deg);
+        }
+
+        .vf-grass-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.35);
+          filter: blur(1.5vmin);
+          z-index: 100;
+        }
+
+        /* ---------------- SIDE / FRONT LEAVES ---------------- */
+
+        .vf-side-grow {
+          position: absolute;
+          bottom: 4vmin;
+        }
+
+        .vf-side-grow--1 {
+          left: 15%;
+          transform: scale(0.8) rotate(-12deg);
+        }
+
+        .vf-side-grow--2 {
+          right: 14%;
+          transform: scale(0.8) rotate(18deg);
+        }
+
+        .vf-g-right {
+          transform-origin: bottom left;
+        }
+
+        .vf-big-leaf {
+          width: 30vmin;
+          height: 38vmin;
+          border-top-left-radius: 100%;
+          border-left: 1.5vmin solid #079097;
+          background: linear-gradient(
+            to top,
+            transparent,
+            rgba(21, 159, 170, 0.35)
+          );
+          mask-image: linear-gradient(
+            to top,
+            transparent 20%,
+            #079097 70%
+          );
+          -webkit-mask-image: linear-gradient(
+            to top,
+            transparent 20%,
+            #079097 70%
+          );
+        }
+
+        .vf-front-grow {
+          position: absolute;
+          bottom: -2vmin;
+          left: 50%;
+          transform: translateX(-50%) scale(0.9);
+          z-index: 25;
+        }
+
+        .vf-g-front {
+          position: relative;
+          width: 25vmin;
+          height: 25vmin;
+        }
+
+        .vf-front-leaf-wrapper {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform-origin: bottom center;
+        }
+
+        .vf-front-leaf {
+          width: 9vmin;
+          height: 12vmin;
+          border-radius: 100% 0 0 100% / 100% 100% 0 0;
+          background: linear-gradient(
+            to bottom left,
+            transparent,
+            #159faa
+          );
+          box-shadow: inset 0 2px 1vmin rgba(44, 238, 252, 0.2);
+        }
+
+        .vf-front-leaf-wrapper--1 {
+          transform: translateX(-50%) rotate(-55deg);
+        }
+
+        .vf-front-leaf-wrapper--2 {
+          transform: translateX(-50%) rotate(-40deg);
+        }
+
+        .vf-front-leaf-wrapper--3 {
+          transform: translateX(-50%) rotate(-25deg);
+        }
+
+        .vf-front-leaf-wrapper--4 {
+          transform: translateX(-50%) rotate(-10deg);
+        }
+
+        .vf-front-leaf-wrapper--5 {
+          transform: translateX(-50%) rotate(10deg);
+        }
+
+        .vf-front-leaf-wrapper--6 {
+          transform: translateX(-50%) rotate(25deg);
+        }
+
+        .vf-front-leaf-wrapper--7 {
+          transform: translateX(-50%) rotate(40deg);
+        }
+
+        .vf-front-leaf-wrapper--8 {
+          transform: translateX(-50%) rotate(55deg);
+        }
+
+        .vf-front-line {
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 1.5vmin;
+          height: 25vmin;
+          transform: translateX(-50%);
+          background: linear-gradient(
+            to top,
+            transparent,
+            #079097
+          );
+        }
+
+        /* ---------------- BACK LEAVES ---------------- */
+
+        .vf-back-grow {
+          position: absolute;
+          bottom: -4vmin;
+          right: 30%;
+          z-index: 12;
+        }
+
+        .vf-g-fr {
+          position: relative;
+          transform-origin: bottom left;
+          animation: vf-back-sway 2s linear infinite;
+        }
+
+        .vf-back-leaf {
+          position: absolute;
+          width: 9vmin;
+          height: 10vmin;
+          border-radius: 100% 0 0 100% / 100% 100% 0 0;
+          background: linear-gradient(
+            to bottom left,
+            transparent,
+            #23f0ff
+          );
+          box-shadow: inset 0 2px 1vmin rgba(44, 238, 252, 0.2);
+        }
+
+        .vf-back-leaf--1 {
+          left: 2vmin;
+          top: 4vmin;
+          transform: rotate(55deg);
+        }
+
+        .vf-back-leaf--2 {
+          left: -1vmin;
+          top: 7vmin;
+          transform: rotate(-25deg);
+        }
+
+        .vf-back-leaf--3 {
+          left: 5vmin;
+          top: 11vmin;
+          transform: rotate(45deg);
+        }
+
+        .vf-back-leaf--4 {
+          left: -3vmin;
+          top: 14vmin;
+          transform: rotate(-15deg);
+        }
+
+        .vf-back-leaf--5 {
+          left: 4vmin;
+          top: 18vmin;
+          transform: rotate(55deg);
+        }
+
+        .vf-back-leaf--6 {
+          left: 0;
+          top: 22vmin;
+          transform: rotate(-25deg);
+        }
+
+        .vf-back-leaf--7 {
+          left: 6vmin;
+          top: 26vmin;
+          transform: rotate(45deg);
+        }
+
+        .vf-back-leaf--8 {
+          left: -4vmin;
+          top: 19vmin;
+          transform: rotate(-15deg);
+        }
+
+        /* ---------------- LONG GRASS ---------------- */
+
+        .vf-long-g {
+          position: absolute;
+          bottom: 18vmin;
+          left: -10vmin;
+          transform-origin: bottom left;
+        }
+
+        .vf-long-g--0 {
+          left: 8%;
+          transform: scale(0.7) rotate(-5deg);
+        }
+
+        .vf-long-g--1 {
+          left: 18%;
+          transform: scale(0.8) rotate(4deg);
+        }
+
+        .vf-long-g--2 {
+          left: 28%;
+          transform: scale(0.65) rotate(-3deg);
+        }
+
+        .vf-long-g--3 {
+          left: 38%;
+          transform: scale(0.75) rotate(5deg);
+        }
+
+        .vf-long-g--4 {
+          right: 38%;
+          left: auto;
+          transform: scale(0.75) rotate(-5deg);
+        }
+
+        .vf-long-g--5 {
+          right: 28%;
+          left: auto;
+          transform: scale(0.65) rotate(3deg);
+        }
+
+        .vf-long-g--6 {
+          right: 18%;
+          left: auto;
+          transform: scale(0.8) rotate(-4deg);
+        }
+
+        .vf-long-g--7 {
+          right: 8%;
+          left: auto;
+          transform: scale(0.7) rotate(5deg);
+        }
+
+        .vf-grow {
+          animation: vf-grow 2s backwards;
+        }
+
+        .vf-leaf {
+          width: 8vmin;
+          height: 12vmin;
+          border-radius: 100% 0 100% 0;
+          background: linear-gradient(
+            to top,
+            #079097,
+            #159faa
+          );
+          transform-origin: bottom;
+        }
+
+        .vf-leaf--0 {
+          transform: rotate(-25deg);
+        }
+
+        .vf-leaf--1 {
+          transform: rotate(15deg);
+        }
+
+        .vf-leaf--2 {
+          transform: rotate(35deg);
+        }
+
+        .vf-leaf--3 {
+          transform: rotate(-15deg);
+        }
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
+
+        @keyframes vf-blooming-flower {
+          0% {
+            transform: scale(0);
+          }
+        }
+
+        @keyframes vf-growing-stem {
+          0% {
+            transform: scaleY(0);
+            transform-origin: bottom center;
+          }
+        }
+
+        @keyframes vf-grow {
+          0% {
+            transform: scale(0);
+            transform-origin: bottom center;
+          }
+        }
+
+        @keyframes vf-grow-grass {
+          0% {
+            transform: scale(0);
+            transform-origin: bottom center;
+          }
+        }
+
+        @keyframes vf-leaf-right {
+          0% {
+            transform: rotate(70deg) rotateY(30deg) scale(0);
+          }
+        }
+
+        @keyframes vf-leaf-left {
+          0% {
+            transform: rotate(-70deg) rotateY(30deg) scale(0);
+          }
+        }
+
+        @keyframes vf-flower-light {
+          0% {
+            opacity: 0;
+            transform: translateY(0);
+          }
+
+          50% {
+            opacity: 1;
+          }
+
+          100% {
+            opacity: 0;
+            transform: translateY(-4vmin);
+          }
+        }
+
+        @keyframes vf-moving-flower-1 {
+          0%,
+          100% {
+            transform: rotate(2deg);
+          }
+
+          50% {
+            transform: rotate(-2deg);
+          }
+        }
+
+        @keyframes vf-moving-flower-2 {
+          0%,
+          100% {
+            transform: rotate(18deg);
+          }
+
+          50% {
+            transform: rotate(22deg);
+          }
+        }
+
+        @keyframes vf-moving-flower-3 {
+          0%,
+          100% {
+            transform: rotate(-13deg);
+          }
+
+          50% {
+            transform: rotate(-17deg);
+          }
+        }
+
+        @keyframes vf-moving-flower-4 {
+          0%,
+          100% {
+            transform: scale(0.72) rotate(10deg);
+          }
+
+          50% {
+            transform: scale(0.72) rotate(14deg);
+          }
+        }
+
+        @keyframes vf-g-long-sway {
+          0%,
+          100% {
+            transform: rotate(-30deg) rotateY(-20deg);
+          }
+
+          50% {
+            transform: rotate(-32deg) rotateY(-20deg);
+          }
+        }
+
+        @keyframes vf-back-sway {
+          0%,
+          100% {
+            transform: rotate(2deg);
+          }
+
+          50% {
+            transform: rotate(4deg);
+          }
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+          .vf-flowers {
+            height: 62vh;
+            min-height: 390px;
+            transform: scale(0.78);
+          }
+
+          .vf-flower--1 {
+            left: 18%;
+          }
+
+          .vf-flower--2 {
+            left: 43%;
+          }
+
+          .vf-flower--3 {
+            left: 67%;
+          }
+
+          .vf-flower--4 {
+            left: 88%;
+          }
+
+          .vf-grass-holder--1 {
+            left: 12%;
+          }
+
+          .vf
